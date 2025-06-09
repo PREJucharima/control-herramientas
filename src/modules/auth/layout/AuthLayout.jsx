@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 export const AuthLayout = ({ children }) => {
   return (
@@ -13,29 +13,38 @@ export const AuthLayout = ({ children }) => {
     >
       <Grid
         item
-        className="box-shadow"
         xs={3}
         sx={{
           width: { sm: 450 },
           backgroundColor: "#fff",
-          padding: 3,
-          borderRadius: 2,
+          padding: 4,
+          borderRadius: 3,
+          boxShadow: 3,
+          textAlign: "center",
         }}
       >
-        <Grid
-          container
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ mb: 2 }}
+        <img
+          src="/logo_precision.png"
+          alt="Logo PRECISION"
+          width={120}
+          style={{ marginBottom: 24 }}
+        />
+
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            textTransform: "uppercase",
+            color: "#0a1a28",
+            mb: 2,
+          }}
         >
-          <img
-            src="/logo_precision.png"
-            alt="logo PRECISION"
-            width={250}
-            style={{ margin: "16px" }}
-          />
-        </Grid>
+          Control de Herramientas
+        </Typography>
+
+        <Typography variant="body1" sx={{ mb: 4, lineHeight: 1.6 }}>
+          Inicia sesión con tu cuenta de Google corporativa <strong>PRECISION</strong> para continuar.
+        </Typography>
 
         {children}
       </Grid>
