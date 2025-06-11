@@ -53,6 +53,5 @@ export const AuthLayout = ({ children }) => {
 };
 
 AuthLayout.propTypes = {
-  title: PropTypes.string,
   children: PropTypes.node,
 };
