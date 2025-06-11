@@ -15,6 +15,8 @@ export const LoginPage = () => {
     const decoded = jwtDecode(credentialResponse.credential);
     const email = decoded.email;
 
+    // console.log(credentialResponse);
+
     if (!email.endsWith('@precision.tech')) {
       alert('Solo correos corporativos');
       return;
