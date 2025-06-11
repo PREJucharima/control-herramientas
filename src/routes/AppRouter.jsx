@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router";
 import { AuthRoutes } from "../modules/auth/routes/AuthRoutes";
 import { useCheckAuth } from "../modules/auth/hooks/useCheckAuth";
 import { HomePage } from "../modules/home/pages/HomePage";
+import { CircularProgress } from "@mui/material";
 
 export const AppRouter = () => {
   const { status } = useCheckAuth();
@@ -9,7 +10,7 @@ export const AppRouter = () => {
   if (status === "checking") {
     return (
       <>
-        <p>Cargando...</p>
+        <CircularProgress />
       </>
     );
   }
