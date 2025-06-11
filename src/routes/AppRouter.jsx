@@ -1,13 +1,17 @@
 import { Navigate, Route, Routes } from "react-router";
 import { AuthRoutes } from "../modules/auth/routes/AuthRoutes";
 import { useCheckAuth } from "../modules/auth/hooks/useCheckAuth";
-import { HomePage } from "../modules/home/pages/HomePage"
+import { HomePage } from "../modules/home/pages/HomePage";
 
 export const AppRouter = () => {
   const { status } = useCheckAuth();
 
   if (status === "checking") {
-    return <><p>Loading...</p> </>
+    return (
+      <>
+        <p>Cargando...</p>
+      </>
+    );
   }
 
   return (
