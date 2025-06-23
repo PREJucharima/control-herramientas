@@ -9,7 +9,7 @@ export const useCheckAuth = () => {
   useEffect(() => {
     restoreSession();
     setStatus(isAuthenticated ? "authenticated" : "not-authenticated");
-  }, [isAuthenticated]);
+  }, [restoreSession, isAuthenticated]);
 
   return { status };
 };
