@@ -1,9 +1,7 @@
-// src/components/Header.jsx
-import { Menu, Notifications } from "@mui/icons-material";
+import { Menu } from "@mui/icons-material";
 import {
   Grid,
   Avatar,
-  Badge,
   Box,
   Container,
   IconButton,
@@ -15,7 +13,7 @@ import {
 import { useUiStore } from "@/core/states/uiStore";
 
 const user = {
-  username: "Renato Valer",
+  username: "Julio Ucharima",
   role: "Admin",
   photoURL: "/assets/user.png",
 };
@@ -67,12 +65,6 @@ export const Header = ({ drawerWidth = 240 }) => {
                   secondary={user.role}
                 />
               </ListItem>
-
-              <IconButton>
-                <Badge badgeContent={2} color="error">
-                  <Notifications />
-                </Badge>
-              </IconButton>
             </Grid>
           </Grid>
         </Toolbar>

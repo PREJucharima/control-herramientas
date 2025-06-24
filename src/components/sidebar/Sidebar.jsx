@@ -11,17 +11,35 @@ export const SideBar = ({ drawerWidth = 240, data = [] }) => {
 
   return (
     <Drawer
+      component="div"
       variant={isDrawerOpen ? "temporary" : "permanent"}
-      open
+      open={true}
       anchor="left"
+      transitionDuration={{
+        enter: 500,
+        exit: 500,
+      }}
       onClose={onCloseDrawer}
       sx={{
-        width: drawerWidth,
-        "& .MuiDrawer-paper": {
-          backgroundColor: "primary.main",
-          width: drawerWidth,
-          padding: 2,
+        width: { sm: drawerWidth },
+
+        '& .MuiDrawer-paper': {
+          backgroundColor: 'primary.main',
+          width: { sm: drawerWidth },
+          height: '100vh',
+          flexShrink: { sm: 0 },
+          padding: '20px',
+          flexDirection: 'column',
+          gap: '5px',
         },
+
+        display: {
+          xs: isDrawerOpen ? 'block' : 'none',
+          sm: 'flex',
+        },
+      }}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
       }}
     >
       <Box sx={{ textAlign: "center", mt: 4, mb: 4 }}>

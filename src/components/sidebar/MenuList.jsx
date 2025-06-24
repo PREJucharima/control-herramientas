@@ -6,14 +6,14 @@ import {
   Collapse,
   List,
 } from "@mui/material";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { NavLink } from "react-router";
 import { useState } from "react";
 import { iconMap } from "@/core/utils/iconMap";
 
 export const MenuList = ({ items }) => {
   const [openSubmenus, setOpenSubmenus] = useState({});
-
-  console.log(items);
 
   const toggle = (id) =>
     setOpenSubmenus((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -22,6 +22,7 @@ export const MenuList = ({ items }) => {
     if (!item.es_visible) return null;
     const hasChildren = item.hijos?.length > 0;
     const Icon = iconMap[item.icono] || iconMap.default;
+    const isOpen = openSubmenus[item.menu_id];
 
     return (
       <div key={item.menu_id || item.nombre}>
@@ -38,15 +39,12 @@ export const MenuList = ({ items }) => {
               <Icon sx={{ color: "white" }} />
             </ListItemIcon>
             <ListItemText primary={item.nombre} />
+            {hasChildren && (isOpen ? <ExpandLess sx={{ color: "white" }} /> : <ExpandMore sx={{ color: "white" }} />)}
           </ListItemButton>
         </ListItem>
 
         {hasChildren && (
-          <Collapse
-            in={openSubmenus[item.menu_id]}
-            timeout="auto"
-            unmountOnExit
-          >
+          <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <List sx={{ pl: 4 }}>
               <MenuList items={item.hijos} />
             </List>
