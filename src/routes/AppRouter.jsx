@@ -3,6 +3,7 @@ import { CircularProgress } from "@mui/material";
 import { AuthRoutes } from "@/auth/routes/AuthRoutes";
 import { useCheckAuth } from "@/auth/hooks/useCheckAuth";
 import { HomePage } from "@/modules/home/pages/HomePage";
+import { ProductPage } from "@/modules/catalogo/pages/ProductPage";
 
 export const AppRouter = () => {
   const { status } = useCheckAuth();
@@ -15,8 +16,9 @@ export const AppRouter = () => {
     <Routes>
       {status === "authenticated" ? (
         <>
-          <Route path="/*" element={<HomePage />} />
-          <Route path="/auth/*" element={<Navigate to="/" />} />
+          <Route path="/inicio" element={<HomePage />} />
+          <Route path="/catalogos/productos" element={<ProductPage />} />
+          <Route path="/auth/*" element={<Navigate to="/inicio" />} />
         </>
       ) : (
         <>
