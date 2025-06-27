@@ -1,31 +1,27 @@
 import { Menu } from "@mui/icons-material";
 import {
-  Grid,
   Avatar,
-  Box,
+  Breadcrumbs,
   Container,
   IconButton,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Typography,
   Toolbar,
 } from "@mui/material";
+import { FlexBox, FlexBetween } from "@/components/flexbox";
 import { useUiStore } from "@/core/states/uiStore";
-
-const user = {
-  username: "Julio Ucharima",
-  role: "Admin",
-  photoURL: "/assets/user.png",
-};
+import { useAuthStore } from "@/auth/states/authStore";
 
 export const Header = ({ drawerWidth = 240 }) => {
   const onOpenDrawer = useUiStore((state) => state.onOpenDrawer);
+  const user = useAuthStore((state) => state.user);
 
   return (
-    <Box
-      position="fixed"
+    <FlexBox
       component="header"
-      display="flex"
+      position="fixed"
       alignItems="center"
       sx={{
         height: { sm: "100px" },
@@ -40,35 +36,36 @@ export const Header = ({ drawerWidth = 240 }) => {
       }}
     >
       <Container maxWidth="xl">
-        <Toolbar>
-          <Grid
-            container
-            display="flex"
-            direction="row"
-            justifyContent={{ xs: "space-between", sm: "end" }}
-            alignItems="center"
-          >
-            <Grid display={{ xs: "block", sm: "none" }}>
-              <IconButton onClick={onOpenDrawer}>
-                <Menu />
-              </IconButton>
-            </Grid>
+        <Toolbar disableGutters>
+          <FlexBetween width="100%">
+            <IconButton
+              onClick={onOpenDrawer}
+              sx={{ display: { xs: "block", sm: "none" } }}
+            >
+              <Menu />
+            </IconButton>
 
-            <Grid item display="flex" alignItems="center">
-              <ListItem>
+            <FlexBox alignItems="center" gap={8} sx={{ flex: 1 }}>
+
+              <Breadcrumbs aria-label="breadcrumb">
+                <Typography color="inherit">{user.alcancesAccesibles[0]?.sucursal_nombre}</Typography>
+                <Typography color="inherit">{user.alcancesAccesibles[0]?.empresa_nombre}</Typography>
+              </Breadcrumbs>
+
+              <ListItem disableGutters>
                 <ListItemAvatar>
                   <Avatar src={user.photoURL} />
                 </ListItemAvatar>
                 <ListItemText
                   sx={{ color: "black" }}
-                  primary={user.username}
-                  secondary={user.role}
+                  primary={`${user.nombre_usuario} ${user.apellido_usuario}`}
+                  secondary={user.rol_nombre}
                 />
               </ListItem>
-            </Grid>
-          </Grid>
+            </FlexBox>
+          </FlexBetween>
         </Toolbar>
       </Container>
-    </Box>
+    </FlexBox>
   );
 };
