@@ -1,6 +1,5 @@
-import Box from '@mui/material/Box'; // ==============================================================
+import Box from '@mui/material/Box';
 
-// ==============================================================
 export default function FlexBetween({
   ref,
   children,
