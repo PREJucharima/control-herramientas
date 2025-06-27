@@ -39,7 +39,7 @@ export const SideBar = ({ drawerWidth = 240, data = [] }) => {
         },
       }}
       ModalProps={{
-        keepMounted: true, // Better open performance on mobile.
+        keepMounted: true,
       }}
     >
       <Box sx={{ textAlign: "center", mt: 4, mb: 4 }}>

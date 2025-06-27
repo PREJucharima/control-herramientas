@@ -14,12 +14,13 @@ import { iconMap } from "@/core/utils/iconMap";
 
 export const MenuList = ({ items }) => {
   const [openSubmenus, setOpenSubmenus] = useState({});
-
+  console.log(items)
   const toggle = (id) =>
     setOpenSubmenus((prev) => ({ ...prev, [id]: !prev[id] }));
 
   return items.map((item) => {
-    if (!item.es_visible) return null;
+    console.log(item.es_visible)
+    if (!item.esta_activo) return null;
     const hasChildren = item.hijos?.length > 0;
     const Icon = iconMap[item.icono] || iconMap.default;
     const isOpen = openSubmenus[item.menu_id];
