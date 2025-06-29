@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ListItem,
   ListItemButton,
@@ -9,17 +10,15 @@ import {
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { NavLink } from "react-router";
-import { useState } from "react";
-import { iconMap } from "@/core/utils/iconMap";
+import { iconMap } from "@/utils/iconMap";
 
 export const MenuList = ({ items }) => {
   const [openSubmenus, setOpenSubmenus] = useState({});
-  console.log(items)
+  console.log(items);
   const toggle = (id) =>
     setOpenSubmenus((prev) => ({ ...prev, [id]: !prev[id] }));
 
   return items.map((item) => {
-    console.log(item.es_visible)
     if (!item.esta_activo) return null;
     const hasChildren = item.hijos?.length > 0;
     const Icon = iconMap[item.icono] || iconMap.default;
@@ -40,7 +39,12 @@ export const MenuList = ({ items }) => {
               <Icon sx={{ color: "white" }} />
             </ListItemIcon>
             <ListItemText primary={item.nombre} />
-            {hasChildren && (isOpen ? <ExpandLess sx={{ color: "white" }} /> : <ExpandMore sx={{ color: "white" }} />)}
+            {hasChildren &&
+              (isOpen ? (
+                <ExpandLess sx={{ color: "white" }} />
+              ) : (
+                <ExpandMore sx={{ color: "white" }} />
+              ))}
           </ListItemButton>
         </ListItem>
 

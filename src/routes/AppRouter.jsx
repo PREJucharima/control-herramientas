@@ -4,6 +4,7 @@ import { AuthRoutes } from "@/auth/routes/AuthRoutes";
 import { useCheckAuth } from "@/auth/hooks/useCheckAuth";
 import { HomePage } from "@/modules/home/pages/HomePage";
 import { ProductPage } from "@/modules/catalogo/pages/ProductPage";
+import RootLayout from "@/layouts/RootLayout";
 
 export const AppRouter = () => {
   const { status } = useCheckAuth();
@@ -16,8 +17,13 @@ export const AppRouter = () => {
     <Routes>
       {status === "authenticated" ? (
         <>
-          <Route path="/inicio" element={<HomePage />} />
-          <Route path="/catalogos/productos" element={<ProductPage />} />
+          {/* Protegidas dentro del layout */}
+          <Route path="/" element={<RootLayout />}>
+            <Route path="inicio" element={<HomePage />} />
+            <Route path="catalogos/productos" element={<ProductPage />} />
+          </Route>
+
+          {/* Si entra a /auth, redirige a inicio */}
           <Route path="/auth/*" element={<Navigate to="/inicio" />} />
         </>
       ) : (

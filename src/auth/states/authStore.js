@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -9,11 +9,14 @@ export const useAuthStore = create((set, get) => ({
   setUserData: (data) => {
     const { token, expiracionToken, ...user } = data;
 
-    localStorage.setItem('auth', JSON.stringify({
-      user,
-      token,
-      expiresAt: expiracionToken,
-    }));
+    localStorage.setItem(
+      "auth",
+      JSON.stringify({
+        user,
+        token,
+        expiresAt: expiracionToken,
+      })
+    );
 
     set({
       user,
@@ -24,7 +27,7 @@ export const useAuthStore = create((set, get) => ({
   },
 
   logout: () => {
-    localStorage.removeItem('auth');
+    localStorage.removeItem("auth");
     set({
       user: null,
       token: null,
@@ -45,7 +48,7 @@ export const useAuthStore = create((set, get) => ({
   },
 
   restoreSession: () => {
-    const saved = localStorage.getItem('auth');
+    const saved = localStorage.getItem("auth");
     if (!saved) return;
 
     const { user, token, expiresAt } = JSON.parse(saved);
@@ -60,7 +63,7 @@ export const useAuthStore = create((set, get) => ({
         isAuthenticated: true,
       });
     } else {
-      localStorage.removeItem('auth');
+      localStorage.removeItem("auth");
     }
-  }
+  },
 }));

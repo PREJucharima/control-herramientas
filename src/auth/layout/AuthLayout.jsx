@@ -24,15 +24,16 @@ export const AuthLayout = ({ children }) => {
         }}
       >
         <img
-          src="/logo_precision.png"
+          src="/static/logo/logo_precision.png"
           alt="Logo PRECISION"
           width={120}
           style={{ marginBottom: 24 }}
         />
 
         <Typography
-          variant="h5"
+          variant="h1"
           sx={{
+            fontSize: 26,
             fontWeight: 700,
             textTransform: "uppercase",
             color: "#0a1a28",
@@ -43,7 +44,8 @@ export const AuthLayout = ({ children }) => {
         </Typography>
 
         <Typography variant="body1" sx={{ mb: 4, lineHeight: 1.6 }}>
-          Inicia sesión con tu cuenta de Google corporativa <strong>PRECISION</strong> para continuar.
+          Inicia sesión con tu cuenta de Google corporativa{" "}
+          <strong>PRECISION</strong> para continuar.
         </Typography>
 
         {children}
