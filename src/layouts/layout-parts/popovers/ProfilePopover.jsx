@@ -1,13 +1,13 @@
 import { memo, useCallback } from "react";
-import { useNavigate } from "react-router"; // MUI
+import { useNavigate } from "react-router";
 
 import Avatar from "@mui/material/Avatar";
-import AvatarLoading from "@/components/avatar-loading"; // CUSTOM DEFINED HOOK
+import AvatarLoading from "@/components/avatar-loading";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import FlexBox from "@/components/flexbox/FlexBox";
 import PopoverLayout from "./_PopoverLayout";
-import Typography from "@mui/material/Typography"; // CUSTOM COMPONENTS
+import Typography from "@mui/material/Typography";
 
 import { styled } from "@mui/material/styles";
 import { useAuth } from "@/auth/hooks/useAuth";

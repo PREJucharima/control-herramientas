@@ -1,11 +1,11 @@
-import { Fragment, memo, useCallback, useMemo, useRef, useState } from "react"; // MUI
+import { Fragment, memo, useCallback, useMemo, useRef, useState } from "react";
 
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles"; // STYLED COMPONENTS
+import { styled } from "@mui/material/styles";
 
 const PopoverTitle = styled(Typography)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -15,9 +15,8 @@ const PopoverTitle = styled(Typography)(({ theme }) => ({
 const PopoverFooter = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
   paddingBottom: theme.spacing(0.5),
-})); // ===================================================================
+}));
 
-// ===================================================================
 export default memo(function PopoverLayout({
   title,
   selectButton,
