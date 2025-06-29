@@ -1,14 +1,14 @@
-export const TableCell = theme => ({
+export const TableCell = (theme) => ({
   defaultProps: {
-    padding: 'none'
+    padding: "none",
   },
   styleOverrides: {
     root: {
-      border: 'none',
+      border: "none",
       color: theme.palette.grey[500],
-      ...theme.applyStyles('dark', {
-        color: theme.palette.grey[200]
-      })
-    }
-  }
+      ...theme.applyStyles("dark", {
+        color: theme.palette.grey[200],
+      }),
+    },
+  },
 });

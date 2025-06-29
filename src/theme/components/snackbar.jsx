@@ -1,9 +1,9 @@
-export const SnackbarContent = theme => ({
+export const SnackbarContent = (theme) => ({
   styleOverrides: {
     root: {
-      color: 'white',
+      color: "white",
       borderRadius: 12,
-      backgroundColor: theme.palette.primary.main
-    }
-  }
+      backgroundColor: theme.palette.primary.main,
+    },
+  },
 });
