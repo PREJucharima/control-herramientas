@@ -6,7 +6,6 @@ import { useAuth } from "@/auth/hooks/useAuth";
 export const HomePage = () => {
   const user = useAuthStore((state) => state.user);
   const { handleLogout } = useAuth();
-  // const token = useAuthStore((state) => state.token);
 
   if (!user) return <Navigate to="/auth/login" />;
 
