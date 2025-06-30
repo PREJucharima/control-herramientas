@@ -6,9 +6,17 @@ import DashboardHeader from "./components/DashboardHeader";
 import DashboardSidebar from "./components/DashboardSidebar";
 import LayoutBodyWrapper from "./components/LayoutBodyWrapper";
 import { LayoutProvider } from "./context/layoutProvider";
+import { useAuth } from "@/auth/hooks/useAuth";
 
 export default function RootLayout() {
+  const { user, logout } = useAuth();
   const downLg = useMediaQuery((theme) => theme.breakpoints.down("lg"));
+
+  if (!user) {
+    logout();
+    return null;
+  }
+
   return (
     <LayoutProvider>
       {downLg ? <MobileSidebar /> : <DashboardSidebar />}
