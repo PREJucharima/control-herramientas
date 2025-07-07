@@ -2,7 +2,7 @@ export const SnackbarContent = (theme) => ({
   styleOverrides: {
     root: {
       color: "white",
-      borderRadius: 12,
+      borderRadius: 5,
       backgroundColor: theme.palette.primary.main,
     },
   },

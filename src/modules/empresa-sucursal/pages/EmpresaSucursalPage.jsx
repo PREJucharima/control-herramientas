@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
 
+import Snackbar from "@mui/material/Snackbar";
+import Fade from "@mui/material/Fade";
+
 export const EmpresaSucursalPage = () => {
   const { user } = useAuth();
   const alcances = useMemo(() => user.alcancesAccesibles || [], [user]);
@@ -19,6 +22,10 @@ export const EmpresaSucursalPage = () => {
 
   const { empresa, sucursal, setEmpresa, setSucursal } =
     useEmpresaSucursalStore();
+
+  const [state, setState] = useState({
+    open: false,
+  });
 
   const isOnlyOne = alcances.length === 1;
 
@@ -61,6 +68,16 @@ export const EmpresaSucursalPage = () => {
   const handleSaveEmpresaSucursal = () => {
     setEmpresa(empresaSeleccionada);
     setSucursal(sucursalSeleccionada);
+
+    setState({
+      open: true,
+    });
+  };
+
+  const handleClose = () => {
+    setState({
+      open: false,
+    });
   };
 
   return (
@@ -176,6 +193,15 @@ export const EmpresaSucursalPage = () => {
           Guardar
         </Button>
       </Box>
+
+      <Snackbar
+        open={state.open}
+        onClose={handleClose}
+        slots={{ Fade }}
+        message="Empresa y Sucursal actualizados correctamente!"
+        key={Fade}
+        autoHideDuration={1200}
+      />
     </>
   );
 };
