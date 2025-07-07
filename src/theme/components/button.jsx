@@ -18,6 +18,12 @@ export const Button = (theme) => {
         textOverflow: "ellipsis",
         "&.Mui-disabled": {
           color: theme.palette.grey[400],
+          cursor: "not-allowed",
+          pointerEvents: "auto",
+          backgroundColor: "#e0e0e0",
+          "&:hover": {
+            backgroundColor: "#e0e0e0",
+          },
         },
       },
       // contained variants
