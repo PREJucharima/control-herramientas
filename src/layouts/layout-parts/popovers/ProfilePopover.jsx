@@ -79,9 +79,11 @@ export default memo(function ProfilePopover() {
 
       return (
         <Box pt={1}>
-          <Text onClick={handleMenuItem("/inicio")}>Perfil y Cuenta</Text>
+          <Text onClick={handleMenuItem("/inicio")}>Ver mi Perfil</Text>
+          <Text onClick={handleMenuItem("/seguridad/empresa-y-sucursal")}>
+            Empresa y Sucursal
+          </Text>
           <Text onClick={handleMenuItem("/inicio")}>Configuración</Text>
-          <Text onClick={handleMenuItem("/inicio")}>Sucursal y Empresa</Text>
           <Divider
             sx={{
               my: 1,

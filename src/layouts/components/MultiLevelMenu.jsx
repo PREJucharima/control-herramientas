@@ -23,7 +23,6 @@ export default function MultiLevelMenu({ sidebarCompact }) {
   const { menus, loading, error } = useFetchNavigation();
   const menuItems = normalizeNavigation(menus?.value?.menus || []);
   const activeRoute = useCallback((path) => pathname === path, [pathname]);
-  console.log(menus);
   console.log(menuItems);
 
   const handleNavigation = useCallback(
@@ -34,12 +33,20 @@ export default function MultiLevelMenu({ sidebarCompact }) {
     [navigate, handleCloseMobileSidebar]
   );
 
+  const insertLabelBefore = (items, targetName, label) => {
+    const index = items.findIndex((item) => item.name === targetName);
+    if (index === -1) return items;
+
+    return [
+      ...items.slice(0, index),
+      { type: "label", label },
+      ...items.slice(index),
+    ];
+  };
+
   const menuWithLabels = [
     { type: "label", label: "GESTIÓN OPERATIVA" },
-    ...menuItems.slice(0, 5),
-
-    { type: "label", label: "ADMINISTRACIÓN DEL SISTEMA" },
-    ...menuItems.slice(5),
+    ...insertLabelBefore(menuItems, "Seguridad", "ADMINISTRACIÓN DEL SISTEMA"),
   ];
 
   if (loading) return <CircularProgress />;

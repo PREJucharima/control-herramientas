@@ -9,6 +9,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
 
 export const EmpresaSucursalPage = () => {
   const { user } = useAuth();
@@ -16,21 +17,50 @@ export const EmpresaSucursalPage = () => {
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState("");
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState("");
 
-  useEffect(() => {
-    if (alcances.length > 0) {
-      setEmpresaSeleccionada(alcances[0].empresa_nombre);
-      setSucursalSeleccionada(alcances[0].sucursal_nombre);
-    }
-  }, [alcances]);
+  const { empresa, sucursal, setEmpresa, setSucursal } =
+    useEmpresaSucursalStore();
 
-  const isDisabled = alcances.length === 1;
+  const isOnlyOne = alcances.length === 1;
+
+  // Setear valores cuando entra a la página
+  useEffect(() => {
+    if (alcances.length === 0) return;
+
+    // Si solo hay uno: seleccionar y guardar automáticamente
+    if (isOnlyOne) {
+      const únicaEmpresa = alcances[0].empresa_nombre;
+      const únicaSucursal = alcances[0].sucursal_nombre;
+      setEmpresaSeleccionada(únicaEmpresa);
+      setSucursalSeleccionada(únicaSucursal);
+      setEmpresa(únicaEmpresa);
+      setSucursal(únicaSucursal);
+    } else {
+      // Si hay más: cargar lo del store o usar el primero como por defecto
+      setEmpresaSeleccionada(empresa || alcances[0].empresa_nombre);
+      setSucursalSeleccionada(sucursal || alcances[0].sucursal_nombre);
+    }
+  }, [alcances, isOnlyOne, empresa, sucursal, setEmpresa, setSucursal]);
 
   const handleChangeEmpresa = (event) => {
-    setEmpresaSeleccionada(event.target.value);
+    const nuevaEmpresa = event.target.value;
+    setEmpresaSeleccionada(nuevaEmpresa);
+
+    // Filtrar las sucursales que pertenecen a la nueva empresa
+    const sucursalesAsociadas = alcances
+      .filter((a) => a.empresa_nombre === nuevaEmpresa)
+      .map((a) => a.sucursal_nombre);
+
+    // Si hay alguna, setear la primera como seleccionada
+    setSucursalSeleccionada(sucursalesAsociadas[0] || "");
   };
 
   const handleChangeSucursal = (event) => {
     setSucursalSeleccionada(event.target.value);
+  };
+
+  const handleSaveEmpresaSucursal = () => {
+    setEmpresa(empresaSeleccionada);
+    setSucursal(sucursalSeleccionada);
   };
 
   return (
@@ -44,7 +74,7 @@ export const EmpresaSucursalPage = () => {
       </Typography>
 
       <Box display="flex" flexDirection="column" gap={4} width={250}>
-        <FormControl size="small" disabled={isDisabled}>
+        <FormControl size="small" disabled={isOnlyOne}>
           <InputLabel
             id="empresa-label"
             sx={{
@@ -79,15 +109,21 @@ export const EmpresaSucursalPage = () => {
               },
             }}
           >
-            {alcances.map((alcance, index) => (
-              <MenuItem key={index} value={alcance.empresa_nombre}>
-                {alcance.empresa_nombre}
-              </MenuItem>
-            ))}
+            {alcances
+              .filter(
+                (a, index, self) =>
+                  index ===
+                  self.findIndex((t) => t.empresa_nombre === a.empresa_nombre)
+              )
+              .map((a, index) => (
+                <MenuItem key={index} value={a.empresa_nombre}>
+                  {a.empresa_nombre}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
 
-        <FormControl size="small" disabled={isDisabled}>
+        <FormControl size="small" disabled={isOnlyOne}>
           <InputLabel
             id="sucursal-label"
             sx={{
@@ -122,24 +158,20 @@ export const EmpresaSucursalPage = () => {
               },
             }}
           >
-            {alcances.map((alcance, index) => (
-              <MenuItem key={index} value={alcance.sucursal_nombre}>
-                {alcance.sucursal_nombre}
-              </MenuItem>
-            ))}
+            {alcances
+              .filter((a) => a.empresa_nombre === empresaSeleccionada)
+              .map((a, index) => (
+                <MenuItem key={index} value={a.sucursal_nombre}>
+                  {a.sucursal_nombre}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
 
         <Button
           variant="contained"
-          disabled={isDisabled}
-          sx={{
-            "&.Mui-disabled": {
-              cursor: "not-allowed",
-              pointerEvents: "auto",
-              backgroundColor: "#e0e0e0",
-            },
-          }}
+          disabled={isOnlyOne}
+          onClick={handleSaveEmpresaSucursal}
         >
           Guardar
         </Button>

@@ -28,9 +28,8 @@ const StyledRoot = styled("div")(({ theme }) => ({
     fontWeight: 500,
     flexGrow: 1,
   },
-})); // ==============================================================
+}));
 
-// ==============================================================
 export default function SearchBar({ open, handleClose }) {
   // SEARCH ICON IN INPUT BOX
   const INPUT_ADORNMENT = (
@@ -44,13 +43,13 @@ export default function SearchBar({ open, handleClose }) {
         <InputBase
           fullWidth
           autoFocus
-          placeholder="Search..."
+          placeholder="Buscar..."
           startAdornment={INPUT_ADORNMENT}
           className="input-field"
         />
 
         <Button variant="contained" onClick={handleClose}>
-          Search
+          Buscar
         </Button>
       </StyledRoot>
     </Slide>
