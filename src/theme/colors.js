@@ -73,7 +73,23 @@ export const error = {
   900: "#63091F",
   main: "#EF4770",
 };
+
 export const secondary = { ...grey, main: "#F1F5F9" };
+
+export const customTeal = {
+  25: "#e0fdf7",
+  50: "#ccfbf1",
+  100: "#99f6e4",
+  200: "#5eead4",
+  300: "#2dd4bf",
+  400: "#14b8a6",
+  500: "#10a191",
+  600: "#0e9384",
+  700: "#0c8376",
+  800: "#0a7166",
+  900: "#08594f",
+  main: "#21e0b2", // este es tu color base
+};
 
 export const info = {
   light: "#F4F4FF",
@@ -129,6 +145,7 @@ const basePalette = {
   success,
   warning,
   secondary,
+  customTeal,
 }; // LIGHT THEME COLOR PALETTE
 
 export const lightPalette = {

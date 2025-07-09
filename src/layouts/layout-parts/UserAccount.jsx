@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import AvatarLoading from "@/components/avatar-loading";
 import FlexRowAlign from "@/components/flexbox/FlexRowAlign";
 import { useAuth } from "@/auth/hooks/useAuth";
-import { formatArea, transformCapitalize } from "@/utils";
+import { transformCapitalize } from "@/utils";
 
 export default function UserAccount() {
   const { user } = useAuth();
@@ -24,8 +24,13 @@ export default function UserAccount() {
       <Box textAlign="center" pt={1.5} pb={3}>
         <Chip
           variant="outlined"
-          label={`${formatArea(user?.area_nombre)}`}
+          label={`Rol - ${user?.rol_nombre}`}
           size="small"
+          // color="customTeal"
+          sx={{
+            color: (theme) => theme.palette.customTeal[400],
+            borderColor: (theme) => theme.palette.customTeal[400],
+          }}
         />
 
         <Typography
@@ -48,6 +53,15 @@ export default function UserAccount() {
         >
           {user?.correo_electronico}
         </Typography>
+
+        {/* <Typography
+          variant="body2"
+          fontSize={13}
+          fontWeight={500}
+          color="text.secondary"
+        >
+          {formatArea(user?.area_nombre)}
+        </Typography> */}
       </Box>
     </FlexRowAlign>
   );
