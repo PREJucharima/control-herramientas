@@ -13,7 +13,6 @@ import {
   AccordionExpandPanel,
 } from "@/layouts/styles";
 
-// ==============================================================
 export default function SidebarAccordion({ item, children, sidebarCompact }) {
   const { pathname } = useLocation();
   const [hasActive, setHasActive] = useState(false);

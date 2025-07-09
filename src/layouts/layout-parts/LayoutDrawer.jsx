@@ -1,4 +1,3 @@
-// MUI
 import Drawer from "@mui/material/Drawer";
 import { styled } from "@mui/material/styles"; // STYLED COMPONENT
 
@@ -10,9 +9,8 @@ const Wrapper = styled("div")(({ theme }) => ({
   boxShadow: theme.shadows[1],
   zIndex: theme.zIndex.drawer + 3,
   backgroundColor: theme.palette.background.paper,
-})); // ================================================================
+}));
 
-// ================================================================
 export default function LayoutDrawer({
   open,
   children,
