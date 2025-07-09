@@ -10,22 +10,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
-
-import Snackbar from "@mui/material/Snackbar";
-import Fade from "@mui/material/Fade";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import CustomSnackbar from "@/components/custom-snackbar";
 
 export const EmpresaSucursalPage = () => {
   const { user } = useAuth();
   const alcances = useMemo(() => user.alcancesAccesibles || [], [user]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState("");
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState("");
-
   const { empresa, sucursal, setEmpresa, setSucursal } =
     useEmpresaSucursalStore();
-
-  const [state, setState] = useState({
-    open: false,
-  });
+  const { snackbar, showSnackbar, handleClose } = useSnackbar();
 
   const isOnlyOne = alcances.length === 1;
 
@@ -69,15 +64,7 @@ export const EmpresaSucursalPage = () => {
     setEmpresa(empresaSeleccionada);
     setSucursal(sucursalSeleccionada);
 
-    setState({
-      open: true,
-    });
-  };
-
-  const handleClose = () => {
-    setState({
-      open: false,
-    });
+    showSnackbar("Guardado exitosamente!", "success");
   };
 
   return (
@@ -194,14 +181,7 @@ export const EmpresaSucursalPage = () => {
         </Button>
       </Box>
 
-      <Snackbar
-        open={state.open}
-        onClose={handleClose}
-        slots={{ Fade }}
-        message="Empresa y Sucursal actualizados correctamente!"
-        key={Fade}
-        autoHideDuration={1200}
-      />
+      <CustomSnackbar {...snackbar} onClose={handleClose} />
     </>
   );
 };

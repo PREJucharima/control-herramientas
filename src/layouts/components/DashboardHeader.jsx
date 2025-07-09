@@ -17,14 +17,14 @@ import ProfilePopover from "@/layouts/layout-parts/popovers/ProfilePopover";
 import { SettingsContext } from "@/contexts/settingsContext"; // CUSTOM ICON COMPONENTS
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
 import { Breadcrumbs, Typography } from "@mui/material";
-// import { useAuth } from "@/auth/hooks/useAuth";
+import { useAuth } from "@/auth/hooks/useAuth";
 import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
   const [openSearchBar, setSearchBar] = useState(false);
   const { settings, saveSettings } = use(SettingsContext);
-  // const { user } = useAuth();
+  const { user } = useAuth();
   const { empresa, sucursal } = useEmpresaSucursalStore();
   const downMd = useMediaQuery((theme) => theme.breakpoints.down(1200));
 
@@ -70,7 +70,7 @@ export default function DashboardHeader() {
             fontWeight={500}
             color="text.secondary"
           >
-            {empresa}
+            {empresa || user.alcancesAccesibles?.[0]?.empresa_nombre}
           </Typography>
           <Typography
             variant="body2"
@@ -78,7 +78,7 @@ export default function DashboardHeader() {
             fontWeight={500}
             color="text.secondary"
           >
-            {sucursal}
+            {sucursal || user.alcancesAccesibles?.[0]?.sucursal_nombre}
           </Typography>
         </Breadcrumbs>
 
