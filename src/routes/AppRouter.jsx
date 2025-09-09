@@ -6,6 +6,7 @@ import { HomePage } from "@/modules/home/pages/HomePage";
 import { ProductPage } from "@/modules/catalogo/pages/ProductPage";
 import { EmpresaSucursalPage } from "@/modules/empresa-sucursal/pages/EmpresaSucursalPage";
 import RootLayout from "@/layouts/RootLayout";
+import MyProfilePage from "@/modules/mi-perfil/pages/MyProfilePage";
 
 export const AppRouter = () => {
   const { status } = useCheckAuth();
@@ -26,6 +27,7 @@ export const AppRouter = () => {
               path="seguridad/empresa-y-sucursal"
               element={<EmpresaSucursalPage />}
             />
+            <Route path="seguridad/mi-perfil" element={<MyProfilePage />} />
           </Route>
 
           {/* Si entra a /auth, redirige a inicio */}
