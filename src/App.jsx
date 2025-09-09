@@ -5,19 +5,10 @@ import { AppRouter } from "@/routes/AppRouter";
 
 function App() {
   const restoreSession = useAuthStore((state) => state.restoreSession);
-  const checkTokenExpiration = useAuthStore(
-    (state) => state.checkTokenExpiration
-  );
 
   useEffect(() => {
     restoreSession();
-
-    const interval = setInterval(() => {
-      checkTokenExpiration();
-    }, 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [restoreSession, checkTokenExpiration]);
+  }, [restoreSession]);
 
   return (
     <>
@@ -29,3 +20,4 @@ function App() {
 }
 
 export default App;
+  

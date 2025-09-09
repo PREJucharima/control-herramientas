@@ -4,7 +4,6 @@ import Typography from "@mui/material/Typography";
 import AvatarLoading from "@/components/avatar-loading";
 import FlexRowAlign from "@/components/flexbox/FlexRowAlign";
 import { useAuth } from "@/auth/hooks/useAuth";
-import { transformCapitalize } from "@/utils";
 
 export default function UserAccount() {
   const { user } = useAuth();
@@ -36,8 +35,7 @@ export default function UserAccount() {
             mt: 2,
           }}
         >
-          {transformCapitalize(user?.first_name)}{" "}
-          {transformCapitalize(user?.last_name)}
+          {user?.first_name} {user?.last_name}
         </Typography>
 
         <Typography
@@ -50,14 +48,14 @@ export default function UserAccount() {
           {user?.email}
         </Typography>
 
-        {/* <Typography
+        <Typography
           variant="body2"
           fontSize={13}
           fontWeight={500}
           color="text.secondary"
         >
-          {formatArea(user?.area_nombre)}
-        </Typography> */}
+          PRECISION
+        </Typography>
       </Box>
     </FlexRowAlign>
   );

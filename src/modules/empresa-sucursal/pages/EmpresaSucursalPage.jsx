@@ -15,45 +15,60 @@ import { CustomSnackbar } from "@/components/custom-snackbar";
 
 export const EmpresaSucursalPage = () => {
   const { user } = useAuth();
-  const alcances = useMemo(() => user.alcancesAccesibles || [], [user]);
+  const empresasDisponibles = useMemo(() => user.acceso_empresas || [], [user]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState("");
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState("");
   const { empresa, sucursal, setEmpresa, setSucursal } =
     useEmpresaSucursalStore();
   const { snackbar, showSnackbar, handleClose } = useSnackbar();
 
-  const isOnlyOne = alcances.length === 1;
+  const isOnlyOne =
+    empresasDisponibles.length === 1 &&
+    empresasDisponibles[0]?.sucursales.length === 1;
+
+  const sucursalesDisponibles = useMemo(() => {
+    if (!empresaSeleccionada) return [];
+    const empresaActual = empresasDisponibles.find(
+      (e) => e.empresa.nombre === empresaSeleccionada
+    );
+    return empresaActual?.sucursales || [];
+  }, [empresasDisponibles, empresaSeleccionada]);
 
   // Setear valores cuando entra a la página
   useEffect(() => {
-    if (alcances.length === 0) return;
+    if (empresasDisponibles.length === 0) return;
 
-    // Si solo hay uno: seleccionar y guardar automáticamente
     if (isOnlyOne) {
-      const únicaEmpresa = alcances[0].empresa_nombre;
-      const únicaSucursal = alcances[0].sucursal_nombre;
-      setEmpresaSeleccionada(únicaEmpresa);
-      setSucursalSeleccionada(únicaSucursal);
-      setEmpresa(únicaEmpresa);
-      setSucursal(únicaSucursal);
+      const unicaEmpresa = empresasDisponibles[0].empresa.nombre;
+      const unicaSucursal = empresasDisponibles[0].sucursales[0].nombre;
+      setEmpresaSeleccionada(unicaEmpresa);
+      setSucursalSeleccionada(unicaSucursal);
+      setEmpresa(unicaEmpresa);
+      setSucursal(unicaSucursal);
     } else {
-      // Si hay más: cargar lo del store o usar el primero como por defecto
-      setEmpresaSeleccionada(empresa || alcances[0].empresa_nombre);
-      setSucursalSeleccionada(sucursal || alcances[0].sucursal_nombre);
+      const empresaInicial =
+        empresa || empresasDisponibles[0]?.empresa.nombre || "";
+      setEmpresaSeleccionada(empresaInicial);
+      // Si ya había una sucursal guardada y pertenece a la empresa inicial, la usamos.
+      const sucursalGuardadaValida = empresasDisponibles
+        .find((e) => e.empresa.nombre === empresaInicial)
+        ?.sucursales.some((s) => s.nombre === sucursal);
+
+      setSucursalSeleccionada(sucursalGuardadaValida ? sucursal : "");
     }
-  }, [alcances, isOnlyOne, empresa, sucursal, setEmpresa, setSucursal]);
+  }, [
+    empresasDisponibles,
+    isOnlyOne,
+    empresa,
+    sucursal,
+    setEmpresa,
+    setSucursal,
+  ]);
 
   const handleChangeEmpresa = (event) => {
     const nuevaEmpresa = event.target.value;
     setEmpresaSeleccionada(nuevaEmpresa);
-
-    // Filtrar las sucursales que pertenecen a la nueva empresa
-    const sucursalesAsociadas = alcances
-      .filter((a) => a.empresa_nombre === nuevaEmpresa)
-      .map((a) => a.sucursal_nombre);
-
-    // Si hay alguna, setear la primera como seleccionada
-    setSucursalSeleccionada(sucursalesAsociadas[0] || "");
+    setSucursalSeleccionada("");
   };
 
   const handleChangeSucursal = (event) => {
@@ -113,17 +128,11 @@ export const EmpresaSucursalPage = () => {
               },
             }}
           >
-            {alcances
-              .filter(
-                (a, index, self) =>
-                  index ===
-                  self.findIndex((t) => t.empresa_nombre === a.empresa_nombre)
-              )
-              .map((a, index) => (
-                <MenuItem key={index} value={a.empresa_nombre}>
-                  {a.empresa_nombre}
-                </MenuItem>
-              ))}
+            {empresasDisponibles.map((item) => (
+              <MenuItem key={item.empresa.id} value={item.empresa.nombre}>
+                {item.empresa.nombre}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
@@ -162,19 +171,17 @@ export const EmpresaSucursalPage = () => {
               },
             }}
           >
-            {alcances
-              .filter((a) => a.empresa_nombre === empresaSeleccionada)
-              .map((a, index) => (
-                <MenuItem key={index} value={a.sucursal_nombre}>
-                  {a.sucursal_nombre}
-                </MenuItem>
-              ))}
+            {sucursalesDisponibles.map((suc) => (
+              <MenuItem key={suc.id} value={suc.nombre}>
+                {suc.nombre}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
         <Button
           variant="contained"
-          disabled={isOnlyOne}
+          disabled={isOnlyOne || !sucursalSeleccionada}
           onClick={handleSaveEmpresaSucursal}
         >
           Guardar

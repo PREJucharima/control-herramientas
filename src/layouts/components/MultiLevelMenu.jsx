@@ -21,9 +21,8 @@ export default function MultiLevelMenu({ sidebarCompact }) {
   const { pathname } = useLocation();
   const { handleCloseMobileSidebar } = useLayout();
   const { menus, loading, error } = useFetchNavigation();
-  const menuItems = normalizeNavigation(menus?.value?.menus || []);
+  const menuItems = normalizeNavigation(menus || []);
   const activeRoute = useCallback((path) => pathname === path, [pathname]);
-  console.log(menuItems);
 
   const handleNavigation = useCallback(
     (path) => {

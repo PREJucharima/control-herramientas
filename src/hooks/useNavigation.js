@@ -5,7 +5,7 @@ import { getNavigation } from "@/services/getNavigation";
 
 export const useFetchNavigation = () => {
   const user = useAuthStore((state) => state.user);
-  const token = useAuthStore((state) => state.token);
+  const access = useAuthStore((state) => state.access);
   const setMenus = useNavigationStore((state) => state.setMenus);
   const { menus } = useNavigationStore();
 
@@ -18,7 +18,7 @@ export const useFetchNavigation = () => {
       setError(null);
 
       try {
-        const data = await getNavigation({ token, rol_id: user?.rol_id });
+        const data = await getNavigation({ access });
         setMenus(data);
       } catch (err) {
         console.error("Error cargando menús:", err);
@@ -28,9 +28,9 @@ export const useFetchNavigation = () => {
       }
     };
 
-    if (user && token) fetch();
-    else setLoading(false); // No intentes si no hay credenciales
-  }, [user, token, setMenus]);
+    if (user) fetch();
+    else setLoading(false);
+  }, [user, access, setMenus]);
 
   return { menus, loading, error };
 };
