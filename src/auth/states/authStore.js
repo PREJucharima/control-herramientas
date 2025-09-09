@@ -1,69 +1,37 @@
 import { create } from "zustand";
+import { loadAuth, saveAuth, clearAuth } from "../services/storage";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
-  token: null,
-  expiresAt: null,
+  access: null,
+  refresh: null,
   isAuthenticated: false,
 
-  setUserData: (data) => {
-    const { token, expiracionToken, ...user } = data;
-
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({
-        user,
-        token,
-        expiresAt: expiracionToken,
-      })
-    );
-
-    set({
-      user,
-      token,
-      expiresAt: expiracionToken,
-      isAuthenticated: true,
-    });
+  setAuthData: ({ user, access, refresh = null }) => {
+    saveAuth({ user, access, refresh });
+    set({ user, access, refresh, isAuthenticated: true });
   },
 
   logout: () => {
-    localStorage.removeItem("auth");
-    set({
-      user: null,
-      token: null,
-      expiresAt: null,
-      isAuthenticated: false,
-    });
-  },
-
-  checkTokenExpiration: () => {
-    const { expiresAt } = get();
-    if (!expiresAt) return;
-
-    const now = new Date();
-    const expiry = new Date(expiresAt);
-    if (now >= expiry) {
-      get().logout();
-    }
+    clearAuth();
+    set({ user: null, access: null, refresh: null, isAuthenticated: false });
   },
 
   restoreSession: () => {
-    const saved = localStorage.getItem("auth");
-    if (!saved) return;
+    const saved = loadAuth();
+    if (!saved?.access || !saved?.user) return;
+    set({ ...saved, isAuthenticated: true });
+  },
 
-    const { user, token, expiresAt } = JSON.parse(saved);
-    const now = new Date();
-    const expiry = new Date(expiresAt);
+  getAuthHeader: () => {
+    const access = get().access;
+    return access ? { Authorization: `Bearer ${access}` } : {};
+  },
 
-    if (now < expiry) {
-      set({
-        user,
-        token,
-        expiresAt,
-        isAuthenticated: true,
-      });
-    } else {
-      localStorage.removeItem("auth");
-    }
+  setNewAccessToken: (newAccessToken) => {
+    const currentState = get();
+
+    saveAuth({ ...currentState, access: newAccessToken });
+    set({ access: newAccessToken });
   },
 }));

@@ -12,7 +12,7 @@ export const HomePage = () => {
   return (
     <Container>
       <h1>
-        Bienvenido {user.nombre_usuario} {user.apellido_usuario}
+        Bienvenido {user.first_name} {user.last_name}
       </h1>
       <Button variant="contained" onClick={handleLogout}>
         Cerrar sesión

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
 import { useSnackbar } from "@/hooks/useSnackbar";
-import CustomSnackbar from "@/components/custom-snackbar";
+import { CustomSnackbar } from "@/components/custom-snackbar";
 
 export const EmpresaSucursalPage = () => {
   const { user } = useAuth();

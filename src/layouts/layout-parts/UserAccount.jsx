@@ -36,8 +36,8 @@ export default function UserAccount() {
             mt: 2,
           }}
         >
-          {transformCapitalize(user?.nombre_usuario)}{" "}
-          {transformCapitalize(user?.apellido_usuario)}
+          {transformCapitalize(user?.first_name)}{" "}
+          {transformCapitalize(user?.last_name)}
         </Typography>
 
         <Typography
@@ -47,7 +47,7 @@ export default function UserAccount() {
           fontWeight={500}
           color="text.secondary"
         >
-          {user?.correo_electronico}
+          {user?.email}
         </Typography>
 
         {/* <Typography

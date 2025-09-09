@@ -9,12 +9,12 @@ import Menu from "@/icons/Menu";
 import ThemeIcon from "@/icons/ThemeIcon";
 import Search from "@/icons/duotone/Search";
 
-import useLayout from "@/layouts/context/useLayout"; // CUSTOM COMPONENTS
+import useLayout from "@/layouts/context/useLayout";
 
 import SearchBar from "@/layouts/layout-parts/SearchBar";
 import ProfilePopover from "@/layouts/layout-parts/popovers/ProfilePopover";
 
-import { SettingsContext } from "@/contexts/settingsContext"; // CUSTOM ICON COMPONENTS
+import { SettingsContext } from "@/contexts/settingsContext";
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
 import { Breadcrumbs, Typography } from "@mui/material";
 import { useAuth } from "@/auth/hooks/useAuth";

@@ -52,9 +52,9 @@ export default memo(function ProfilePopover() {
       <div>
         <Typography variant="body2" fontWeight={500}>
           {user
-            ? `${transformCapitalize(
-                user.nombre_usuario
-              )} ${transformCapitalize(user.apellido_usuario)}`
+            ? `${transformCapitalize(user.first_name)} ${transformCapitalize(
+                user.last_name
+              )}`
             : "Usuario"}
         </Typography>
 
@@ -64,7 +64,7 @@ export default memo(function ProfilePopover() {
           textTransform={"lowercase"}
           fontSize={12}
         >
-          {user?.correo_electronico}
+          {user?.email}
         </Typography>
       </div>
     </FlexBox>

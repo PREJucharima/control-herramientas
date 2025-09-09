@@ -1,95 +1,83 @@
 import { AuthLayout } from "../layout";
-import { Grid } from "@mui/material";
-import { GoogleLogin } from '@react-oauth/google';
+import { Button, Grid } from "@mui/material";
+import { CustomSnackbar } from "@/components/custom-snackbar";
+import { fetchGoogleUserinfo } from "../services/googleService";
+import { loginWithEmail } from "../services/authService";
+import { useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useAuthStore } from "../states/authStore";
-import { jwtDecode } from 'jwt-decode';
+import { useSnackbar } from "@/hooks/useSnackbar";
 import { useNavigate } from "react-router";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+const LOGO_PATH = "/static/logo/google.svg";
+const REQUIRED_DOMAIN = "@precision.tech";
 
 export const LoginPage = () => {
-  const navigate = useNavigate()
-  const setUserData = useAuthStore((state) => state.setUserData);
+  const navigate = useNavigate();
+  const setAuthData = useAuthStore((s) => s.setAuthData);
+  const [pending, setPending] = useState(false);
 
-  const handleLoginSuccess = async (credentialResponse) => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    const email = decoded.email;
+  const { snackbar, showSnackbar, handleClose } = useSnackbar();
 
-    // console.log(credentialResponse);
+  const login = useGoogleLogin({
+    scope: "openid email profile",
+    prompt: "select_account",
+    onSuccess: async ({ access_token }) => {
+      try {
+        setPending(true);
+        const profile = await fetchGoogleUserinfo(access_token);
+        const email = profile?.email;
+        const verified = profile?.email_verified;
 
-    if (!email.endsWith('@precision.tech')) {
-      alert('Solo correos corporativos');
-      return;
-    }
+        if (!verified || !email?.endsWith(REQUIRED_DOMAIN)) {
+          showSnackbar(
+            "Solo se permiten correos corporativos verificados",
+            "warning"
+          );
+          return;
+        }
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/Autenticacion/Login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ correo_electronico: email }),
-      });
-
-      const data = await res.json();
-
-      if (data.hasSucceeded && data.value?.token) {
-        setUserData(data.value);
-        navigate('/home');
-      } else {
-        alert('Acceso denegado');
+        const auth = await loginWithEmail(email);
+        setAuthData(auth);
+        navigate("/home");
+      } catch (e) {
+        showSnackbar("Acceso denegado!", "error");
+        console.error("Error al autenticar", e);
+      } finally {
+        setPending(false);
       }
-
-      console.log("Inicio de sesión exitoso", data);
-    } catch (error) {
-      console.log('Error al autenticar', error)
-    }
-  };
-
-  // const login = useGoogleLogin({
-  //   onSuccess: tokenResponse => console.log(tokenResponse),
-  //   onError: () => {
-  //     console.log('Login Failed');
-  //   },
-  // });
+    },
+    onError: () => console.log("Error al iniciar sesión!"),
+  });
 
   return (
     <AuthLayout>
-        <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-          {/* Error Message */}
-          {/* <Grid item xs={12} display={errorMessage ? "" : "none"}>
-              <Alert severity="error">{errorMessage}</Alert>
-            </Grid> */}
+      <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+        <Button
+          fullWidth
+          type="button"
+          variant="contained"
+          disabled={pending}
+          endIcon={<img src={LOGO_PATH} width={20} height={20} alt="Google" />}
+          sx={{
+            textTransform: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            py: { xs: 1.25, md: 1.5 },
+            fontSize: { xs: "0.95rem", md: "1rem" },
+          }}
+          onClick={() => login()}
+        >
+          {pending ? "Conectando..." : "Iniciar sesión con Google"}
+        </Button>
+      </Grid>
 
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-            width={400}
-            theme="outline"
-            size="large"
-          />
-
-          {/* <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            sx={{
-              textTransform: "none",
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-            onClick={() => login()}
-          >
-            Iniciar Sesión con Google
-            <img
-              src="/google.svg"
-              alt="google-logo"
-              width={20}
-              style={{ marginRight: "8px" }}
-            />
-          </Button> */}
-        </Grid>
+      <CustomSnackbar
+        {...snackbar}
+        onClose={handleClose}
+        position={{ vertical: "top", horizontal: "center" }}
+      />
     </AuthLayout>
   );
 };

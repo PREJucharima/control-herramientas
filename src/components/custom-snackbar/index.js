@@ -1,1 +1,1 @@
-export { default } from "./CustomSnackbar";
+export { default as CustomSnackbar } from "./CustomSnackbar";

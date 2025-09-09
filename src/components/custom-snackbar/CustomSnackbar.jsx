@@ -1,12 +1,18 @@
 import { Snackbar, Alert } from "@mui/material";
 
-const CustomSnackbar = ({ open, message, severity, onClose }) => {
+const CustomSnackbar = ({
+  open,
+  message,
+  severity,
+  onClose,
+  position = { vertical: "bottom", horizontal: "right" },
+}) => {
   return (
     <Snackbar
       open={open}
       autoHideDuration={3000}
       onClose={onClose}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      anchorOrigin={position}
     >
       <Alert onClose={onClose} severity={severity} variant="outlined">
         {message}
