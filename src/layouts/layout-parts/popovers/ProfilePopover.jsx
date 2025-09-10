@@ -8,7 +8,6 @@ import Divider from "@mui/material/Divider";
 import FlexBox from "@/components/flexbox/FlexBox";
 import PopoverLayout from "./_PopoverLayout";
 import Typography from "@mui/material/Typography";
-
 import { styled } from "@mui/material/styles";
 import { useAuth } from "@/auth/hooks/useAuth";
 import { transformCapitalize } from "@/utils";

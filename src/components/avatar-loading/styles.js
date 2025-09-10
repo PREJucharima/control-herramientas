@@ -4,7 +4,6 @@ import { styled } from "@mui/material/styles";
 export const StyledAvatar = styled(Avatar, {
   shouldForwardProp: (prop) => prop !== "deg" && prop !== "borderSize",
 })(({ theme, borderSize, deg }) => ({
-  padding: "3px",
   backgroundOrigin: "border-box",
   border: `double ${borderSize}px transparent`,
   backgroundClip: "padding-box, border-box",
