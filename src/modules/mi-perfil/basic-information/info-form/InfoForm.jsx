@@ -7,7 +7,11 @@ import { Box, Grid, TextField } from "@mui/material";
 
 export default function InfoForm() {
   return (
-    <Card>
+    <Card
+      sx={{
+        mt: 3,
+      }}
+    >
       <Typography
         variant="body1"
         sx={{
@@ -15,14 +19,14 @@ export default function InfoForm() {
           fontWeight: 500,
         }}
       >
-        Basic Information
+        Información Básica
       </Typography>
 
       <Divider />
 
-      <Box>
+      <Box mb={3}>
         <div className="p-3">
-          {/* <Grid container spacing={3}>
+          <Grid container spacing={3}>
             <Grid>
               <TextField
                 fullWidth
@@ -58,7 +62,7 @@ export default function InfoForm() {
                 variant="outlined"
               />
             </Grid>
-          </Grid> */}
+          </Grid>
         </div>
       </Box>
     </Card>

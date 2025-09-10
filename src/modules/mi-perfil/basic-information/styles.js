@@ -17,6 +17,7 @@ export const ContentWrapper = styled("div")(({ theme }) => ({
   zIndex: 1,
   marginTop: 55,
   position: "relative",
+  padding: "0 30px 30px",
   [theme.breakpoints.down("sm")]: {
     paddingLeft: 20,
     paddingRight: 20,
