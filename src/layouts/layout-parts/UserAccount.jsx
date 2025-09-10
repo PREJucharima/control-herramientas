@@ -11,9 +11,9 @@ export default function UserAccount() {
   return (
     <FlexRowAlign flexDirection="column" py={5}>
       <AvatarLoading
-        alt="user"
+        alt={user.name || "Avatar del usuario"}
         percentage={60}
-        src="/static/user/user.png"
+        src={user.picture}
         sx={{
           width: 50,
           height: 50,

@@ -29,6 +29,8 @@ export const LoginPage = () => {
         const email = profile?.email;
         const verified = profile?.email_verified;
 
+        console.log("Profile Google:", profile);
+
         if (!verified || !email?.endsWith(REQUIRED_DOMAIN)) {
           showSnackbar(
             "Solo se permiten correos corporativos verificados",
@@ -38,7 +40,17 @@ export const LoginPage = () => {
         }
 
         const auth = await loginWithEmail(email);
-        setAuthData(auth);
+
+        const userWithPicture = {
+          ...auth.user,
+          picture: profile.picture,
+        };
+
+        setAuthData({
+          ...auth,
+          user: userWithPicture,
+        });
+
         navigate("/home");
       } catch (e) {
         showSnackbar("Acceso denegado!", "error");

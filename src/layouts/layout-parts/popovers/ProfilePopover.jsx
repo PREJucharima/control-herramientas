@@ -34,8 +34,8 @@ export default memo(function ProfilePopover() {
 
   const SELECT_BUTTON = (
     <AvatarLoading
-      alt="Aaron Cooper"
-      src="/static/user/user.png"
+      src={user.picture}
+      alt={user.name || "Avatar del usuario"}
       percentage={60}
       sx={AVATAR_STYLES}
     />
@@ -44,8 +44,8 @@ export default memo(function ProfilePopover() {
   const TITLE = (
     <FlexBox alignItems="center" gap={1} p={2} pt={1}>
       <Avatar
-        src="/static/user/user.png"
-        alt="Aaron Cooper"
+        src={user.picture}
+        alt={user.name || "Avatar del usuario"}
         sx={AVATAR_STYLES}
       />
 
