@@ -1,6 +1,6 @@
 import Key from "@/icons/Key";
 import Link from "@/icons/Link";
-import Instagram from "@/icons/social/Instagram";
+// import Instagram from "@/icons/social/Instagram";
 import Fingerprint from "@/icons/Fingerprint";
 import DevicesApple from "@/icons/DevicesApple";
 import FileOutlined from "@/icons/FileOutlined";
@@ -25,5 +25,5 @@ export default {
   SettingsOutlined,
   UserOutlined,
   Fingerprint,
-  Instagram,
+  // Instagram,
 };
