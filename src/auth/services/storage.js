@@ -17,12 +17,3 @@ export function saveAuth({ user, access, refresh = null }) {
 export function clearAuth() {
   localStorage.removeItem(KEY);
 }
-
-export async function fetchWithAuth(url, options = {}) {
-  const auth = loadAuth();
-  const headers = {
-    ...(options.headers || {}),
-    ...(auth?.access ? { Authorization: `Bearer ${auth.access}` } : {}),
-  };
-  return fetch(url, { ...options, headers });
-}
