@@ -1,6 +1,5 @@
-import { FormProvider as ReactHookFormProvider } from 'react-hook-form'; // ==============================================================
+import { FormProvider as ReactHookFormProvider } from 'react-hook-form';
 
-// ==============================================================
 export default function FormProvider({
   children,
   methods,

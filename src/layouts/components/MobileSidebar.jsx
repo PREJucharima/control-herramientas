@@ -39,7 +39,7 @@ export default function MobileSidebar() {
           <MultiLevelMenu sidebarCompact={false} />
 
           {/* USER ACCOUNT INFORMATION */}
-          <UserAccount />
+          {/* <UserAccount /> */}
         </NavWrapper>
       </Scrollbar>
     </LayoutDrawer>

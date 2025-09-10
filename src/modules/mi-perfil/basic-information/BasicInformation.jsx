@@ -5,25 +5,23 @@ import InfoForm from "./info-form";
 import UserInfo from "./user-info";
 
 import { CoverPicWrapper } from "./styles";
+
 export default function BasicInformation() {
   return (
     <Fragment>
       <Card>
-        {/* COVER IMAGE SECTION */}
-        <CoverPicWrapper>
+        {/* <CoverPicWrapper>
           <img
             width="100%"
             height="100%"
             alt="Team Member"
-            src="/static/cover/user-cover-pic.png"
+            src="/static/cover/cover.png"
           />
-        </CoverPicWrapper>
+        </CoverPicWrapper> */}
 
-        {/* USER INFO SECTION */}
         <UserInfo />
       </Card>
 
-      {/* BASIC INFORMATION FORM SECTION */}
       <InfoForm />
     </Fragment>
   );

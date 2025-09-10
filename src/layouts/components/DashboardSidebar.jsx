@@ -8,8 +8,7 @@ import MultiLevelMenu from "./MultiLevelMenu";
 import Link from "@/components/link";
 import Scrollbar from "@/components/scrollbar";
 import FlexBetween from "@/components/flexbox/FlexBetween";
-import UserAccount from "@/layouts/layout-parts/UserAccount"; // CUSTOM ICON COMPONENT
-
+import Typography from '@mui/material/Typography';
 import ArrowLeftToLine from "@/icons/duotone/ArrowLeftToLine"; // STYLED COMPONENTS
 
 import { SidebarWrapper } from "../styles";
@@ -18,7 +17,7 @@ const LOGO_PATH = "/static/logo/logo.png";
 
 export default function DashboardSidebar() {
   const { sidebarCompact, handleSidebarCompactToggle } = useLayout();
-  const [onHover, setOnHover] = useState(false); // ACTIVATE COMPACT WHEN TOGGLE BUTTON CLICKED AND NOT ON HOVER STATE
+  const [onHover, setOnHover] = useState(false);
 
   const isCompact = useMemo(
     () => sidebarCompact && !onHover,
@@ -44,6 +43,7 @@ export default function DashboardSidebar() {
     </SidebarWrapper>
   );
 }
+
 const SidebarContent = memo(({ isCompact }) => (
   <Scrollbar
     autoHide
@@ -55,23 +55,39 @@ const SidebarContent = memo(({ isCompact }) => (
   >
     <Box height="100%" px={2}>
       <MultiLevelMenu sidebarCompact={isCompact} />
-      {!isCompact && <UserAccount />}
     </Box>
   </Scrollbar>
 ));
+
 const SidebarHeader = memo(({ isCompact, onToggle }) => (
   <FlexBetween padding="1.5rem 1rem .5rem 1.8rem" height={TOP_HEADER_AREA}>
-    <Logo />
+    <Logo isCompact={isCompact} />
     {!isCompact && <CollapseButton onClick={onToggle} />}
   </FlexBetween>
 ));
+
 const CollapseButton = memo(({ onClick }) => (
   <IconButton onClick={onClick}>
     <ArrowLeftToLine />
   </IconButton>
 ));
-const Logo = memo(() => (
+
+const Logo = memo(({ isCompact }) => (
   <Link href="/">
-    <Box component="img" src={LOGO_PATH} alt="logo" width={30} />
+    <Box component={"div"} display="flex" alignItems="center">
+      <Box component="img" src={LOGO_PATH} alt="logo" width={30} />
+      
+      {!isCompact && (
+        <Typography
+          variant="h6"
+          fontWeight={900}
+          ml={1}
+          color="primary"
+          letterSpacing={1}
+        >
+          PRECISION
+        </Typography>
+      )}
+    </Box>
   </Link>
 ));

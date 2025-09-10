@@ -13,7 +13,7 @@ import { Grid } from "@mui/material";
 
 const MyProfilePage = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [active, setActive] = useState("Basic Information");
+  const [active, setActive] = useState("Información Básica");
   const downMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   const handleListItemBtn = useCallback(
@@ -41,9 +41,9 @@ const MyProfilePage = () => {
   );
 
   return (
-    <div className="pt-2 pb-4">
+    <div className="pb-4">
       <Grid container spacing={3}>
-        <Grid item md={3} xs={12}>
+        <Grid item md={3} xs={12} sx={{ minWidth: 250, mt: 4 }}>
           {downMd ? (
             <Fragment>
               <Box
@@ -63,7 +63,7 @@ const MyProfilePage = () => {
                   }}
                 />
                 <Typography variant="body2" fontWeight={500}>
-                  More
+                  Más
                 </Typography>
               </Box>
 
@@ -82,7 +82,7 @@ const MyProfilePage = () => {
           )}
         </Grid>
 
-        <Grid item md={9} xs={12}>
+        <Grid item md={9} xs={12} sx={{ minWidth: 300, mt: 4 }}>
           {active === tabList[0].name && <TabComponent.BasicInformation />}
         </Grid>
       </Grid>
@@ -93,7 +93,7 @@ const MyProfilePage = () => {
 const tabList = [
   {
     id: 1,
-    name: "Basic Information",
+    name: "Información Básica",
     Icon: Icons.UserOutlined,
   },
 ];
