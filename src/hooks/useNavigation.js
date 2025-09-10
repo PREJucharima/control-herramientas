@@ -5,7 +5,7 @@ import { getNavigation } from "@/services/getNavigation";
 
 export const useFetchNavigation = () => {
   const user = useAuthStore((state) => state.user);
-  const access = useAuthStore((state) => state.access);
+  // const access = useAuthStore((state) => state.access);
   const setMenus = useNavigationStore((state) => state.setMenus);
   const { menus } = useNavigationStore();
 
@@ -18,7 +18,7 @@ export const useFetchNavigation = () => {
       setError(null);
 
       try {
-        const data = await getNavigation({ access });
+        const data = await getNavigation();
         setMenus(data);
       } catch (err) {
         console.error("Error cargando menús:", err);
@@ -30,7 +30,7 @@ export const useFetchNavigation = () => {
 
     if (user) fetch();
     else setLoading(false);
-  }, [user, access, setMenus]);
+  }, [user, setMenus]);
 
   return { menus, loading, error };
 };
