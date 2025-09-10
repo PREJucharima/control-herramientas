@@ -49,6 +49,7 @@ import {
   DesktopDateTimePicker,
 } from "./pickers";
 import { Select } from "./select";
+import { TextField } from "./textfield";
 
 const componentsOverride = (theme) => {
   return {
@@ -209,11 +210,7 @@ const componentsOverride = (theme) => {
     MuiCheckbox: Checkbox(theme),
     MuiTableCell: TableCell(theme),
     MuiLinearProgress: LinearProgress(theme),
-    MuiTextField: {
-      defaultProps: {
-        size: "small",
-      },
-    },
+    MuiTextField: TextField(theme)
   };
 };
 
