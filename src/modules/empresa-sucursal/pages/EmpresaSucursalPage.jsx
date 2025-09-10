@@ -94,39 +94,13 @@ export const EmpresaSucursalPage = () => {
 
       <Box display="flex" flexDirection="column" gap={4} width={250}>
         <FormControl size="small" disabled={isOnlyOne}>
-          <InputLabel
-            id="empresa-label"
-            sx={{
-              color: (theme) => theme.palette.text.primary,
-              "&.Mui-disabled": {
-                color: "black",
-              },
-            }}
-          >
-            Nombre de empresa
-          </InputLabel>
+          <InputLabel id="empresa-label">Nombre de empresa</InputLabel>
           <Select
             labelId="empresa-label"
             id="empresa-select"
             value={empresaSeleccionada}
             label="Nombre de empresa"
             onChange={handleChangeEmpresa}
-            sx={{
-              "& .MuiSelect-select.Mui-disabled": {
-                color: "gray",
-                WebkitTextFillColor: "gray",
-                cursor: "not-allowed",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "gray",
-              },
-              "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-                borderColor: "gray",
-              },
-              "& .MuiSvgIcon-root": {
-                color: "gray",
-              },
-            }}
           >
             {empresasDisponibles.map((item) => (
               <MenuItem key={item.empresa.id} value={item.empresa.nombre}>
@@ -137,39 +111,13 @@ export const EmpresaSucursalPage = () => {
         </FormControl>
 
         <FormControl size="small" disabled={isOnlyOne}>
-          <InputLabel
-            id="sucursal-label"
-            sx={{
-              color: (theme) => theme.palette.text.primary,
-              "&.Mui-disabled": {
-                color: "black",
-              },
-            }}
-          >
-            Nombre de sucursal
-          </InputLabel>
+          <InputLabel id="sucursal-label">Nombre de sucursal</InputLabel>
           <Select
             labelId="sucursal-label"
             id="sucursal-select"
             value={sucursalSeleccionada}
             label="Nombre de sucursal"
             onChange={handleChangeSucursal}
-            sx={{
-              "& .MuiSelect-select.Mui-disabled": {
-                color: "gray",
-                WebkitTextFillColor: "gray",
-                cursor: "not-allowed",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "gray",
-              },
-              "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-                borderColor: "gray",
-              },
-              "& .MuiSvgIcon-root": {
-                color: "gray",
-              },
-            }}
           >
             {sucursalesDisponibles.map((suc) => (
               <MenuItem key={suc.id} value={suc.nombre}>
