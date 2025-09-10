@@ -12,7 +12,6 @@ import { Autocomplete } from "./autocomplete";
 import { AppBar } from "./appbar";
 import { Paper } from "./paper";
 import { Slider } from "./slider";
-// import { TreeItem } from "./tree";
 import { Tooltip } from "./tooltip";
 import { SnackbarContent } from "./snackbar";
 import { StepConnector, StepIcon } from "./step";
@@ -49,6 +48,7 @@ import {
   DesktopTimePicker,
   DesktopDateTimePicker,
 } from "./pickers";
+import { Select } from "./select";
 
 const componentsOverride = (theme) => {
   return {
@@ -194,7 +194,7 @@ const componentsOverride = (theme) => {
     MuiOutlinedInput: OutlinedInput(theme),
     MuiPaper: Paper(),
     MuiAppBar: AppBar(),
-    // MuiTreeItem: TreeItem(),
+    MuiSelect: Select(),
     MuiSlider: Slider(theme),
     MuiTooltip: Tooltip(theme),
     MuiTimelineDot: TimelineDot(theme),
