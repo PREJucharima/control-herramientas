@@ -18,6 +18,7 @@ export default function SidebarAccordion({ item, children, sidebarCompact }) {
   const [hasActive, setHasActive] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const handleClick = useCallback(() => setCollapsed((state) => !state), []);
+
   const hasActiveChild = useMemo(() => {
     const checkActive = (currentItem) => {
       if (currentItem.path === pathname) return true;
@@ -27,6 +28,7 @@ export default function SidebarAccordion({ item, children, sidebarCompact }) {
 
     return checkActive(item);
   }, [item, pathname]);
+
   useEffect(() => {
     setHasActive(hasActiveChild);
     setCollapsed(hasActiveChild);
