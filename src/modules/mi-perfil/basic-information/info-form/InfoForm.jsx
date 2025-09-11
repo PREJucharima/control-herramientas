@@ -1,6 +1,12 @@
 import {
-  Card, CardHeader, CardContent, Divider,
-  Grid, TextField, Avatar, InputAdornment
+  Card,
+  CardHeader,
+  CardContent,
+  Divider,
+  Grid,
+  TextField,
+  Avatar,
+  InputAdornment,
 } from "@mui/material";
 import PersonOutline from "@mui/icons-material/PersonOutline";
 import EmailOutlined from "@mui/icons-material/EmailOutlined";
@@ -10,7 +16,7 @@ import { useAuth } from "@/auth/hooks/useAuth";
 export default function InfoForm() {
   const { user } = useAuth();
   const first = user?.first_name ?? "";
-  const last  = user?.last_name ?? "";
+  const last = user?.last_name ?? "";
   const email = user?.email ?? "";
   const username = user?.username ?? "";
   const phone = user?.phone ?? "";
@@ -18,15 +24,17 @@ export default function InfoForm() {
   const initials = (first + " " + last)
     .trim()
     .split(" ")
-    .map(n => n[0])
+    .map((n) => n[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
 
   return (
-    <Card sx={{ mt: 3, minWidth: 300, maxWidth: 700, mx: "auto" }}>
+    <Card sx={{ mt: 3, minWidth: 300, mx: "auto" }}>
       <CardHeader
-        avatar={<Avatar sx={{ bgcolor: "primary.main" }}>{initials || "U"}</Avatar>}
+        avatar={
+          <Avatar sx={{ bgcolor: "primary.main" }}>{initials || "U"}</Avatar>
+        }
         title="Información básica"
         subheader="Estos datos se muestran en tu perfil"
         sx={{ py: 2 }}
@@ -36,7 +44,7 @@ export default function InfoForm() {
 
       <CardContent sx={{ pt: 3 }}>
         <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2 }}>
-          <Grid item size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               name="firstName"
               label="Nombre"
@@ -57,7 +65,7 @@ export default function InfoForm() {
             />
           </Grid>
 
-          <Grid item size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               name="lastName"
               label="Apellido"
@@ -78,7 +86,7 @@ export default function InfoForm() {
             />
           </Grid>
 
-          <Grid item size={{ xs: 12, md: 12 }}>
+          <Grid size={{ xs: 12, md: 12 }}>
             <TextField
               name="email"
               label="Email"
@@ -99,8 +107,8 @@ export default function InfoForm() {
               }}
             />
           </Grid>
-          
-          <Grid item size={{ xs: 12, md: 6 }}>
+
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               name="username"
               label="Nombre de usuario"
@@ -121,7 +129,7 @@ export default function InfoForm() {
             />
           </Grid>
 
-          <Grid item size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               name="phone"
               label="Teléfono"

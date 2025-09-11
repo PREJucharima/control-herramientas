@@ -43,7 +43,7 @@ const MyProfilePage = () => {
   return (
     <div className="pb-4">
       <Grid container spacing={3}>
-        <Grid item md={3} xs={12} sx={{ minWidth: 250, mt: 4 }}>
+        <Grid size={{ xs: 12, md: 3 }} sx={{ minWidth: 200, mt: 1 }}>
           {downMd ? (
             <Fragment>
               <Box
@@ -82,7 +82,7 @@ const MyProfilePage = () => {
           )}
         </Grid>
 
-        <Grid item md={9} xs={12} sx={{ minWidth: 300, mt: 4 }}>
+        <Grid size={{ xs: 12, md: 9 }} sx={{ minWidth: 300, mt: 1 }}>
           {active === tabList[0].name && <TabComponent.BasicInformation />}
         </Grid>
       </Grid>
