@@ -1,11 +1,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-import AvatarLoading from "@/components/avatar-loading";
 import { FlexBox } from "@/components/flexbox";
-
 import { ContentWrapper } from "../styles";
 import { useAuth } from "@/auth/hooks/useAuth";
+import { Avatar } from "@mui/material";
 
 export default function UserInfo() {
   const { user } = useAuth();
@@ -13,7 +12,7 @@ export default function UserInfo() {
   return (
     <ContentWrapper>
       <FlexBox justifyContent="center">
-        <AvatarLoading
+        <Avatar
           borderSize={2}
           percentage={60}
           alt="Team Member"
