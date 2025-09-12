@@ -1,9 +1,12 @@
 import { useAuthStore } from "@/auth//states/authStore";
 
-export async function fetchWithAuth(url, options = {}) {
-  // Obtenemos el token y las acciones del store
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export async function fetchWithAuth(endpoint, options = {}) {
   const { access, refresh, setNewAccessToken, logout } =
     useAuthStore.getState();
+
+  const url = `${API_BASE_URL}${endpoint}`;
 
   const headers = {
     "Content-Type": "application/json",
@@ -19,16 +22,15 @@ export async function fetchWithAuth(url, options = {}) {
   console.log(response);
   console.log("Fetch realizado a:", url);
   console.log("Estado de la respuesta:", response.status);
-  console.log("Opciones de la petición:", options);
   console.log("Headers de la petición:", headers);
-  console.log("Access token usado:", access);
-  console.log("Refresh token disponible:", refresh);
+  console.log("Access token usado:", { access });
+  console.log("Refresh token disponible:", { refresh });
 
   // Si la respuesta es 401, intentamos refrescar el token
   if (response.status === 401 && refresh) {
     try {
       console.log("Access token expirado. Intentando refrescar...");
-      const refreshResponse = await fetch("/api/seguridad/token/refresh/", {
+      const refreshResponse = await fetch(`${API_BASE_URL}api/seguridad/token/refresh/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh }),
@@ -47,7 +49,7 @@ export async function fetchWithAuth(url, options = {}) {
       response = await fetch(url, { ...options, headers });
     } catch (error) {
       console.log("No se pudo refrescar el token. Cerrando sesión.", error);
-      logout(); // Si el refresh falla, cerramos sesión
+      logout();
       window.location.href = "/login";
       return Promise.reject(error);
     }

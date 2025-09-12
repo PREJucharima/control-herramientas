@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { loadAuth, saveAuth, clearAuth } from "../services/storage";
+import { googleLogout } from "@react-oauth/google";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -15,6 +16,7 @@ export const useAuthStore = create((set, get) => ({
   logout: () => {
     clearAuth();
     set({ user: null, access: null, refresh: null, isAuthenticated: false });
+    googleLogout();
   },
 
   restoreSession: () => {
