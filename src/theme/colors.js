@@ -88,7 +88,7 @@ export const customTeal = {
   700: "#0c8376",
   800: "#0a7166",
   900: "#08594f",
-  main: "#21e0b2", // este es tu color base
+  main: "#21e0b2",
 };
 
 export const info = {
