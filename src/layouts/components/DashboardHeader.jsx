@@ -1,17 +1,14 @@
-import { use, useState } from "react";
+import { use } from "react";
 
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 
 import Menu from "@/icons/Menu";
 import ThemeIcon from "@/icons/ThemeIcon";
-import Search from "@/icons/duotone/Search";
 
 import useLayout from "@/layouts/context/useLayout";
 
-import SearchBar from "@/layouts/layout-parts/SearchBar";
 import ProfilePopover from "@/layouts/layout-parts/popovers/ProfilePopover";
 
 import { SettingsContext } from "@/contexts/settingsContext";
@@ -22,7 +19,6 @@ import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
-  const [openSearchBar, setSearchBar] = useState(false);
   const { settings, saveSettings } = use(SettingsContext);
   const { user } = useAuth();
   const { empresa, sucursal } = useEmpresaSucursalStore();
@@ -41,25 +37,6 @@ export default function DashboardHeader() {
             <Menu />
           </IconButton>
         )}
-
-        {/* SEARCH ICON BUTTON */}
-        <ClickAwayListener onClickAway={() => setSearchBar(false)}>
-          <div>
-            <IconButton onClick={() => setSearchBar(true)}>
-              <Search
-                sx={{
-                  color: "grey.400",
-                  fontSize: 18,
-                }}
-              />
-            </IconButton>
-
-            <SearchBar
-              open={openSearchBar}
-              handleClose={() => setSearchBar(false)}
-            />
-          </div>
-        </ClickAwayListener>
 
         <Box flexGrow={1} ml={1} />
 
