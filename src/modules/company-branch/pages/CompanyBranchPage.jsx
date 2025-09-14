@@ -9,17 +9,17 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
+import { useCompanyBranchStore } from "../states/companyBranchStore";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { CustomSnackbar } from "@/components/custom-snackbar";
 
-export const EmpresaSucursalPage = () => {
+export const CompanyBranchPage = () => {
   const { user } = useAuth();
   const empresasDisponibles = useMemo(() => user.acceso_empresas || [], [user]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState("");
   const [sucursalSeleccionada, setSucursalSeleccionada] = useState("");
   const { empresa, sucursal, setEmpresa, setSucursal } =
-    useEmpresaSucursalStore();
+    useCompanyBranchStore();
   const { snackbar, showSnackbar, handleClose } = useSnackbar();
 
   const isOnlyOne =

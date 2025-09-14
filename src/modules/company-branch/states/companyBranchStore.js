@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export const useEmpresaSucursalStore = create(
+export const useCompanyBranchStore = create(
   persist(
     (set) => ({
       empresa: "",

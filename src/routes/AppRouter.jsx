@@ -3,10 +3,10 @@ import { CircularProgress } from "@mui/material";
 import { AuthRoutes } from "@/auth/routes/AuthRoutes";
 import { useCheckAuth } from "@/auth/hooks/useCheckAuth";
 import { HomePage } from "@/modules/home/pages/HomePage";
-import { ProductPage } from "@/modules/catalogo/pages/ProductPage";
-import { EmpresaSucursalPage } from "@/modules/empresa-sucursal/pages/EmpresaSucursalPage";
+import { CatalogsPage } from "@/modules/catalogs/pages/CatalogsPage";
+import { CompanyBranchPage } from "@/modules/company-branch/pages/CompanyBranchPage";
+import { MyProfilePage } from "@/modules/my-profile/pages/MyProfilePage";
 import RootLayout from "@/layouts/RootLayout";
-import MyProfilePage from "@/modules/mi-perfil/pages/MyProfilePage";
 
 export const AppRouter = () => {
   const { status } = useCheckAuth();
@@ -22,10 +22,10 @@ export const AppRouter = () => {
           {/* Protegidas dentro del layout */}
           <Route path="/" element={<RootLayout />}>
             <Route path="inicio" element={<HomePage />} />
-            <Route path="catalogos/productos" element={<ProductPage />} />
+            <Route path="catalogos/productos" element={<CatalogsPage />} />
             <Route
               path="seguridad/empresa-y-sucursal"
-              element={<EmpresaSucursalPage />}
+              element={<CompanyBranchPage />}
             />
             <Route path="seguridad/mi-perfil" element={<MyProfilePage />} />
           </Route>

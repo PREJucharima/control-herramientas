@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback } from "react";
 import { useNavigate } from "react-router";
 import {
   Avatar,
@@ -21,6 +21,7 @@ import Logout from "@mui/icons-material/Logout";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import PopoverLayout from "./_PopoverLayout";
+import useCopyToClipboard from "@/hooks/useCopyToClipboard";
 
 const AVATAR_SX = { width: 36, height: 36 };
 
@@ -67,20 +68,9 @@ export default memo(function ProfilePopover() {
   const navigate = useNavigate();
   const theme = useTheme();
   const { user, handleLogout } = useAuth();
-  const [copied, setCopied] = useState(false);
+  const { isCopied, copy } = useCopyToClipboard();
 
   const fullName = `${user.first_name} ${user.last_name}`.trim() || "";
-
-  const copyEmail = useCallback(async () => {
-    if (!user?.email) return;
-    try {
-      await navigator.clipboard.writeText(user.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
-    } catch (e) {
-      console.error("Error copying to clipboard:", e);
-    }
-  }, [user?.email]);
 
   const SELECT_BUTTON = (
     <Avatar
@@ -112,12 +102,12 @@ export default memo(function ProfilePopover() {
           {user?.email && (
             <IconButton
               aria-label="Copiar correo"
-              onClick={copyEmail}
+              onClick={() => copy(user?.email)}
               size="small"
               edge="end"
               sx={{ ml: 0.5, p: 0.15 }}
             >
-              {copied ? (
+              {isCopied ? (
                 <CheckCircle fontSize="small" />
               ) : (
                 <ContentCopy fontSize="small" />

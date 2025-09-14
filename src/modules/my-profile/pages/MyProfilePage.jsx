@@ -11,7 +11,7 @@ import Icons from "@/icons/account";
 import { StyledButton } from "../styles";
 import { Grid } from "@mui/material";
 
-const MyProfilePage = () => {
+export const MyProfilePage = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [active, setActive] = useState("Información Básica");
   const downMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -98,4 +98,4 @@ const tabList = [
   },
 ];
 
-export default MyProfilePage;
+// export default MyProfilePage;

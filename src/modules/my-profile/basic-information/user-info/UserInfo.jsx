@@ -13,7 +13,6 @@ export default function UserInfo() {
     <ContentWrapper>
       <FlexBox justifyContent="center">
         <Avatar
-          borderSize={2}
           percentage={60}
           alt="Team Member"
           src={user.picture}

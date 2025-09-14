@@ -20,8 +20,8 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import { useFetchCatalog } from "../hooks/useFetchCatalog";
 import { useNavigate } from "react-router";
 
-export const ProductPage = () => {
-  const { catalogs = [], loading, error} = useFetchCatalog();
+export const CatalogsPage = () => {
+  const { catalogs = [], loading, error } = useFetchCatalog();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -29,7 +29,9 @@ export const ProductPage = () => {
     const q = query.trim().toLowerCase();
     if (!q) return catalogs;
     return catalogs.filter((c) =>
-      String(c?.nombre_catalogo || "").toLowerCase().includes(q)
+      String(c?.nombre_catalogo || "")
+        .toLowerCase()
+        .includes(q)
     );
   }, [catalogs, query]);
 
@@ -54,7 +56,7 @@ export const ProductPage = () => {
         <Typography variant="h5" component="h1" fontWeight={700}>
           Catálogos
         </Typography>
-        {(!loading && !error) && (
+        {!loading && !error && (
           <Chip
             size="small"
             color="primary"
@@ -65,15 +67,16 @@ export const ProductPage = () => {
               ml: 0.5,
               "& .MuiChip-label": {
                 // color: "customTeal.main",
-                fontWeight: "bold"
-              }
+                fontWeight: "bold",
+              },
             }}
           />
         )}
       </Box>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Explora el listado de catálogos. Usa el buscador para filtrar por nombre.
+        Explora el listado de catálogos. Usa el buscador para filtrar por
+        nombre.
       </Typography>
 
       <TextField
@@ -106,7 +109,17 @@ export const ProductPage = () => {
       />
 
       {loading && (
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, gap: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1fr 1fr 1fr",
+            },
+            gap: 2,
+          }}
+        >
           {Array.from({ length: 6 }).map((_, i) => (
             <Card key={i} sx={{ borderRadius: 3 }}>
               <CardContent>
@@ -116,7 +129,14 @@ export const ProductPage = () => {
               </CardContent>
             </Card>
           ))}
-          <Box sx={{ gridColumn: "1 / -1", display: "flex", justifyContent: "center", mt: 1 }}>
+          <Box
+            sx={{
+              gridColumn: "1 / -1",
+              display: "flex",
+              justifyContent: "center",
+              mt: 1,
+            }}
+          >
             <CircularProgress aria-label="Cargando catálogos" />
           </Box>
         </Box>
@@ -127,7 +147,12 @@ export const ProductPage = () => {
           severity="error"
           sx={{ borderRadius: 2, mb: 2 }}
           action={
-            <Button color="inherit" size="small" onClick={handleRetry} startIcon={<RefreshIcon />}>
+            <Button
+              color="inherit"
+              size="small"
+              onClick={handleRetry}
+              startIcon={<RefreshIcon />}
+            >
               Reintentar
             </Button>
           }
@@ -166,11 +191,19 @@ export const ProductPage = () => {
                       borderRadius: 3,
                       height: "100%",
                       transition: "transform .12s ease, box-shadow .12s ease",
-                      "&:hover": { transform: "translateY(-2px)", boxShadow: 6 },
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: 6,
+                      },
                     }}
                   >
                     <CardContent>
-                      <Typography variant="subtitle1" fontWeight={700} noWrap title={catalog?.nombre_catalogo}>
+                      <Typography
+                        variant="subtitle1"
+                        fontWeight={700}
+                        noWrap
+                        title={catalog?.nombre_catalogo}
+                      >
                         {catalog?.nombre_catalogo || "Catálogo sin nombre"}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
