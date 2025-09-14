@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/auth//states/authStore";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const ENDPOINT_TOKEN_REFRESH = import.meta.env.VITE_ENDPOINT_TOKEN_REFRESH;
 
 export async function fetchWithAuth(endpoint, options = {}) {
   const { access, refresh, setNewAccessToken, logout } =
@@ -19,22 +20,24 @@ export async function fetchWithAuth(endpoint, options = {}) {
 
   let response = await fetch(url, { ...options, headers });
 
-  console.log(response);
-  console.log("Fetch realizado a:", url);
-  console.log("Estado de la respuesta:", response.status);
-  console.log("Headers de la petición:", headers);
-  console.log("Access token usado:", { access });
-  console.log("Refresh token disponible:", { refresh });
+  console.log({ response, "Headers de la petición:": headers });
+  console.log({
+    "Access token usado:": access,
+    "Refresh token disponible:": refresh,
+  });
 
   // Si la respuesta es 401, intentamos refrescar el token
   if (response.status === 401 && refresh) {
     try {
       console.log("Access token expirado. Intentando refrescar...");
-      const refreshResponse = await fetch(`${API_BASE_URL}api/seguridad/token/refresh/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refresh }),
-      });
+      const refreshResponse = await fetch(
+        `${API_BASE_URL}${ENDPOINT_TOKEN_REFRESH}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh }),
+        }
+      );
 
       if (!refreshResponse.ok) throw new Error("Refresh token inválido");
 
