@@ -15,13 +15,13 @@ import { SettingsContext } from "@/contexts/settingsContext";
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
 import { Breadcrumbs, Typography } from "@mui/material";
 import { useAuth } from "@/auth/hooks/useAuth";
-import { useEmpresaSucursalStore } from "@/states/empresaSucursalStore";
+import { useCompanyBranchStore } from "@/modules/company-branch/states/companyBranchStore";
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
   const { settings, saveSettings } = use(SettingsContext);
   const { user } = useAuth();
-  const { empresa, sucursal } = useEmpresaSucursalStore();
+  const { empresa, sucursal } = useCompanyBranchStore();
   const downMd = useMediaQuery((theme) => theme.breakpoints.down(1200));
 
   const handleChangeTheme = (value) => {

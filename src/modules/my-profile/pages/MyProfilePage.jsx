@@ -5,7 +5,7 @@ import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import FlexBox from "@/components/flexbox/FlexBox";
-import TabComponent from "@/modules/mi-perfil";
+import TabComponent from "@/modules/my-profile";
 import Apps from "@/icons/Apps";
 import Icons from "@/icons/account";
 import { StyledButton } from "../styles";
