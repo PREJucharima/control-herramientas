@@ -29,10 +29,15 @@ import ItemTableRow from "../components/ItemTableRow";
 // Hooks / utils internos
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
 import { useFetchItems } from "../hooks/useFetchItems";
+import { useMaestrosStore } from "../../maestros/states/maestrosStore";
 
 export const ItemsPage = () => {
   const { codigo } = useParams();
   const { items = [], isLoading, error } = useFetchItems(codigo);
+  const { maestros } = useMaestrosStore();
+
+  const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
+  const nombre_maestro = maestroActual?.nombre_catalogo;
 
   const [filters, setFilters] = useState({ status: "", search: "" });
 
@@ -56,15 +61,14 @@ export const ItemsPage = () => {
   }, [filters, setPage]);
 
   const handleChangeTab = useCallback((_, v) => {
-    setFilters((f) => ({ ...f, status: v })); // "" | "active" | "inactive"
+    setFilters((f) => ({ ...f, status: v }));
   }, []);
   const handleSearchChange = useCallback((e) => {
     setFilters((f) => ({ ...f, search: e.target.value }));
   }, []);
 
-  // filtrar + ordenar
   const filtered = useMemo(() => {
-    const withDerived = items.map((x) => ({
+    const withDerived = (items || []).map((x) => ({
       ...x,
       tipo_nombre: x?.tipo_catalogo?.nombre_catalogo ?? "",
     }));
@@ -99,12 +103,15 @@ export const ItemsPage = () => {
   const allIds = useMemo(() => filtered.map((r) => r.id), [filtered]);
   const count = filtered.length;
 
+  console.log("items in ItemsPage", filtered);
+
   return (
     <Box pt={2}>
       <Card sx={{ marginBottom: 3 }}>
         <Box px={2} pt={2}>
           <ItemsHeadingArea
             value={filters.status}
+            title={nombre_maestro}
             onChange={handleChangeTab}
             isLoading={isLoading}
             error={error}
@@ -116,7 +123,7 @@ export const ItemsPage = () => {
           <SearchArea
             value={filters.search}
             onChange={handleSearchChange}
-            gridRoute="/items/grid" // grid
+            gridRoute="/items/grid"
             listRoute={`/catalogos/${codigo}/lista-items`}
           />
         </Box>
