@@ -1,13 +1,21 @@
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell'; // CUSTOM COMPONENT
+import { TableRow, TableCell, Box } from "@mui/material";
 
-import FlexRowAlign from '@/components/flexbox/FlexRowAlign';
-export default function TableDataNotFound() {
-  return <TableRow>
-      <TableCell colSpan={7}>
-        <FlexRowAlign m={2} fontSize={18} minHeight={300} fontWeight={700} borderRadius={2} bgcolor="action.selected">
-          Data Not Found!
-        </FlexRowAlign>
+export default function TableDataNotFound({ query = "" }) {
+  return (
+    <TableRow>
+      <TableCell colSpan={12}>
+        <Box
+          sx={{
+            py: 4,
+            textAlign: "center",
+            color: "text.secondary",
+          }}
+        >
+          {query === ""
+            ? "No hay datos disponibles."
+            : `No hay resultados para "${query}"`}
+        </Box>
       </TableCell>
-    </TableRow>;
+    </TableRow>
+  );
 }
