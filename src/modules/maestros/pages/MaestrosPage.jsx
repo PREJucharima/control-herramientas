@@ -18,23 +18,23 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ListAltIcon from "@mui/icons-material/ListAlt";
-import { useFetchCatalogs } from "../hooks/useFetchCatalogs";
+import { useFetchMaestros } from "../hooks/useFetchMaestros";
 import { useNavigate } from "react-router";
 
-export const CatalogsPage = () => {
-  const { catalogs = [], loading, error } = useFetchCatalogs();
+export const MaestrosPage = () => {
+  const { maestros = [], loading, error } = useFetchMaestros();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return catalogs;
-    return catalogs.filter((c) =>
+    if (!q) return maestros;
+    return maestros.filter((c) =>
       String(c?.nombre_catalogo || "")
         .toLowerCase()
         .includes(q)
     );
-  }, [catalogs, query]);
+  }, [maestros, query]);
 
   const count = filtered.length;
 
@@ -55,7 +55,7 @@ export const CatalogsPage = () => {
       >
         <ListAltIcon aria-hidden />
         <Typography variant="h5" component="h1" fontWeight={700}>
-          Catálogos
+          Maestros
         </Typography>
         {!loading && !error && (
           <Chip
@@ -76,8 +76,7 @@ export const CatalogsPage = () => {
       </Box>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Explora el listado de catálogos. Usa el buscador para filtrar por
-        nombre.
+        Explora el listado de maestros. Usa el buscador para filtrar por nombre.
       </Typography>
 
       <TextField

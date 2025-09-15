@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/auth/states/authStore";
-import { useCatalogsStore } from "../states/catalogsStore";
-import { getCatalogs } from "../services/getCatalogs";
+import { useMaestrosStore } from "../states/maestrosStore";
+import { getMaestros } from "../services/getMaestros";
 
-export const useFetchCatalogs = () => {
+export const useFetchMaestros = () => {
   const user = useAuthStore((state) => state.user);
-  const setCatalogs = useCatalogsStore((state) => state.setCatalogs);
-  const { catalogs } = useCatalogsStore();
+  const setMaestros = useMaestrosStore((state) => state.setMaestros);
+  const { maestros } = useMaestrosStore();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,8 +17,8 @@ export const useFetchCatalogs = () => {
       setError(null);
 
       try {
-        const data = await getCatalogs();
-        setCatalogs(data);
+        const data = await getMaestros();
+        setMaestros(data);
       } catch (err) {
         console.error("Error cargando catálogos:", err);
         setError(err);
@@ -29,7 +29,7 @@ export const useFetchCatalogs = () => {
 
     if (user) fetch();
     else setLoading(false);
-  }, [user, setCatalogs]);
+  }, [user, setMaestros]);
 
-  return { catalogs, loading, error };
+  return { maestros, loading, error };
 };
