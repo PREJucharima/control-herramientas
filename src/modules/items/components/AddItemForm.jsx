@@ -1,4 +1,3 @@
-// modules/items/components/AddItemForm.jsx
 import * as Yup from "yup";
 import dayjs from "dayjs";
 import { useForm, Controller } from "react-hook-form";
@@ -24,14 +23,21 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 // RHF wrappers
 import { FormProvider, TextField, DatePicker } from "@/components/form";
+import { SelectField } from "../../../components/form/SelectField";
 
 const toISODate = (d) => (d ? dayjs(d).format("YYYY-MM-DD") : null);
 
-export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
+export default function AddItemForm({
+  initialItem,
+  itemsByMaestro,
+  isLoadingItemsByMaestro,
+  typeCatalog,
+  onCancel,
+  onSubmit,
+}) {
   const initialValues = {
     item_padre_id: initialItem?.item_padre_id ?? "", // string
     item_padre: initialItem?.item_padre ?? "", // string
-    codigo: initialItem?.codigo ?? "",
     descripcion: initialItem?.descripcion ?? "",
     descripcion_corta: initialItem?.descripcion_corta ?? "",
     esta_activo: initialItem?.esta_activo ?? true,
@@ -55,7 +61,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
       .nullable()
       .transform((v, orig) => (orig === "" ? null : v))
       .typeError("Debe ser numérico"),
-    codigo: Yup.string().trim().required("El código es requerido"),
     descripcion: Yup.string().trim().required("La descripción es requerida"),
     descripcion_corta: Yup.string().trim().nullable(),
     esta_activo: Yup.boolean().required(),
@@ -74,6 +79,8 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
         return schema;
       }),
   });
+
+  const hasShowInputsDads = typeCatalog?.depende_de_catalogo != null;
 
   const methods = useForm({
     defaultValues: initialValues,
@@ -94,7 +101,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
       item_padre_id:
         values.item_padre_id === "" ? null : Number(values.item_padre_id),
       item_padre: values.item_padre === "" ? null : Number(values.item_padre),
-      codigo: values.codigo.trim(),
       descripcion: values.descripcion.trim(),
       descripcion_corta: values.descripcion_corta?.trim() || null,
       esta_activo: !!values.esta_activo,
@@ -132,18 +138,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
       <FormProvider methods={methods} onSubmit={onSubmitInternal}>
         <CardContent>
           <Grid container spacing={2.5}>
-            {/* Código (requerido) */}
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                name="codigo"
-                label="Código *"
-                placeholder="Ej. CONTR-001"
-                fullWidth
-                inputProps={{ "aria-label": "Código del ítem" }}
-              />
-            </Grid>
-
-            {/* Descripción (requerido) */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 name="descripcion"
@@ -153,7 +147,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
               />
             </Grid>
 
-            {/* Descripción corta (opcional) */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 name="descripcion_corta"
@@ -163,7 +156,17 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
               />
             </Grid>
 
-            {/* Activo */}
+            {hasShowInputsDads && (
+              <Grid xs={12} sm={12}>
+                <SelectField
+                  name="item_padre"
+                  label="Ítem Padre"
+                  options={itemsByMaestro}
+                  loading={isLoadingItemsByMaestro}
+                />
+              </Grid>
+            )}
+
             <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 control={control}
@@ -189,7 +192,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
               />
             </Grid>
 
-            {/* Fechas de vigencia */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <Stack direction="row" alignItems="center" gap={1}>
                 <DatePicker
@@ -234,27 +236,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
                 </Tooltip>
               </Stack>
             </Grid>
-
-            {/* Relación padre (opcional) */}
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                name="item_padre_id"
-                type="number"
-                label="ID ítem padre"
-                placeholder="Ej. 12"
-                fullWidth
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                name="item_padre"
-                type="number"
-                label="Ítem padre"
-                placeholder="Ej. 12"
-                fullWidth
-              />
-            </Grid>
           </Grid>
         </CardContent>
 
@@ -265,7 +246,6 @@ export default function AddItemForm({ initialItem, onCancel, onSubmit }) {
             Cancelar
           </Button>
 
-          {/* MUI v7: Button ahora soporta `loading` */}
           <Button
             type="submit"
             variant="contained"
