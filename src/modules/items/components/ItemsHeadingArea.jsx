@@ -24,6 +24,7 @@ const ActionButtons = styled("div")(({ theme }) => ({
 
 export default function ItemsHeadingArea({
   value,
+  title,
   onChange,
   isloading,
   error,
@@ -45,7 +46,7 @@ export default function ItemsHeadingArea({
         </IconButton>
 
         <Typography variant="h6" component="h1" fontWeight={700}>
-          Ítems del catálogo
+          Ítems de {title}
         </Typography>
 
         {!isloading && !error && (
