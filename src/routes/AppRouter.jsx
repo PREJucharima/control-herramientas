@@ -6,6 +6,9 @@ import { HomePage } from "@/modules/home/pages/HomePage";
 import { CatalogsPage } from "@/modules/catalogs/pages/CatalogsPage";
 import { CompanyBranchPage } from "@/modules/company-branch/pages/CompanyBranchPage";
 import { MyProfilePage } from "@/modules/my-profile/pages/MyProfilePage";
+import { ItemsPage } from "@/modules/items/pages/ItemsPage";
+import { AddNewItemPage } from "@/modules/items/pages/AddNewItemPage";
+
 import RootLayout from "@/layouts/RootLayout";
 
 export const AppRouter = () => {
@@ -23,6 +26,15 @@ export const AppRouter = () => {
           <Route path="/" element={<RootLayout />}>
             <Route path="inicio" element={<HomePage />} />
             <Route path="catalogos/productos" element={<CatalogsPage />} />
+            <Route
+              path="/catalogos/:codigo/lista-items"
+              element={<ItemsPage />}
+            />
+            <Route
+              path="/catalogos/:codigo/agregar-item"
+              element={<AddNewItemPage />}
+            />
+
             <Route
               path="seguridad/empresa-y-sucursal"
               element={<CompanyBranchPage />}
