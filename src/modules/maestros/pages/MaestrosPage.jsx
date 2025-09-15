@@ -15,16 +15,17 @@ import {
   Skeleton,
   CardActionArea,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import { useFetchMaestros } from "../hooks/useFetchMaestros";
+import { Add, Search, Refresh, ListAlt } from "@mui/icons-material";
 import { useNavigate } from "react-router";
+import { useFetchMaestros } from "../hooks/useFetchMaestros";
+import Flexbox from "@/components/flexbox/FlexBox";
 
 export const MaestrosPage = () => {
   const { maestros = [], loading, error } = useFetchMaestros();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+
+  console.log("maestros in MaestrosPage", maestros);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -44,16 +45,14 @@ export const MaestrosPage = () => {
 
   return (
     <Box sx={{ maxWidth: 1100, mx: "auto", px: 2, py: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1.5,
-          mb: 1,
-          flexWrap: "wrap",
-        }}
+      <Flexbox
+        alignItems="center"
+        gap={1.5}
+        marginBottom={1}
+        marginTop={1}
+        flexWrap="wrap"
       >
-        <ListAltIcon aria-hidden />
+        <ListAlt aria-hidden />
         <Typography variant="h5" component="h1" fontWeight={700}>
           Maestros
         </Typography>
@@ -73,7 +72,16 @@ export const MaestrosPage = () => {
             }}
           />
         )}
-      </Box>
+        <Box sx={{ flexGrow: 1 }} />
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          onClick={() => navigate("/catalogos/agregar-maestro")}
+        >
+          Agregar nuevo maestro
+        </Button>
+      </Flexbox>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Explora el listado de maestros. Usa el buscador para filtrar por nombre.
@@ -82,15 +90,15 @@ export const MaestrosPage = () => {
       <TextField
         fullWidth
         size="small"
-        placeholder="Buscar por nombre de catálogo…"
+        placeholder="Buscar por nombre de maestros..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        inputProps={{ "aria-label": "Buscar catálogo" }}
+        inputProps={{ "aria-label": "Buscar maestros" }}
         sx={{ mb: 2 }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon />
+              <Search />
             </InputAdornment>
           ),
           endAdornment: (
@@ -101,7 +109,7 @@ export const MaestrosPage = () => {
                 edge="end"
                 disabled={!query}
               >
-                <RefreshIcon />
+                <Refresh />
               </IconButton>
             </InputAdornment>
           ),
@@ -137,7 +145,7 @@ export const MaestrosPage = () => {
               mt: 1,
             }}
           >
-            <CircularProgress aria-label="Cargando catálogos" />
+            <CircularProgress aria-label="Cargando maestros" />
           </Box>
         </Box>
       )}
@@ -151,7 +159,7 @@ export const MaestrosPage = () => {
               color="inherit"
               size="small"
               onClick={handleRetry}
-              startIcon={<RefreshIcon />}
+              startIcon={<Refresh />}
             >
               Reintentar
             </Button>
@@ -167,7 +175,7 @@ export const MaestrosPage = () => {
             <Card sx={{ borderRadius: 3, p: 2 }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600}>
-                  No encontramos catálogos
+                  No encontramos maestros
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Prueba cambiando el término de búsqueda o limpia el filtro.
@@ -176,7 +184,7 @@ export const MaestrosPage = () => {
                   size="small"
                   sx={{ mt: 1.5 }}
                   onClick={() => setQuery("")}
-                  startIcon={<RefreshIcon />}
+                  startIcon={<Refresh />}
                 >
                   Limpiar filtro
                 </Button>
@@ -184,8 +192,8 @@ export const MaestrosPage = () => {
             </Card>
           ) : (
             <Grid container spacing={2}>
-              {filtered.map((catalog) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={catalog.id}>
+              {filtered.map((maestro) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={maestro.id}>
                   <Card
                     sx={{
                       borderRadius: 3,
@@ -201,23 +209,23 @@ export const MaestrosPage = () => {
                       onClick={() =>
                         navigate(
                           `/catalogos/${encodeURIComponent(
-                            catalog.codigo_unico
+                            maestro.codigo_unico
                           )}/lista-items`
                         )
                       }
-                      aria-label={`Abrir ítems del catálogo ${catalog?.nombre_catalogo}`}
+                      aria-label={`Abrir ítems del catálogo ${maestro?.nombre_catalogo}`}
                     >
                       <CardContent>
                         <Typography
                           variant="subtitle1"
                           fontWeight={700}
                           noWrap
-                          title={catalog?.nombre_catalogo}
+                          title={maestro?.nombre_catalogo}
                         >
-                          {catalog?.nombre_catalogo || "Catálogo sin nombre"}
+                          {maestro?.nombre_catalogo || "Catálogo sin nombre"}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          ID: {catalog?.id ?? "—"}
+                          ID: {maestro?.id ?? "—"}
                         </Typography>
                       </CardContent>
                     </CardActionArea>
