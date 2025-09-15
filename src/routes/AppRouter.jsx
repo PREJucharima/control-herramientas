@@ -3,11 +3,12 @@ import { CircularProgress } from "@mui/material";
 import { AuthRoutes } from "@/auth/routes/AuthRoutes";
 import { useCheckAuth } from "@/auth/hooks/useCheckAuth";
 import { HomePage } from "@/modules/home/pages/HomePage";
-import { CatalogsPage } from "@/modules/catalogs/pages/CatalogsPage";
+import { MaestrosPage } from "@/modules/maestros/pages/MaestrosPage";
 import { CompanyBranchPage } from "@/modules/company-branch/pages/CompanyBranchPage";
 import { MyProfilePage } from "@/modules/my-profile/pages/MyProfilePage";
 import { ItemsPage } from "@/modules/items/pages/ItemsPage";
 import { AddNewItemPage } from "@/modules/items/pages/AddNewItemPage";
+import { AddNewMaestroPage } from "@/modules/maestros/pages/AddNewMaestroPage";
 
 import RootLayout from "@/layouts/RootLayout";
 
@@ -25,7 +26,11 @@ export const AppRouter = () => {
           {/* Protegidas dentro del layout */}
           <Route path="/" element={<RootLayout />}>
             <Route path="inicio" element={<HomePage />} />
-            <Route path="catalogos/productos" element={<CatalogsPage />} />
+            <Route path="catalogos/maestros" element={<MaestrosPage />} />
+            <Route
+              path="catalogos/agregar-maestro"
+              element={<AddNewMaestroPage />}
+            />
             <Route
               path="/catalogos/:codigo/lista-items"
               element={<ItemsPage />}
