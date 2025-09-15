@@ -22,13 +22,13 @@ export function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function useMuiTable({
+export const useMuiTable = ({
   defaultOrder = "asc",
   defaultOrderBy = "name",
   defaultSelected = [],
   defaultPage = 0,
   defaultRowsPerPage = 5,
-}) {
+}) => {
   const [order, setOrder] = useState(defaultOrder);
   const [orderBy, setOrderBy] = useState(defaultOrderBy);
   const [selected, setSelected] = useState(defaultSelected);
@@ -101,4 +101,4 @@ export default function useMuiTable({
     handleSelectAllRows,
     handleChangeRowsPerPage,
   };
-}
+};
