@@ -3,8 +3,7 @@ import { useAuthStore } from "@/auth/states/authStore";
 import { useCatalogsStore } from "../states/catalogsStore";
 import { getCatalogs } from "../services/getCatalogs";
 
-
-export const useFetchCatalog = () => {
+export const useFetchCatalogs = () => {
   const user = useAuthStore((state) => state.user);
   const setCatalogs = useCatalogsStore((state) => state.setCatalogs);
   const { catalogs } = useCatalogsStore();

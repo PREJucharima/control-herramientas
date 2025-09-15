@@ -13,15 +13,16 @@ import {
   Button,
   CircularProgress,
   Skeleton,
+  CardActionArea,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ListAltIcon from "@mui/icons-material/ListAlt";
-import { useFetchCatalog } from "../hooks/useFetchCatalog";
+import { useFetchCatalogs } from "../hooks/useFetchCatalogs";
 import { useNavigate } from "react-router";
 
 export const CatalogsPage = () => {
-  const { catalogs = [], loading, error } = useFetchCatalog();
+  const { catalogs = [], loading, error } = useFetchCatalogs();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -197,25 +198,30 @@ export const CatalogsPage = () => {
                       },
                     }}
                   >
-                    <CardContent>
-                      <Typography
-                        variant="subtitle1"
-                        fontWeight={700}
-                        noWrap
-                        title={catalog?.nombre_catalogo}
-                      >
-                        {catalog?.nombre_catalogo || "Catálogo sin nombre"}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        ID: {catalog?.id ?? "—"}
-                      </Typography>
-
-                      {/* {catalog?.descripcion && (
-                        <Typography variant="body2" sx={{ mt: 1.2 }} noWrap title={catalog.descripcion}>
-                          {catalog.descripcion}
+                    <CardActionArea
+                      onClick={() =>
+                        navigate(
+                          `/catalogos/${encodeURIComponent(
+                            catalog.codigo_unico
+                          )}/lista-items`
+                        )
+                      }
+                      aria-label={`Abrir ítems del catálogo ${catalog?.nombre_catalogo}`}
+                    >
+                      <CardContent>
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight={700}
+                          noWrap
+                          title={catalog?.nombre_catalogo}
+                        >
+                          {catalog?.nombre_catalogo || "Catálogo sin nombre"}
                         </Typography>
-                      )} */}
-                    </CardContent>
+                        <Typography variant="caption" color="text.secondary">
+                          ID: {catalog?.id ?? "—"}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
                   </Card>
                 </Grid>
               ))}
