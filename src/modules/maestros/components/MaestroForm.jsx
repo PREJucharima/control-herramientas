@@ -19,15 +19,21 @@ import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 // RHF wrappers
-import { FormProvider, TextField } from "@/components/form";
+import { FormProvider, TextField, SelectField } from "@/components/form";
 
-export default function AddMaestroForm({ initialItem, onCancel, onSubmit }) {
+export default function MaestroForm({
+  initialMaestro,
+  maestros,
+  isLoadingMaestros,
+  onCancel,
+  onSubmit,
+}) {
   const initialValues = {
-    nombre_catalogo: initialItem?.nombre_catalogo ?? "",
-    usa_descripcion_corta: initialItem?.usa_descripcion_corta ?? false,
-    usa_fechas_vigencia: initialItem?.usa_fechas_vigencia ?? false,
-    esta_activo: initialItem?.esta_activo ?? true,
-    depende_de_catalogo: initialItem?.depende_de_catalogo ?? null,
+    nombre_catalogo: initialMaestro?.nombre_catalogo ?? "",
+    usa_descripcion_corta: initialMaestro?.usa_descripcion_corta ?? false,
+    usa_fechas_vigencia: initialMaestro?.usa_fechas_vigencia ?? false,
+    esta_activo: initialMaestro?.esta_activo ?? true,
+    depende_de_catalogo: initialMaestro?.depende_de_catalogo ?? null,
   };
 
   const validationSchema = Yup.object({
@@ -66,8 +72,8 @@ export default function AddMaestroForm({ initialItem, onCancel, onSubmit }) {
     else console.log("POST /api/catalogos/definiciones/", payload);
   });
 
-  const title = initialItem ? "Editar maestro" : "Nuevo maestro";
-  const subheader = initialItem
+  const title = initialMaestro ? "Editar maestro" : "Nuevo maestro";
+  const subheader = initialMaestro
     ? "Modifica los datos del maestro seleccionado."
     : "Completa los campos requeridos para crear un nuevo maestro.";
 
@@ -184,12 +190,15 @@ export default function AddMaestroForm({ initialItem, onCancel, onSubmit }) {
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
+              <SelectField
                 name="depende_de_catalogo"
-                label="Depende de catálogo (ID)"
-                placeholder="Ej. 15"
-                fullWidth
-                inputProps={{ "aria-label": "Depende de catálogo" }}
+                label="Depende de catálogo"
+                loading={isLoadingMaestros}
+                options={maestros || []}
+                valueKey="id"
+                labelKey="nombre_catalogo"
+                allowEmpty
+                emptyLabel="— Ninguno —"
               />
             </Grid>
           </Grid>
