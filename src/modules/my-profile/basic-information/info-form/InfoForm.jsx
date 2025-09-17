@@ -19,7 +19,7 @@ export default function InfoForm() {
   const last = user?.last_name ?? "";
   const email = user?.email ?? "";
   const username = user?.username ?? "";
-  const phone = user?.phone ?? "";
+  const phone = user?.profile.telefono ?? "";
 
   const initials = (first + " " + last)
     .trim()
