@@ -1,17 +1,13 @@
-import MuiModal from '@mui/material/Modal'; // STYLED COMPONENT
+import MuiModal from "@mui/material/Modal";
 
-import { StyledScrollbar, Wrapper } from './styles'; // ===========================================================================
+import { StyledScrollbar, Wrapper } from "./styles";
 
-// ===========================================================================
-export default function Modal({
-  children,
-  open,
-  sx,
-  handleClose
-}) {
-  return <MuiModal open={open} onClose={handleClose}>
+export default function Modal({ children, open, sx, handleClose }) {
+  return (
+    <MuiModal open={open} onClose={handleClose}>
       <Wrapper sx={sx}>
         <StyledScrollbar>{children}</StyledScrollbar>
       </Wrapper>
-    </MuiModal>;
+    </MuiModal>
+  );
 }
