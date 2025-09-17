@@ -6,23 +6,34 @@ export const useAuthStore = create((set, get) => ({
   user: null,
   access: null,
   refresh: null,
-  isAuthenticated: false,
+  status: "checking", // 3 estados: 'checking', 'not-authenticated', 'authenticated'
 
   setAuthData: ({ user, access, refresh = null }) => {
     saveAuth({ user, access, refresh });
-    set({ user, access, refresh, isAuthenticated: true });
+    set({
+      user,
+      access,
+      refresh,
+      status: "authenticated",
+    });
   },
 
   logout: () => {
     clearAuth();
-    set({ user: null, access: null, refresh: null, isAuthenticated: false });
+    set({
+      user: null,
+      access: null,
+      refresh: null,
+      status: "not-authenticated",
+    });
     googleLogout();
   },
 
   restoreSession: () => {
     const saved = loadAuth();
-    if (!saved?.access || !saved?.user) return;
-    set({ ...saved, isAuthenticated: true });
+    if (!saved?.access || !saved?.user)
+      return set({ status: "not-authenticated" });
+    set({ ...saved, status: "authenticated" });
   },
 
   getAuthHeader: () => {
