@@ -1,13 +1,15 @@
 import { useFormContext, Controller } from "react-hook-form";
 import { TextField, MenuItem } from "@mui/material";
 
-export function SelectField({
+export default function SelectField({
   name,
   label,
-  options,
+  options = [],
   valueKey = "id",
   labelKey = "descripcion",
-  loading,
+  loading = false,
+  allowEmpty = false,
+  emptyLabel = "— Ninguno —",
   ...other
 }) {
   const { control } = useFormContext();
@@ -23,18 +25,23 @@ export function SelectField({
           select
           fullWidth
           label={label}
-          value={field.value || ""}
+          value={field.value ?? ""}
           error={!!error}
           helperText={error?.message}
           disabled={loading || other.disabled}
         >
           {loading && <MenuItem disabled>Cargando opciones...</MenuItem>}
-          {!loading && options?.length === 0 && (
+
+          {!loading && options.length === 0 && (
             <MenuItem disabled>No hay opciones</MenuItem>
           )}
 
-          {options?.map((option) => (
-            <MenuItem key={option[valueKey]} value={option[valueKey]}>
+          {allowEmpty && !loading && options.length > 0 && (
+            <MenuItem value="">{emptyLabel}</MenuItem>
+          )}
+
+          {options.map((option) => (
+            <MenuItem key={option[valueKey]} value={Number(option[valueKey])}>
               {option[labelKey]}
             </MenuItem>
           ))}
