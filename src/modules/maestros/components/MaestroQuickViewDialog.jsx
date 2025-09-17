@@ -98,6 +98,10 @@ export const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
+              Usuario creador: <b>{maestroBySlug.usuario_creacion}</b>
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
               Depende de catálogo:{" "}
               <b>
                 {nombreCatalogoDependiente ??
@@ -107,9 +111,10 @@ export const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Fechas: creación {dateFormat(maestroBySlug.fecha_creacion) ?? "—"}{" "}
-              · modificación.{" "}
-              {dateFormat(maestroBySlug.fecha_modificacion) ?? "—"}
+              Fechas: creación{" "}
+              <b>{dateFormat(maestroBySlug.fecha_creacion) ?? "—"}</b> -
+              modificación{" "}
+              <b>{dateFormat(maestroBySlug.fecha_modificacion) ?? "—"}</b>
             </Typography>
           </Stack>
         )}
