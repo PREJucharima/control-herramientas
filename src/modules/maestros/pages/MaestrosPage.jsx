@@ -30,7 +30,7 @@ import { MaestroQuickViewDialog } from "../components/MaestroQuickViewDialog";
 import Flexbox from "@/components/flexbox/FlexBox";
 
 export const MaestrosPage = () => {
-  const { maestros = [], loading, error } = useFetchMaestros();
+  const { maestros = [], isLoading, error } = useFetchMaestros();
   const [query, setQuery] = useState("");
 
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ export const MaestrosPage = () => {
         <Typography variant="h5" component="h1" fontWeight={700}>
           Maestros
         </Typography>
-        {!loading && !error && (
+        {!isLoading && !error && (
           <Chip
             size="small"
             color="primary"
@@ -93,9 +93,9 @@ export const MaestrosPage = () => {
           variant="contained"
           color="primary"
           startIcon={<Add />}
-          onClick={() => navigate("/catalogos/agregar-maestro")}
+          onClick={() => navigate("/catalogos/maestros/agregar-maestro")}
         >
-          Agregar nuevo maestro
+          Agregar maestro
         </Button>
       </Flexbox>
 
@@ -132,7 +132,7 @@ export const MaestrosPage = () => {
         }}
       />
 
-      {loading && (
+      {isLoading && (
         <Box
           sx={{
             display: "grid",
@@ -185,7 +185,7 @@ export const MaestrosPage = () => {
         </Alert>
       )}
 
-      {!loading && !error && (
+      {!isLoading && !error && (
         <>
           {filtered.length === 0 ? (
             <Card sx={{ borderRadius: 3, p: 2 }}>
@@ -255,7 +255,7 @@ export const MaestrosPage = () => {
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(
-                              `/catalogos/${encodeURIComponent(
+                              `/catalogos/maestros/${encodeURIComponent(
                                 maestro.codigo_unico
                               )}/editar`
                             );
@@ -276,7 +276,15 @@ export const MaestrosPage = () => {
                       }
                       aria-label={`Abrir ítems del catálogo ${maestro?.nombre_catalogo}`}
                     >
-                      <CardContent>
+                      <CardContent
+                        sx={{
+                          position: "relative",
+                          pb: 4,
+                          pt: 2,
+                          px: 3,
+                          mb: 1,
+                        }}
+                      >
                         <Typography
                           variant="subtitle1"
                           fontWeight={700}
@@ -285,9 +293,16 @@ export const MaestrosPage = () => {
                         >
                           {maestro?.nombre_catalogo || "Catálogo sin nombre"}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          ID: {maestro?.id ?? "—"}
-                        </Typography>
+
+                        <Chip
+                          size="small"
+                          sx={{ position: "absolute", bottom: 0, right: 16 }}
+                          label={maestro?.esta_activo ? "Activo" : "Inactivo"}
+                          color={maestro?.esta_activo ? "success" : "default"}
+                          variant={
+                            maestro?.esta_activo ? "outlined" : "outlined"
+                          }
+                        />
                       </CardContent>
                     </CardActionArea>
                   </Card>

@@ -8,12 +8,12 @@ export const useFetchMaestros = () => {
   const setMaestros = useMaestrosStore((state) => state.setMaestros);
   const { maestros } = useMaestrosStore();
 
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
 
       try {
@@ -21,15 +21,17 @@ export const useFetchMaestros = () => {
         setMaestros(data);
       } catch (err) {
         console.error("Error cargando catálogos:", err);
-        setError(err);
+        setError(
+          "No se pudieron cargar los datos. Por favor, intente más tarde."
+        );
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     if (user) fetch();
-    else setLoading(false);
+    else setIsLoading(false);
   }, [user, setMaestros]);
 
-  return { maestros, loading, error };
+  return { maestros, isLoading, error };
 };
