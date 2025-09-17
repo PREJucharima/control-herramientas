@@ -2,7 +2,6 @@ import useLayout from "@/layouts/context/useLayout";
 import SidebarAccordion from "./SidebarAccordion";
 import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router";
-
 import {
   ItemText,
   ListLabel,
@@ -22,7 +21,15 @@ export default function MultiLevelMenu({ sidebarCompact }) {
   const { handleCloseMobileSidebar } = useLayout();
   const { menus, loading, error } = useFetchNavigation();
   const menuItems = normalizeNavigation(menus || []);
-  const activeRoute = useCallback((path) => pathname === path, [pathname]);
+
+  const activeRoute = useCallback(
+    (path) => {
+      if (!path) return false;
+      if (path === "/") return pathname === path;
+      return pathname.startsWith(path);
+    },
+    [pathname]
+  );
 
   const handleNavigation = useCallback(
     (path) => {
@@ -49,7 +56,14 @@ export default function MultiLevelMenu({ sidebarCompact }) {
   ];
 
   if (loading) return <CircularProgress />;
-  if (error) return <Typography color="error">Error al cargar menú</Typography>;
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ borderRadius: 2, mb: 2 }}>
+        Error al cargar el menú: {error.code}
+      </Alert>
+    );
+  }
 
   const renderIcon = (item) => {
     if (item.icon) {
@@ -76,6 +90,7 @@ export default function MultiLevelMenu({ sidebarCompact }) {
           <SidebarAccordion
             key={index}
             item={item}
+            activeRoute={activeRoute}
             sidebarCompact={sidebarCompact}
           >
             {renderLevels(item.children)}

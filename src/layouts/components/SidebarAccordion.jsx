@@ -1,9 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router"; // MUI
-
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse"; // REACT TRANSLATION
-
+import { Box, Collapse } from "@mui/material";
 import {
   ItemText,
   ICON_STYLE,
@@ -13,54 +9,54 @@ import {
   AccordionExpandPanel,
 } from "@/layouts/styles";
 
-export default function SidebarAccordion({ item, children, sidebarCompact }) {
-  const { pathname } = useLocation();
-  const [hasActive, setHasActive] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  const handleClick = useCallback(() => setCollapsed((state) => !state), []);
+export default function SidebarAccordion({
+  item,
+  children,
+  sidebarCompact,
+  activeRoute,
+}) {
+  const [isExpanded, setIsExpanded] = useState(() =>
+    item.children.some((child) => activeRoute(child.path))
+  );
 
   const hasActiveChild = useMemo(() => {
     const checkActive = (currentItem) => {
-      if (currentItem.path === pathname) return true;
+      if (activeRoute(currentItem.path)) return true;
       if (currentItem.children) return currentItem.children.some(checkActive);
       return false;
     };
-
     return checkActive(item);
-  }, [item, pathname]);
+  }, [item, activeRoute]);
 
   useEffect(() => {
-    setHasActive(hasActiveChild);
-    setCollapsed(hasActiveChild);
+    setIsExpanded(hasActiveChild);
   }, [hasActiveChild]);
+
+  const handleClick = useCallback(() => setIsExpanded((state) => !state), []);
+
   return (
     <Fragment>
       <AccordionButton
         onClick={handleClick}
-        active={sidebarCompact && hasActive}
+        active={sidebarCompact && hasActiveChild}
       >
         <Box pl="7px" display="flex" alignItems="center">
-          {/* ICON SHOW IF EXIST */}
-          {item.icon && <item.icon sx={ICON_STYLE(hasActive)} />}
-
-          {/* BULLET ICON SHOW IF ANY TEXT EXIST  */}
-          {item.iconText && <BulletIcon active={hasActive} />}
-
-          <ItemText compact={sidebarCompact} active={hasActive}>
+          {item.icon && <item.icon sx={ICON_STYLE(hasActiveChild)} />}
+          {item.iconText && <BulletIcon active={hasActiveChild} />}
+          <ItemText compact={sidebarCompact} active={hasActiveChild}>
             {item.name}
           </ItemText>
         </Box>
-
         <ChevronRightStyled
-          active={hasActive}
-          collapsed={collapsed}
+          active={hasActiveChild}
+          collapsed={isExpanded}
           compact={sidebarCompact}
           className="accordionArrow"
         />
       </AccordionButton>
 
       {!sidebarCompact && (
-        <Collapse in={collapsed} unmountOnExit mountOnEnter>
+        <Collapse in={isExpanded} unmountOnExit mountOnEnter>
           <AccordionExpandPanel className="expand">
             {children}
           </AccordionExpandPanel>
