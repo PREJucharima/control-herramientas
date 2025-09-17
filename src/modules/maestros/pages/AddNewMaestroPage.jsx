@@ -1,25 +1,36 @@
 import { useNavigate } from "react-router";
 import { useMaestrosStore } from "../states/maestrosStore";
 import { createMaestro } from "../services/createMaestro";
-import AddMaestroForm from "../components/AddMaestroForm";
+import { useFetchMaestros } from "../hooks/useFetchMaestros";
+import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
+import MaestroForm from "../components/MaestroForm";
 
 export const AddNewMaestroPage = () => {
   const navigate = useNavigate();
-  const setMaestros = useMaestrosStore((s) => s.setMaestros);
+  const { isLoading } = useFetchMaestros();
+  const { maestrosLookup } = useFetchMaestrosLookup();
+  const addMaestro = useMaestrosStore((s) => s.setMaestros);
 
   const handleSubmit = async (payload) => {
     try {
       const created = await createMaestro(payload);
-      setMaestros((prev) => [created, ...prev]);
+      addMaestro(created);
       navigate(`/catalogos/maestros`);
     } catch (e) {
-      console.error("Error creando ítem:", e);
+      console.error("Error creando un nuevo maestro:", e);
     }
   };
 
+  console.log({ maestrosLookup });
+
   return (
     <>
-      <AddMaestroForm onSubmit={handleSubmit} onCancel={() => navigate(-1)} />
+      <MaestroForm
+        maestros={maestrosLookup || []}
+        isLoadingMaestros={isLoading}
+        onSubmit={handleSubmit}
+        onCancel={() => navigate(-1)}
+      />
     </>
   );
 };

@@ -14,18 +14,35 @@ import {
   CircularProgress,
   Skeleton,
   CardActionArea,
+  Tooltip,
 } from "@mui/material";
-import { Add, Search, Refresh, ListAlt } from "@mui/icons-material";
-import { useNavigate } from "react-router";
+import {
+  Add,
+  Search,
+  Refresh,
+  ListAlt,
+  Visibility,
+  Edit,
+} from "@mui/icons-material";
+import { useNavigate, useSearchParams } from "react-router";
 import { useFetchMaestros } from "../hooks/useFetchMaestros";
+import { MaestroQuickViewDialog } from "../components/MaestroQuickViewDialog";
 import Flexbox from "@/components/flexbox/FlexBox";
 
 export const MaestrosPage = () => {
   const { maestros = [], loading, error } = useFetchMaestros();
   const [query, setQuery] = useState("");
-  const navigate = useNavigate();
 
-  console.log("maestros in MaestrosPage", maestros);
+  const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+
+  const viewSlug = params.get("ver");
+
+  const openView = (slug) => setParams({ ver: slug });
+  const closeView = () => {
+    params.delete("ver");
+    setParams(params);
+  };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -66,7 +83,6 @@ export const MaestrosPage = () => {
             sx={{
               ml: 0.5,
               "& .MuiChip-label": {
-                // color: "customTeal.main",
                 fontWeight: "bold",
               },
             }}
@@ -196,6 +212,7 @@ export const MaestrosPage = () => {
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={maestro.id}>
                   <Card
                     sx={{
+                      position: "relative",
                       borderRadius: 3,
                       height: "100%",
                       transition: "transform .12s ease, box-shadow .12s ease",
@@ -205,6 +222,50 @@ export const MaestrosPage = () => {
                       },
                     }}
                   >
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        display: "flex",
+                        gap: 0.5,
+                        zIndex: 1,
+                        "& .MuiIconButton-root": {
+                          bgcolor: "background.paper",
+                        },
+                      }}
+                    >
+                      <Tooltip title="Ver maestro">
+                        <IconButton
+                          size="small"
+                          aria-label={`Ver maestro ${maestro.nombre_catalogo}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openView(maestro.codigo_unico);
+                          }}
+                        >
+                          <Visibility fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Editar maestro">
+                        <IconButton
+                          size="small"
+                          aria-label={`Editar maestro ${maestro.nombre_catalogo}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(
+                              `/catalogos/${encodeURIComponent(
+                                maestro.codigo_unico
+                              )}/editar`
+                            );
+                          }}
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+
                     <CardActionArea
                       onClick={() =>
                         navigate(
@@ -233,6 +294,14 @@ export const MaestrosPage = () => {
                 </Grid>
               ))}
             </Grid>
+          )}
+
+          {viewSlug && (
+            <MaestroQuickViewDialog
+              open={Boolean(viewSlug)}
+              slug={viewSlug}
+              onClose={closeView}
+            />
           )}
         </>
       )}
