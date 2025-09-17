@@ -9,6 +9,7 @@ import { MyProfilePage } from "@/modules/my-profile/pages/MyProfilePage";
 import { ItemsPage } from "@/modules/items/pages/ItemsPage";
 import { AddNewItemPage } from "@/modules/items/pages/AddNewItemPage";
 import { AddNewMaestroPage } from "@/modules/maestros/pages/AddNewMaestroPage";
+import { EditMaestroPage } from "@/modules/maestros/pages/EditMaestroPage";
 
 import RootLayout from "@/layouts/RootLayout";
 
@@ -30,6 +31,10 @@ export const AppRouter = () => {
             <Route
               path="catalogos/agregar-maestro"
               element={<AddNewMaestroPage />}
+            />
+            <Route
+              path="/catalogos/:codigo/editar"
+              element={<EditMaestroPage />}
             />
             <Route
               path="/catalogos/:codigo/lista-items"
