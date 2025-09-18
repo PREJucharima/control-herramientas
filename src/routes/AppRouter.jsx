@@ -16,6 +16,7 @@ import { ItemsPage } from "@/modules/items/pages/ItemsPage";
 import { AddNewItemPage } from "@/modules/items/pages/AddNewItemPage";
 import { CompanyBranchPage } from "@/modules/company-branch/pages/CompanyBranchPage";
 import { MyProfilePage } from "@/modules/my-profile/pages/MyProfilePage";
+import { EditItemPage } from "../modules/items/pages/EditItemPage";
 
 // 4. Módulos Internos (relativos '../')
 import { useAuthStore } from "../auth/states/authStore";
@@ -51,12 +52,16 @@ export const AppRouter = () => {
               element={<EditMaestroPage />}
             />
             <Route
-              path="/catalogos/:codigo/lista-items"
+              path="/catalogos/maestros/:codigo/items"
               element={<ItemsPage />}
             />
             <Route
-              path="/catalogos/:codigo/agregar-item"
+              path="/catalogos/maestros/:codigo/agregar"
               element={<AddNewItemPage />}
+            />
+            <Route
+              path="/catalogos/maestros/:codigo/:codigo_item/editar"
+              element={<EditItemPage />}
             />
 
             <Route
