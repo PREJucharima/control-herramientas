@@ -14,13 +14,13 @@ import {
 } from "@mui/material";
 
 // React Router
-import { useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 // Componentes internos
 import { TableDataNotFound, TableToolbar } from "@/components/table";
 import Scrollbar from "@/components/scrollbar";
 
-// Componentes relativos (feature Items)
+// Componentes relativos
 import SearchArea from "../components/SearchArea";
 import ItemsHeadingArea from "../components/ItemsHeadingArea";
 import ItemTableHead from "../components/ItemTableHead";
@@ -30,16 +30,30 @@ import ItemTableRow from "../components/ItemTableRow";
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
 import { useFetchItems } from "../hooks/useFetchItems";
 import { useMaestrosStore } from "../../maestros/states/maestrosStore";
+import ItemQuickViewDialog from "../components/ItemQuickViewDialog";
 
 export const ItemsPage = () => {
   const { codigo } = useParams();
   const { items = [], isLoading, error } = useFetchItems(codigo);
   const { maestros } = useMaestrosStore();
+  const navigate = useNavigate();
 
-  const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
-  const nombre_maestro = maestroActual?.nombre_catalogo;
+  const maestroCurrent = maestros?.find((m) => m.codigo_unico === codigo);
+  const maestroName = maestroCurrent?.nombre_catalogo;
+
+  console.log("Maestro actual:", maestroCurrent);
+  console.log("nombre de maestro:", maestroName);
 
   const [filters, setFilters] = useState({ status: "", search: "" });
+
+  const [params, setParams] = useSearchParams();
+  const viewItem = params.get("ver");
+
+  const openView = (slug) => setParams({ ver: slug });
+  const closeView = () => {
+    params.delete("ver");
+    setParams(params);
+  };
 
   const {
     page,
@@ -103,36 +117,29 @@ export const ItemsPage = () => {
   const allIds = useMemo(() => filtered.map((r) => r.id), [filtered]);
   const count = filtered.length;
 
-  console.log("items in ItemsPage", filtered);
-
   return (
     <Box pt={2}>
       <Card sx={{ marginBottom: 3 }}>
         <Box px={2} pt={2}>
           <ItemsHeadingArea
             value={filters.status}
-            title={nombre_maestro}
+            title={maestroName}
             onChange={handleChangeTab}
             isLoading={isLoading}
             error={error}
             count={count}
-            gridRoute="/items/grid" // grid
-            listRoute={`/catalogos/${codigo}/lista-items`}
+            gridRoute="/items/grid"
+            listRoute={`/catalogos/maestros/${codigo}/items`}
           />
 
-          <SearchArea
-            value={filters.search}
-            onChange={handleSearchChange}
-            gridRoute="/items/grid"
-            listRoute={`/catalogos/${codigo}/lista-items`}
-          />
+          <SearchArea value={filters.search} onChange={handleSearchChange} />
         </Box>
 
         {selected.length > 0 && (
           <TableToolbar
             selected={selected.length}
             handleDeleteRows={() => {
-              /* bulk delete si aplica */
+              /* bulk delete */
             }}
           />
         )}
@@ -161,11 +168,13 @@ export const ItemsPage = () => {
                           isSelected={isSelected(item.id)}
                           handleSelectRow={handleSelectRow}
                           onEdit={() => {
-                            /* navigate/edit modal */
+                            navigate(
+                              `/catalogos/maestros/${encodeURIComponent(
+                                codigo
+                              )}/${encodeURIComponent(item.codigo)}/editar`
+                            );
                           }}
-                          onDelete={() => {
-                            /* delete single */
-                          }}
+                          onViewDetails={() => openView(item.codigo)}
                         />
                       ))
                     )}
@@ -200,6 +209,15 @@ export const ItemsPage = () => {
           </>
         )}
       </Card>
+
+      {viewItem && (
+        <ItemQuickViewDialog
+          open={Boolean(viewItem)}
+          maestroSlug={codigo}
+          itemSlug={viewItem}
+          onClose={closeView}
+        />
+      )}
 
       {isLoading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
