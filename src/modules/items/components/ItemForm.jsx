@@ -31,7 +31,7 @@ import {
 
 const toISODate = (d) => (d ? dayjs(d).format("YYYY-MM-DD") : null);
 
-export default function AddItemForm({
+export default function ItemForm({
   initialItem,
   itemsByMaestro,
   isLoadingItemsByMaestro,
@@ -40,8 +40,8 @@ export default function AddItemForm({
   onSubmit,
 }) {
   const initialValues = {
-    item_padre_id: initialItem?.item_padre_id ?? "", // string
-    item_padre: initialItem?.item_padre ?? "", // string
+    item_padre_id: initialItem?.item_padre_id ?? "",
+    item_padre: initialItem?.item_padre ?? "",
     descripcion: initialItem?.descripcion ?? "",
     descripcion_corta: initialItem?.descripcion_corta ?? "",
     esta_activo: initialItem?.esta_activo ?? true,
@@ -161,12 +161,14 @@ export default function AddItemForm({
             </Grid>
 
             {hasShowInputsDads && (
-              <Grid xs={12} sm={12}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <SelectField
                   name="item_padre"
                   label="Ítem Padre"
                   options={itemsByMaestro}
                   loading={isLoadingItemsByMaestro}
+                  allowEmpty
+                  emptyLabel="— Ninguno —"
                 />
               </Grid>
             )}
