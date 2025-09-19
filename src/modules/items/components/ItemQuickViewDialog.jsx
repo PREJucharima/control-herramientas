@@ -37,10 +37,10 @@ export default function ItemQuickViewDialog({
     [maestros, maestroSlug]
   );
 
-  // const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
-  const maestroId = maestroActual?.id ?? null;
+  const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
+  // const maestroId = maestroActual?.id ?? null;
 
-  const { itemsByMaestro } = useFetchItemsByMaestro(maestroId);
+  const { itemsByMaestro } = useFetchItemsByMaestro(dependeDeCatalogo);
   const fmt = (d) => (d ? dayjs(d).format("DD/MM/YYYY") : "—");
 
   const itemPadreNombre = useMemo(() => {
@@ -50,6 +50,10 @@ export default function ItemQuickViewDialog({
     );
     return found?.descripcion ?? null;
   }, [itemsByMaestro, itemBySlug]);
+
+  console.log("itemBySlug in ItemQuickViewDialog", itemBySlug);
+  console.log("itemsByMaestro in ItemQuickViewDialog", itemsByMaestro);
+  console.log("itemPadreNombre in ItemQuickViewDialog", itemPadreNombre);
 
   return (
     <Dialog

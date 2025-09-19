@@ -14,23 +14,19 @@ export const AddNewItemPage = () => {
   const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
   const dependeDeCatalogo = maestroActual?.depende_de_catalogo;
 
-  const maestroId = maestroActual?.id;
+  // const maestroId = dependeDeCatalogo?.id;
 
   const { itemsByMaestro, isLoading, error } =
-    useFetchItemsByMaestro(maestroId);
+    useFetchItemsByMaestro(dependeDeCatalogo);
 
-  console.log("itemsByMaestro in AddNewItemPage", itemsByMaestro);
-  console.log("isLoading in AddNewItemPage", isLoading);
-  console.log("error in AddNewItemPage", error);
-
-  console.log("maestroActual in AddNewItemPage", maestroActual);
-  console.log("dependeDeCatalogo in AddNewItemPage", dependeDeCatalogo);
+  console.log("Maestro actual:", maestroActual);
+  console.log("Depende de catálogo:", dependeDeCatalogo);
 
   const handleSubmit = async (payload) => {
     try {
       const created = await createItem(codigo, payload);
       addItem(created);
-      navigate(`/catalogos/${encodeURIComponent(codigo)}/lista-items`);
+      navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/items`);
     } catch (e) {
       console.error("Error creando ítem:", e);
     }

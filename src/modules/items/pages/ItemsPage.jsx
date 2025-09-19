@@ -41,9 +41,6 @@ export const ItemsPage = () => {
   const maestroCurrent = maestros?.find((m) => m.codigo_unico === codigo);
   const maestroName = maestroCurrent?.nombre_catalogo;
 
-  console.log("Maestro actual:", maestroCurrent);
-  console.log("nombre de maestro:", maestroName);
-
   const [filters, setFilters] = useState({ status: "", search: "" });
 
   const [params, setParams] = useSearchParams();

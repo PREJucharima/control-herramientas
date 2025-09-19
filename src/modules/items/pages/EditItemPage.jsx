@@ -25,15 +25,14 @@ export const EditItemPage = () => {
     [maestros, codigo]
   );
 
-  // const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
-  const maestroId = maestroActual?.id ?? null;
+  const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
 
   // Lookup para "item_padre" (id/descripcion) si hay dependencia
   const {
     itemsByMaestro: parentOptions,
     isLoading: loadingLookup,
     error: errorLookup,
-  } = useFetchItemsByMaestro(maestroId);
+  } = useFetchItemsByMaestro(dependeDeCatalogo);
 
   console.log("parentOptions in EditItemPage", parentOptions);
 
@@ -60,10 +59,9 @@ export const EditItemPage = () => {
 
     try {
       const updated = await updateItemBySlug(codigo, codigo_item, payload);
-      // sincroniza store por "codigo" (slug del ítem)
       updateItem(codigo_item, updated);
 
-      navigate(`/catalogos/${encodeURIComponent(codigo)}/lista-items`);
+      navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/items`);
     } catch (e) {
       console.error("Error actualizando ítem:", e);
     }

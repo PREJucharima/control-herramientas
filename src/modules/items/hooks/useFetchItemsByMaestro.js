@@ -15,7 +15,6 @@ export const useFetchItemsByMaestro = (id) => {
       setError(null);
       try {
         const data = await getItemsByMaestro(id);
-        console.log("Ítems cargados:", data);
         setItemsByMaestro(data);
       } catch (err) {
         console.error("Error cargando ítems:", err);
