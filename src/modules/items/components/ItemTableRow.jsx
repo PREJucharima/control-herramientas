@@ -2,13 +2,14 @@ import { useCallback } from "react";
 import { Checkbox, TableRow, TableCell, Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
+import { Visibility } from "@mui/icons-material";
 
 export default function ItemTableRow({
   item,
   isSelected,
   handleSelectRow,
   onEdit,
-  onDelete,
+  onViewDetails,
 }) {
   // const [menuOpen, setMenuOpen] = useState(false);
   const handleCheck = useCallback(
@@ -52,11 +53,11 @@ export default function ItemTableRow({
       </TableCell>
 
       <TableCell>
+        <IconButton size="small" onClick={() => onViewDetails?.(item)}>
+          <Visibility fontSize="small" />
+        </IconButton>
         <IconButton size="small" onClick={() => onEdit?.(item)}>
           <EditIcon fontSize="small" />
-        </IconButton>
-        <IconButton size="small" onClick={() => onDelete?.(item)}>
-          <DeleteOutline fontSize="small" />
         </IconButton>
       </TableCell>
     </TableRow>

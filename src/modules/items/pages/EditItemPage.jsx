@@ -25,14 +25,15 @@ export const EditItemPage = () => {
     [maestros, codigo]
   );
 
-  const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
+  // const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
+  const maestroId = maestroActual?.id ?? null;
 
   // Lookup para "item_padre" (id/descripcion) si hay dependencia
   const {
     itemsByMaestro: parentOptions,
     isLoading: loadingLookup,
     error: errorLookup,
-  } = useFetchItemsByMaestro(dependeDeCatalogo);
+  } = useFetchItemsByMaestro(maestroId);
 
   console.log("parentOptions in EditItemPage", parentOptions);
 

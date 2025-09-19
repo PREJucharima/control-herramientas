@@ -269,9 +269,9 @@ export const MaestrosPage = () => {
                     <CardActionArea
                       onClick={() =>
                         navigate(
-                          `/catalogos/${encodeURIComponent(
+                          `/catalogos/maestros/${encodeURIComponent(
                             maestro.codigo_unico
-                          )}/lista-items`
+                          )}/items`
                         )
                       }
                       aria-label={`Abrir ítems del catálogo ${maestro?.nombre_catalogo}`}

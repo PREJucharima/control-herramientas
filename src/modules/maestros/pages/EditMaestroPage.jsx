@@ -1,4 +1,3 @@
-// modules/maestros/pages/EditMaestroPage.jsx
 import { useNavigate, useParams } from "react-router";
 import { useMemo } from "react";
 import { Alert, Box, CircularProgress } from "@mui/material";
@@ -14,12 +13,9 @@ export const EditMaestroPage = () => {
   const { codigo } = useParams();
 
   const { maestroBySlug, loading, error } = useFetchMaestroBySlug(codigo);
-
   const { maestrosLookup, loading: loadingLookup } = useFetchMaestrosLookup();
 
-  // const maestros = useMaestrosStore((s) => s.maestros);
-  const setMaestros = useMaestrosStore((s) => s.setMaestros);
-  const setMaestroBySlug = useMaestrosStore((s) => s.setMaestroBySlug);
+  const updateMaestro = useMaestrosStore((s) => s.updateMaestro);
 
   const isBusy = loading || loadingLookup;
 
@@ -41,18 +37,7 @@ export const EditMaestroPage = () => {
 
     try {
       const updated = await updateMaestroBySlug(codigo, payload);
-
-      setMaestros((prev) =>
-        Array.isArray(prev)
-          ? prev.map((m) =>
-              m.codigo_unico === codigo ? { ...m, ...updated } : m
-            )
-          : prev
-      );
-
-      if (typeof setMaestroBySlug === "function") {
-        setMaestroBySlug(updated);
-      }
+      updateMaestro(codigo, updated);
 
       navigate("/catalogos/maestros");
     } catch (e) {

@@ -15,7 +15,6 @@ export const useFetchItems = (codigo) => {
       setError(null);
       try {
         const data = await getItems(codigo);
-        console.log("Ítems cargados:", data);
         setItems(data);
       } catch (err) {
         console.error("Error cargando ítems:", err);

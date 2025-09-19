@@ -35,10 +35,10 @@ export default function SearchArea({ value = "", onChange }) {
         variant="contained"
         startIcon={<Add />}
         onClick={() =>
-          navigate(`/catalogos/${encodeURIComponent(codigo)}/agregar-item`)
+          navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/agregar`)
         }
       >
-        Agregar nuevo item
+        Agregar item
       </Button>
     </FlexBetween>
   );

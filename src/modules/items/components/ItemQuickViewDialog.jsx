@@ -15,8 +15,10 @@ import { Close, Inventory2 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { useFetchItemBySlug } from "../hooks/useFetchItemBySlug";
 import dayjs from "dayjs";
-import { useItemsStore } from "../states/itemsStore";
+// import { useItemsStore } from "../states/itemsStore";
 import { useMemo } from "react";
+import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
+import { useFetchMaestros } from "../../maestros/hooks/useFetchMaestros";
 
 export default function ItemQuickViewDialog({
   open,
@@ -29,7 +31,16 @@ export default function ItemQuickViewDialog({
     itemSlug
   );
   const navigate = useNavigate();
-  const itemsByMaestro = useItemsStore((state) => state.itemsByMaestro);
+  const { maestros = [] } = useFetchMaestros();
+  const maestroActual = useMemo(
+    () => maestros.find((m) => m.codigo_unico === maestroSlug),
+    [maestros, maestroSlug]
+  );
+
+  // const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
+  const maestroId = maestroActual?.id ?? null;
+
+  const { itemsByMaestro } = useFetchItemsByMaestro(maestroId);
   const fmt = (d) => (d ? dayjs(d).format("DD/MM/YYYY") : "—");
 
   const itemPadreNombre = useMemo(() => {
