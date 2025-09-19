@@ -16,7 +16,8 @@ import { ItemsPage } from "@/modules/items/pages/ItemsPage";
 import { AddNewItemPage } from "@/modules/items/pages/AddNewItemPage";
 import { CompanyBranchPage } from "@/modules/company-branch/pages/CompanyBranchPage";
 import { MyProfilePage } from "@/modules/my-profile/pages/MyProfilePage";
-import { EditItemPage } from "../modules/items/pages/EditItemPage";
+import { EditItemPage } from "@/modules/items/pages/EditItemPage";
+import { EmployeesPage } from "@/modules/employees/pages/EmployeesPage";
 
 // 4. Módulos Internos (relativos '../')
 import { useAuthStore } from "../auth/states/authStore";
@@ -63,6 +64,8 @@ export const AppRouter = () => {
               path="/catalogos/maestros/:codigo/:codigo_item/editar"
               element={<EditItemPage />}
             />
+
+            <Route path="/catalogos/empleados" element={<EmployeesPage />} />
 
             <Route
               path="seguridad/empresa-y-sucursal"
