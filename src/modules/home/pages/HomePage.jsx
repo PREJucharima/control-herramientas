@@ -1,9 +1,10 @@
 import { Button, Container } from "@mui/material";
 import { Navigate } from "react-router";
-import { useAuthStore } from "@/auth/states/authStore";
-import { useAuth } from "@/auth/hooks/useAuth";
 
-export const HomePage = () => {
+import { useAuth } from "@/auth/hooks/useAuth";
+import { useAuthStore } from "@/auth/states/authStore";
+
+const HomePage = () => {
   const user = useAuthStore((state) => state.user);
   const { handleLogout } = useAuth();
 
@@ -20,3 +21,5 @@ export const HomePage = () => {
     </Container>
   );
 };
+
+export default HomePage;

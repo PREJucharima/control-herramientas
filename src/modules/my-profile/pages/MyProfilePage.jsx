@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Drawer from "@mui/material/Drawer";
@@ -11,7 +11,7 @@ import Icons from "@/icons/account";
 import { StyledButton } from "../styles";
 import { Grid } from "@mui/material";
 
-export const MyProfilePage = () => {
+const MyProfilePage = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [active, setActive] = useState("Información Básica");
   const downMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
@@ -30,7 +30,7 @@ export const MyProfilePage = () => {
         <StyledButton
           key={id}
           variant="text"
-          startIcon={React.createElement(Icon)}
+          startIcon={Icon ? <Icon /> : null}
           active={active === name}
           onClick={handleListItemBtn(name)}
         >
@@ -98,4 +98,4 @@ const tabList = [
   },
 ];
 
-// export default MyProfilePage;
+export default MyProfilePage;

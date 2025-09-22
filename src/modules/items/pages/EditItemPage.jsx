@@ -8,7 +8,7 @@ import { useItemsStore } from "../states/itemsStore";
 import { Box, CircularProgress } from "@mui/material";
 import ItemForm from "../components/ItemForm";
 
-export const EditItemPage = () => {
+const EditItemPage = () => {
   const navigate = useNavigate();
   const { codigo, codigo_item } = useParams();
 
@@ -101,3 +101,5 @@ export const EditItemPage = () => {
     />
   );
 };
+
+export default EditItemPage;

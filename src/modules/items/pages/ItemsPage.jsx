@@ -32,7 +32,7 @@ import { useFetchItems } from "../hooks/useFetchItems";
 import { useMaestrosStore } from "../../maestros/states/maestrosStore";
 import ItemQuickViewDialog from "../components/ItemQuickViewDialog";
 
-export const ItemsPage = () => {
+const ItemsPage = () => {
   const { codigo } = useParams();
   const { items = [], isLoading, error } = useFetchItems(codigo);
   const { maestros } = useMaestrosStore();
@@ -230,3 +230,5 @@ export const ItemsPage = () => {
     </Box>
   );
 };
+
+export default ItemsPage;

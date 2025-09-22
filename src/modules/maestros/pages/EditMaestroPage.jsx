@@ -8,7 +8,7 @@ import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
 import { useMaestrosStore } from "../states/maestrosStore";
 import { updateMaestroBySlug } from "../services/updateMaestroBySlug";
 
-export const EditMaestroPage = () => {
+const EditMaestroPage = () => {
   const navigate = useNavigate();
   const { codigo } = useParams();
 
@@ -73,3 +73,5 @@ export const EditMaestroPage = () => {
     />
   );
 };
+
+export default EditMaestroPage;

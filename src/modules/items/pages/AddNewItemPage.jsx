@@ -5,7 +5,7 @@ import { useFetchMaestros } from "../../maestros/hooks/useFetchMaestros";
 import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 import ItemForm from "../components/ItemForm";
 
-export const AddNewItemPage = () => {
+const AddNewItemPage = () => {
   const { codigo } = useParams();
   const { maestros } = useFetchMaestros();
   const addItem = useItemsStore((s) => s.addItem);
@@ -45,3 +45,5 @@ export const AddNewItemPage = () => {
     </>
   );
 };
+
+export default AddNewItemPage;

@@ -29,7 +29,7 @@ import { useFetchMaestros } from "../hooks/useFetchMaestros";
 import { MaestroQuickViewDialog } from "../components/MaestroQuickViewDialog";
 import Flexbox from "@/components/flexbox/FlexBox";
 
-export const MaestrosPage = () => {
+const MaestrosPage = () => {
   const { maestros = [], isLoading, error } = useFetchMaestros();
   const [query, setQuery] = useState("");
 
@@ -323,3 +323,5 @@ export const MaestrosPage = () => {
     </Box>
   );
 };
+
+export default MaestrosPage;

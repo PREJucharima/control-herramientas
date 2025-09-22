@@ -5,7 +5,7 @@ import { useFetchMaestros } from "../hooks/useFetchMaestros";
 import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
 import MaestroForm from "../components/MaestroForm";
 
-export const AddNewMaestroPage = () => {
+const AddNewMaestroPage = () => {
   const navigate = useNavigate();
   const { isLoading } = useFetchMaestros();
   const { maestrosLookup } = useFetchMaestrosLookup();
@@ -34,3 +34,5 @@ export const AddNewMaestroPage = () => {
     </>
   );
 };
+
+export default AddNewMaestroPage;
