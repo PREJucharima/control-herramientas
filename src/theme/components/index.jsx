@@ -210,7 +210,7 @@ const componentsOverride = (theme) => {
     MuiCheckbox: Checkbox(theme),
     MuiTableCell: TableCell(theme),
     MuiLinearProgress: LinearProgress(theme),
-    MuiTextField: TextField(theme)
+    MuiTextField: TextField(theme),
   };
 };
 

@@ -1,7 +1,14 @@
 import { useCallback } from "react";
-import { Checkbox, TableRow, TableCell, Chip, IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { Visibility } from "@mui/icons-material";
+
+import { Edit, Visibility } from "@mui/icons-material";
+import {
+  Checkbox,
+  TableRow,
+  TableCell,
+  Chip,
+  IconButton,
+  useTheme,
+} from "@mui/material";
 
 export default function EmployeeTableRow({
   item,
@@ -10,6 +17,7 @@ export default function EmployeeTableRow({
   onEdit,
   onViewDetails,
 }) {
+  const theme = useTheme();
   const handleCheck = useCallback(
     (e) => handleSelectRow(e, item.id),
     [handleSelectRow, item.id]
@@ -46,8 +54,14 @@ export default function EmployeeTableRow({
         <Chip
           size="small"
           label={item.esta_activo ? "Sí" : "No"}
-          color={item.esta_activo ? "success" : "default"}
-          variant={item.esta_activo ? "filled" : "outlined"}
+          color={item.esta_activo ? "success" : "error"}
+          variant={"outlined"}
+          sx={{
+            backgroundColor: item.esta_activo
+              ? theme.palette.success[100]
+              : theme.palette.error[100],
+            color: item.esta_activo ? "success.main" : "error.main",
+          }}
         />
       </TableCell>
 
@@ -59,7 +73,7 @@ export default function EmployeeTableRow({
           <Visibility fontSize="small" />
         </IconButton>
         <IconButton size="small" onClick={() => onEdit?.(item.id)}>
-          <EditIcon fontSize="small" />
+          <Edit fontSize="small" />
         </IconButton>
       </TableCell>
     </TableRow>

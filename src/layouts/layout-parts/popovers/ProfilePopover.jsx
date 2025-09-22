@@ -1,5 +1,11 @@
 import { memo, useCallback } from "react";
-import { useNavigate } from "react-router";
+
+import Business from "@mui/icons-material/Business";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import ContentCopy from "@mui/icons-material/ContentCopy";
+import Logout from "@mui/icons-material/Logout";
+import PersonOutline from "@mui/icons-material/PersonOutline";
+import Settings from "@mui/icons-material/Settings";
 import {
   Avatar,
   Box,
@@ -13,15 +19,11 @@ import {
   styled,
   useTheme,
 } from "@mui/material";
+import { useNavigate } from "react-router";
+
 import { useAuth } from "@/auth/hooks/useAuth";
-import PersonOutline from "@mui/icons-material/PersonOutline";
-import Business from "@mui/icons-material/Business";
-import Settings from "@mui/icons-material/Settings";
-import Logout from "@mui/icons-material/Logout";
-import ContentCopy from "@mui/icons-material/ContentCopy";
-import CheckCircle from "@mui/icons-material/CheckCircle";
-import PopoverLayout from "./_PopoverLayout";
 import useCopyToClipboard from "@/hooks/useCopyToClipboard";
+import PopoverLayout from "./_PopoverLayout";
 
 const AVATAR_SX = { width: 36, height: 36 };
 

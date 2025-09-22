@@ -12,16 +12,16 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 
-import Scrollbar from "@/components/scrollbar";
+import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
-import { useFetchEmployees } from "../hooks/useFetchEmployees";
 import {
-  EmployeesHeadingArea,
   EmployeeTableHead,
   EmployeeTableRow,
+  EmployeesHeadingArea,
   SearchArea,
 } from "../components";
+import { useFetchEmployees } from "../hooks/useFetchEmployees";
 
 const nowISO = new Date().toISOString();
 

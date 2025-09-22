@@ -1,5 +1,4 @@
-import Drawer from "@mui/material/Drawer";
-import { styled } from "@mui/material/styles"; // STYLED COMPONENT
+import { Drawer, styled } from "@mui/material";
 
 const Wrapper = styled("div")(({ theme }) => ({
   height: "100%",

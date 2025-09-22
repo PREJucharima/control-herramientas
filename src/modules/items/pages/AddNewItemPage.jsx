@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from "react-router";
+
+import { ItemForm } from "../components";
+import { useFetchMaestros } from "@/modules/maestros/hooks/useFetchMaestros";
+import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 import { createItem } from "../services/createItem";
 import { useItemsStore } from "../states/itemsStore";
-import { useFetchMaestros } from "../../maestros/hooks/useFetchMaestros";
-import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
-import ItemForm from "../components/ItemForm";
 
 const AddNewItemPage = () => {
   const { codigo } = useParams();

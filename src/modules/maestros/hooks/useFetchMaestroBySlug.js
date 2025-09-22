@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { useAuthStore } from "@/auth/states/authStore";
 import { useMaestrosStore } from "../states/maestrosStore";
 import { getMaestroBySlug } from "../services/getMaestroBySlug";

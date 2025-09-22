@@ -1,8 +1,6 @@
-// MUI
-import Container from "@mui/material/Container";
-import { styled } from "@mui/material/styles"; // LAYOUT BASED HOOK
+import { Container, styled } from "@mui/material";
 
-import useLayout from "@/layouts/context/useLayout"; // STYLED COMPONENT
+import useLayout from "@/layouts/context/useLayout";
 
 const RootStyled = styled("div", {
   shouldForwardProp: (prop) => prop !== "compact",

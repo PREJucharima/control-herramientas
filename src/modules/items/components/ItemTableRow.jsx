@@ -1,8 +1,7 @@
 import { useCallback } from "react";
+
 import { Checkbox, TableRow, TableCell, Chip, IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import { Visibility } from "@mui/icons-material";
+import { Edit, Visibility } from "@mui/icons-material";
 
 export default function ItemTableRow({
   item,
@@ -57,7 +56,7 @@ export default function ItemTableRow({
           <Visibility fontSize="small" />
         </IconButton>
         <IconButton size="small" onClick={() => onEdit?.(item)}>
-          <EditIcon fontSize="small" />
+          <Edit fontSize="small" />
         </IconButton>
       </TableCell>
     </TableRow>

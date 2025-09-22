@@ -1,32 +1,31 @@
+import { Controller, useForm } from "react-hook-form";
+
 import * as Yup from "yup";
 import dayjs from "dayjs";
-import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-// MUI
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormHelperText from "@mui/material/FormHelperText";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import ClearIcon from "@mui/icons-material/Clear";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-
-// RHF wrappers
+import { Clear, InfoOutlined } from "@mui/icons-material";
 import {
-  FormProvider,
-  TextField,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  IconButton,
+  Stack,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+
+import {
   DatePicker,
+  FormProvider,
   SelectField,
+  TextField,
 } from "@/components/form";
 
 const toISODate = (d) => (d ? dayjs(d).format("YYYY-MM-DD") : null);
@@ -130,7 +129,7 @@ export default function ItemForm({
               {title}
             </Typography>
             <Tooltip title="Los campos con * son obligatorios">
-              <InfoOutlinedIcon fontSize="small" color="action" />
+              <InfoOutlined fontSize="small" color="action" />
             </Tooltip>
           </Stack>
         }
@@ -215,7 +214,7 @@ export default function ItemForm({
                       }
                       size="small"
                     >
-                      <ClearIcon fontSize="small" />
+                      <Clear fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>
@@ -236,7 +235,7 @@ export default function ItemForm({
                       }
                       size="small"
                     >
-                      <ClearIcon fontSize="small" />
+                      <Clear fontSize="small" />
                     </IconButton>
                   </span>
                 </Tooltip>

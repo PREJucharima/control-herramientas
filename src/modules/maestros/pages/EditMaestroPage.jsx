@@ -1,12 +1,13 @@
-import { useNavigate, useParams } from "react-router";
 import { useMemo } from "react";
+import { useNavigate, useParams } from "react-router";
+
 import { Alert, Box, CircularProgress } from "@mui/material";
 
-import MaestroForm from "../components/MaestroForm";
+import { MaestroForm } from "../components";
 import { useFetchMaestroBySlug } from "../hooks/useFetchMaestroBySlug";
 import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
-import { useMaestrosStore } from "../states/maestrosStore";
 import { updateMaestroBySlug } from "../services/updateMaestroBySlug";
+import { useMaestrosStore } from "../states/maestrosStore";
 
 const EditMaestroPage = () => {
   const navigate = useNavigate();

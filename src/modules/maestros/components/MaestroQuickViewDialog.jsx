@@ -1,3 +1,7 @@
+import { useMemo } from "react";
+import { useNavigate } from "react-router";
+
+import dayjs from "dayjs";
 import {
   Dialog,
   DialogTitle,
@@ -12,13 +16,11 @@ import {
   Skeleton,
 } from "@mui/material";
 import { Close, Inventory2 } from "@mui/icons-material";
-import { useMemo } from "react";
-import { useNavigate } from "react-router";
+
 import { useFetchMaestroBySlug } from "../hooks/useFetchMaestroBySlug";
 import { useMaestrosStore } from "../states/maestrosStore";
-import dayjs from "dayjs";
 
-export const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
+const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
   const { loading, error } = useFetchMaestroBySlug(slug);
   const { maestroBySlug } = useMaestrosStore();
   const maestros = useMaestrosStore((state) => state.maestros);
@@ -144,3 +146,5 @@ export const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
     </Dialog>
   );
 };
+
+export default MaestroQuickViewDialog;

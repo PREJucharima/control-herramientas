@@ -1,10 +1,9 @@
 // import { useNavigate } from "react-router";
 
-import { Button, TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Button, styled, TextField } from "@mui/material";
 import { Add, Search } from "@mui/icons-material";
 
-import FlexBetween from "@/components/flexbox/FlexBetween";
+import { FlexBetween } from "@/components/flexbox";
 
 const SearchTextField = styled(TextField)({
   maxWidth: 400,

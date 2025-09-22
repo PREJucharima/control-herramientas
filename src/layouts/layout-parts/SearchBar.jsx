@@ -1,10 +1,12 @@
-import Slide from "@mui/material/Slide";
-import Button from "@mui/material/Button";
-import InputBase from "@mui/material/InputBase";
-import InputAdornment from "@mui/material/InputAdornment";
-import { styled } from "@mui/material/styles"; // CUSTOM ICON COMPONENT
+import {
+  Button,
+  InputAdornment,
+  InputBase,
+  Slide,
+  styled,
+} from "@mui/material";
 
-import SearchIcon from "@/icons/SearchIcon"; // STYLED COMPONENTS
+import SearchIcon from "@/icons/SearchIcon";
 
 const StyledRoot = styled("div")(({ theme }) => ({
   gap: 2,

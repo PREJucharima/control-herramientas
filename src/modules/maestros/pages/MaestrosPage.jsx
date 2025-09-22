@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
+
 import {
   Box,
   Typography,
@@ -24,10 +26,10 @@ import {
   Visibility,
   Edit,
 } from "@mui/icons-material";
-import { useNavigate, useSearchParams } from "react-router";
+
+import { FlexBox } from "@/components/flexbox";
+import { MaestroQuickViewDialog } from "../components";
 import { useFetchMaestros } from "../hooks/useFetchMaestros";
-import { MaestroQuickViewDialog } from "../components/MaestroQuickViewDialog";
-import Flexbox from "@/components/flexbox/FlexBox";
 
 const MaestrosPage = () => {
   const { maestros = [], isLoading, error } = useFetchMaestros();
@@ -62,7 +64,7 @@ const MaestrosPage = () => {
 
   return (
     <Box sx={{ maxWidth: 1100, mx: "auto", px: 2, py: 3 }}>
-      <Flexbox
+      <FlexBox
         alignItems="center"
         gap={1.5}
         marginBottom={1}
@@ -97,7 +99,7 @@ const MaestrosPage = () => {
         >
           Agregar maestro
         </Button>
-      </Flexbox>
+      </FlexBox>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Explora el listado de maestros. Usa el buscador para filtrar por nombre.

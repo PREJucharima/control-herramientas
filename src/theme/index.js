@@ -1,11 +1,9 @@
-import { createTheme } from "@mui/material/styles"; // THEME SHADOWS LIST
+import { createTheme } from "@mui/material/styles";
 
-import shadows from "./shadows"; // MUI COMPONENTS OVERRIDE
-
-import componentsOverride from "./components"; // LIGHT & DARK THEME OPTIONS
-
+import { THEMES } from "@/utils/constants";
+import componentsOverride from "./components";
+import shadows from "./shadows";
 import themesOptions from "./themeOptions";
-import { THEMES } from "@/utils/constants"; // FONT VARIANTS
 
 import "@fontsource/public-sans/400.css";
 import "@fontsource/public-sans/500.css";

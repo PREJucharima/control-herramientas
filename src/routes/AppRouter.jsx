@@ -1,11 +1,8 @@
-// 1. React
 import { useEffect } from "react";
 
-// 2. Librerías Externas
 import { Navigate, Route, Routes } from "react-router";
 import { CircularProgress } from "@mui/material";
 
-// 3. Módulos Internos
 import { AuthRoutes } from "@/auth/routes/AuthRoutes";
 import { useAuthStore } from "@/auth/states/authStore";
 import { protectedRoutes, RootLayout } from "./routes";

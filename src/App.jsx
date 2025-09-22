@@ -1,9 +1,9 @@
 import { Suspense, useEffect } from "react";
 
-import { AppTheme } from "@/theme/AppTheme";
 import { CircularProgress } from "@mui/material";
 
 import { useAuthStore } from "@/auth/states/authStore";
+import { AppTheme } from "@/theme/AppTheme";
 import { AppRouter } from "@/routes/AppRouter";
 
 function App() {

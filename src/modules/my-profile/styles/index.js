@@ -1,7 +1,4 @@
-import Button from "@mui/material/Button";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import { styled } from "@mui/material/styles";
+import { Button, styled, TableCell, TableRow } from "@mui/material";
 
 export const StyledButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "active",

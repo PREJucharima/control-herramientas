@@ -2,10 +2,10 @@ export const Card = () => ({
   styleOverrides: {
     root: {
       borderRadius: 12,
-      backgroundImage: 'none'
-    }
+      backgroundImage: "none",
+    },
   },
   defaultProps: {
-    elevation: 1
-  }
+    elevation: 1,
+  },
 });

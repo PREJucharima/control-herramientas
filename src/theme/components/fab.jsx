@@ -1,41 +1,29 @@
-export const Fab = _theme => {
+export const Fab = (_theme) => {
   return {
     styleOverrides: {
-      extended: ({
-        ownerState: {
-          color
-        }
-      }) => ({
+      extended: ({ ownerState: { color } }) => ({
         gap: 4,
         lineHeight: 1,
-        textTransform: 'none',
-        ...((color === 'success' || color === 'warning') && {
-          color: 'white'
-        })
+        textTransform: "none",
+        ...((color === "success" || color === "warning") && {
+          color: "white",
+        }),
       }),
-      circular: ({
-        ownerState: {
-          color
-        }
-      }) => ({
+      circular: ({ ownerState: { color } }) => ({
         lineHeight: 1,
-        ...((color === 'success' || color === 'warning') && {
-          color: 'white'
-        })
+        ...((color === "success" || color === "warning") && {
+          color: "white",
+        }),
       }),
-      sizeSmall: ({
-        ownerState: {
-          variant
-        }
-      }) => ({
+      sizeSmall: ({ ownerState: { variant } }) => ({
         fontSize: 14,
         svg: {
-          fontSize: 20
+          fontSize: 20,
         },
-        ...(variant === 'extended' && {
-          paddingInline: '1rem'
-        })
-      })
-    }
+        ...(variant === "extended" && {
+          paddingInline: "1rem",
+        }),
+      }),
+    },
   };
 };

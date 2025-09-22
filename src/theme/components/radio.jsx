@@ -1,27 +1,28 @@
-import { svgIconClasses } from '@mui/material/SvgIcon'; // CUSTOM ICON COMPONENTS
+import { svgIconClasses } from "@mui/material/SvgIcon";
 
-import RadioButtonIcon from '@/icons/RadioButtonIcon';
-import RadioButtonChecked from '@/icons/RadioButtonChecked'; // ==============================================================
+import RadioButtonIcon from "@/icons/RadioButtonIcon";
+import RadioButtonChecked from "@/icons/RadioButtonChecked";
 
-// ==============================================================
 export const Radio = () => ({
   defaultProps: {
     icon: <RadioButtonIcon />,
-    checkedIcon: <RadioButtonChecked />
+    checkedIcon: <RadioButtonChecked />,
   },
   styleOverrides: {
     root: {
-      padding: 6
-    }
-  },
-  variants: [{
-    props: {
-      size: 'large'
+      padding: 6,
     },
-    style: {
-      [`.${svgIconClasses.root}`]: {
-        fontSize: '1.75rem'
-      }
-    }
-  }]
+  },
+  variants: [
+    {
+      props: {
+        size: "large",
+      },
+      style: {
+        [`.${svgIconClasses.root}`]: {
+          fontSize: "1.75rem",
+        },
+      },
+    },
+  ],
 });

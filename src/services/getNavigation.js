@@ -1,6 +1,5 @@
 import { fetchWithAuth } from "../auth/services/apiClient";
 
-
 export const getNavigation = async () => {
   const response = await fetchWithAuth(`api/seguridad/navegacion/`);
   const data = await response.json();

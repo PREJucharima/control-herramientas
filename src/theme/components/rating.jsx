@@ -1,4 +1,3 @@
-// CUSTOM ICON COMPONENTS
 import Star from "@/icons/Star";
 import StarOutlined from "@/icons/StarOutlined";
 

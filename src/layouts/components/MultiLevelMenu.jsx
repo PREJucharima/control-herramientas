@@ -1,19 +1,20 @@
-import useLayout from "@/layouts/context/useLayout";
-import SidebarAccordion from "./SidebarAccordion";
 import { useCallback } from "react";
+
+import { CircularProgress } from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
+
+import { useFetchNavigation } from "@/hooks/useNavigation";
+import useLayout from "@/layouts/context/useLayout";
 import {
+  BulletIcon,
+  ExternalLink,
+  ICON_STYLE,
   ItemText,
   ListLabel,
-  BulletIcon,
-  ICON_STYLE,
-  ExternalLink,
   NavItemButton,
 } from "@/layouts/styles";
-
 import { normalizeNavigation } from "@/utils/normalizeNavigation";
-import { useFetchNavigation } from "@/hooks/useNavigation";
-import { CircularProgress } from "@mui/material";
+import SidebarAccordion from "./SidebarAccordion";
 
 export default function MultiLevelMenu({ sidebarCompact }) {
   const navigate = useNavigate();

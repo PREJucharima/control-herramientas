@@ -1,8 +1,7 @@
-import { useLocation, useNavigate } from "react-router";
-
-import { Chip, IconButton, styled, Typography, Tab } from "@mui/material";
-import { TabContext, TabList } from "@mui/lab";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { TabContext, TabList } from "@mui/lab";
+import { Chip, IconButton, styled, Tab, Typography } from "@mui/material";
+import { useLocation, useNavigate } from "react-router";
 
 import { FlexBetween, FlexBox } from "@/components/flexbox";
 import Apps from "@/icons/Apps";
