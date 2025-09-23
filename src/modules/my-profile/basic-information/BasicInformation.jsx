@@ -1,9 +1,9 @@
 import { Fragment } from "react";
+
 import Card from "@mui/material/Card";
 
-import InfoForm from "./info-form";
-import UserInfo from "./user-info";
-
+import { InfoForm } from "./info-form";
+import { UserInfo } from "./user-info";
 import { CoverPicWrapper } from "./styles";
 
 export default function BasicInformation() {

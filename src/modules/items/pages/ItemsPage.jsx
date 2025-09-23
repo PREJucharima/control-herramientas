@@ -1,7 +1,6 @@
-// React
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
-// MUI
 import {
   Alert,
   Box,
@@ -13,26 +12,20 @@ import {
   TablePagination,
 } from "@mui/material";
 
-// React Router
-import { useNavigate, useParams, useSearchParams } from "react-router";
-
-// Componentes internos
+import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
-import Scrollbar from "@/components/scrollbar";
-
-// Componentes relativos
-import SearchArea from "../components/SearchArea";
-import ItemsHeadingArea from "../components/ItemsHeadingArea";
-import ItemTableHead from "../components/ItemTableHead";
-import ItemTableRow from "../components/ItemTableRow";
-
-// Hooks / utils internos
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
-import { useFetchItems } from "../hooks/useFetchItems";
 import { useMaestrosStore } from "../../maestros/states/maestrosStore";
-import ItemQuickViewDialog from "../components/ItemQuickViewDialog";
+import {
+  ItemQuickViewDialog,
+  ItemTableHead,
+  ItemTableRow,
+  ItemsHeadingArea,
+  SearchArea,
+} from "../components";
+import { useFetchItems } from "../hooks/useFetchItems";
 
-export const ItemsPage = () => {
+const ItemsPage = () => {
   const { codigo } = useParams();
   const { items = [], isLoading, error } = useFetchItems(codigo);
   const { maestros } = useMaestrosStore();
@@ -230,3 +223,5 @@ export const ItemsPage = () => {
     </Box>
   );
 };
+
+export default ItemsPage;

@@ -1,18 +1,20 @@
-import { AuthLayout } from "../layout";
-import { Button, Grid } from "@mui/material";
-import { CustomSnackbar } from "@/components/custom-snackbar";
-import { fetchGoogleUserinfo } from "../services/googleService";
-import { loginWithEmail } from "../services/authService";
 import { useState } from "react";
+
+import { Button, Grid } from "@mui/material";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useAuthStore } from "../states/authStore";
-import { useSnackbar } from "@/hooks/useSnackbar";
 import { useNavigate } from "react-router";
+
+import { CustomSnackbar } from "@/components/custom-snackbar";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import { AuthLayout } from "../layout";
+import { loginWithEmail } from "../services/authService";
+import { fetchGoogleUserinfo } from "../services/googleService";
+import { useAuthStore } from "../states/authStore";
 
 const LOGO_PATH = "/static/logo/google.svg";
 const REQUIRED_DOMAIN = "@precision.tech";
 
-export const LoginPage = () => {
+const LoginPage = () => {
   const navigate = useNavigate();
   const setAuthData = useAuthStore((s) => s.setAuthData);
   const [pending, setPending] = useState(false);
@@ -93,3 +95,5 @@ export const LoginPage = () => {
     </AuthLayout>
   );
 };
+
+export default LoginPage;

@@ -1,12 +1,9 @@
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles"; // LAYOUT BASED HOOK
+import { Box, styled } from "@mui/material";
 
-import useLayout from "@/layouts/context/useLayout"; // CUSTOM COMPONENTS
-
+import { Scrollbar } from "@/components/scrollbar";
+import { LayoutDrawer } from "@/layouts/layout-parts";
+import useLayout from "@/layouts/context/useLayout";
 import MultiLevelMenu from "./MultiLevelMenu";
-import Scrollbar from "@/components/scrollbar";
-import UserAccount from "@/layouts/layout-parts/UserAccount";
-import LayoutDrawer from "@/layouts/layout-parts/LayoutDrawer"; // STYLED COMPONENTS
 
 const NavWrapper = styled("div")({
   height: "100%",
@@ -35,11 +32,7 @@ export default function MobileSidebar() {
             src="/static/logo/logo.png"
           />
 
-          {/* NAVIGATION ITEMS */}
           <MultiLevelMenu sidebarCompact={false} />
-
-          {/* USER ACCOUNT INFORMATION */}
-          {/* <UserAccount /> */}
         </NavWrapper>
       </Scrollbar>
     </LayoutDrawer>

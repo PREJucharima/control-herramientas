@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router";
-import { useMaestrosStore } from "../states/maestrosStore";
-import { createMaestro } from "../services/createMaestro";
+
+import { MaestroForm } from "../components";
 import { useFetchMaestros } from "../hooks/useFetchMaestros";
 import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
-import MaestroForm from "../components/MaestroForm";
+import { createMaestro } from "../services/createMaestro";
+import { useMaestrosStore } from "../states/maestrosStore";
 
-export const AddNewMaestroPage = () => {
+const AddNewMaestroPage = () => {
   const navigate = useNavigate();
   const { isLoading } = useFetchMaestros();
   const { maestrosLookup } = useFetchMaestrosLookup();
@@ -34,3 +35,5 @@ export const AddNewMaestroPage = () => {
     </>
   );
 };
+
+export default AddNewMaestroPage;

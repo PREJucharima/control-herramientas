@@ -1,6 +1,9 @@
-import { useEffect } from "react";
-import { AppTheme } from "@/theme/AppTheme";
+import { Suspense, useEffect } from "react";
+
+import { CircularProgress } from "@mui/material";
+
 import { useAuthStore } from "@/auth/states/authStore";
+import { AppTheme } from "@/theme/AppTheme";
 import { AppRouter } from "@/routes/AppRouter";
 
 function App() {
@@ -13,11 +16,12 @@ function App() {
   return (
     <>
       <AppTheme>
-        <AppRouter />
+        <Suspense fallback={<CircularProgress />}>
+          <AppRouter />
+        </Suspense>
       </AppTheme>
     </>
   );
 }
 
 export default App;
-  

@@ -1,15 +1,11 @@
-// React Router
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { TabContext, TabList } from "@mui/lab";
+import { Chip, IconButton, styled, Tab, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router";
 
-// MUI
-import { Chip, IconButton, styled, Typography, Tab } from "@mui/material";
-import { TabContext, TabList } from "@mui/lab";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
-//  Componentes internos
-import { FlexBetween, FlexBox } from "@/components/flexbox";
 import Apps from "@/icons/Apps";
 import FormatBullets from "@/icons/FormatBullets";
+import { FlexBetween, FlexBox } from "@/components/flexbox";
 
 const TabListWrapper = styled(TabList)({ borderBottom: 0 });
 

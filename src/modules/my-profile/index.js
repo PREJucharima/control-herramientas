@@ -1,4 +1,4 @@
-import BasicInformation from "./basic-information/BasicInformation";
+import { BasicInformation } from "./basic-information";
 
 const Tabs = {
   BasicInformation,

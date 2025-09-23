@@ -1,20 +1,20 @@
 import { use } from "react";
 
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import {
+  Box,
+  Breadcrumbs,
+  IconButton,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 
+import { useAuth } from "@/auth/hooks/useAuth";
+import { SettingsContext } from "@/contexts/settingsContext";
 import Menu from "@/icons/Menu";
 import ThemeIcon from "@/icons/ThemeIcon";
-
 import useLayout from "@/layouts/context/useLayout";
-
-import ProfilePopover from "@/layouts/layout-parts/popovers/ProfilePopover";
-
-import { SettingsContext } from "@/contexts/settingsContext";
+import { ProfilePopover } from "@/layouts/layout-parts";
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
-import { Breadcrumbs, Typography } from "@mui/material";
-import { useAuth } from "@/auth/hooks/useAuth";
 import { useCompanyBranchStore } from "@/modules/company-branch/states/companyBranchStore";
 
 export default function DashboardHeader() {
@@ -31,7 +31,6 @@ export default function DashboardHeader() {
   return (
     <DashboardHeaderRoot position="sticky">
       <StyledToolBar>
-        {/* SMALL DEVICE SIDE BAR OPEN BUTTON */}
         {downMd && (
           <IconButton onClick={handleOpenMobileSidebar}>
             <Menu />
@@ -59,7 +58,6 @@ export default function DashboardHeader() {
           </Typography>
         </Breadcrumbs>
 
-        {/* THEME SWITCH BUTTON */}
         <IconButton
           onClick={() =>
             handleChangeTheme(settings.theme === "light" ? "dark" : "light")

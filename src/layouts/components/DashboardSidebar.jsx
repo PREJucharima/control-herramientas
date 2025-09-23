@@ -1,15 +1,13 @@
 import { memo, useCallback, useMemo, useState } from "react";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton"; // LAYOUT BASED HOOK
 
-import useLayout from "@/layouts/context/useLayout"; // CUSTOM COMPONENTS
+import { Box, IconButton, Typography } from "@mui/material";
 
+import { FlexBetween } from "@/components/flexbox";
+import { Link } from "@/components/link";
+import { Scrollbar } from "@/components/scrollbar";
+import ArrowLeftToLine from "@/icons/duotone/ArrowLeftToLine";
+import useLayout from "@/layouts/context/useLayout";
 import MultiLevelMenu from "./MultiLevelMenu";
-import Link from "@/components/link";
-import Scrollbar from "@/components/scrollbar";
-import FlexBetween from "@/components/flexbox/FlexBetween";
-import Typography from '@mui/material/Typography';
-import ArrowLeftToLine from "@/icons/duotone/ArrowLeftToLine"; // STYLED COMPONENTS
 
 import { SidebarWrapper } from "../styles";
 const TOP_HEADER_AREA = 70;
@@ -76,7 +74,7 @@ const Logo = memo(({ isCompact }) => (
   <Link href="/">
     <Box component={"div"} display="flex" alignItems="center">
       <Box component="img" src={LOGO_PATH} alt="logo" width={30} />
-      
+
       {!isCompact && (
         <Typography
           variant="h6"

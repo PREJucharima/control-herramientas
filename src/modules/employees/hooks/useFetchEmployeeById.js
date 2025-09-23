@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+
 import { useAuthStore } from "@/auth/states/authStore";
-import { useEmployeesStore } from "../states/employeesStore";
 import { getEmployeeById } from "../services/getEmployeeById";
+import { useEmployeesStore } from "../states/employeesStore";
 
 export const useFetchEmployeeById = (id) => {
   const user = useAuthStore((state) => state.user);

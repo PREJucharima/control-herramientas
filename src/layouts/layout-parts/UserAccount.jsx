@@ -1,9 +1,8 @@
-import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
-import Typography from "@mui/material/Typography";
-import AvatarLoading from "@/components/avatar-loading";
-import FlexRowAlign from "@/components/flexbox/FlexRowAlign";
+import { Box, Chip, Typography } from "@mui/material";
+
 import { useAuth } from "@/auth/hooks/useAuth";
+import { AvatarLoading } from "@/components/avatar-loading";
+import { FlexRowAlign } from "@/components/flexbox";
 
 export default function UserAccount() {
   const { user } = useAuth();

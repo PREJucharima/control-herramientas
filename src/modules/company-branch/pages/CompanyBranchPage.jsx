@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "@/auth/hooks/useAuth";
+
 import {
   Box,
   Button,
@@ -9,11 +9,13 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useCompanyBranchStore } from "../states/companyBranchStore";
-import { useSnackbar } from "@/hooks/useSnackbar";
-import { CustomSnackbar } from "@/components/custom-snackbar";
 
-export const CompanyBranchPage = () => {
+import { useAuth } from "@/auth/hooks/useAuth";
+import { CustomSnackbar } from "@/components/custom-snackbar";
+import { useSnackbar } from "@/hooks/useSnackbar";
+import { useCompanyBranchStore } from "../states/companyBranchStore";
+
+const CompanyBranchPage = () => {
   const { user } = useAuth();
   const empresasDisponibles = useMemo(() => user.acceso_empresas || [], [user]);
   const [empresaSeleccionada, setEmpresaSeleccionada] = useState("");
@@ -140,3 +142,5 @@ export const CompanyBranchPage = () => {
     </>
   );
 };
+
+export default CompanyBranchPage;

@@ -1,19 +1,20 @@
-import { checkboxClasses } from '@mui/material/Checkbox'; // CUSTOM ICON COMPONENTS
+import { checkboxClasses } from "@mui/material/Checkbox";
 
-import CheckBoxIcon from '@/icons/CheckBoxIcon';
-import BlankCheckBoxIcon from '@/icons/BlankCheckBoxIcon';
-import CheckboxIndeterminateIcon from '@/icons/CheckboxIndeterminateIcon';
-export const Checkbox = theme => ({
+import BlankCheckBoxIcon from "@/icons/BlankCheckBoxIcon";
+import CheckBoxIcon from "@/icons/CheckBoxIcon";
+import CheckboxIndeterminateIcon from "@/icons/CheckboxIndeterminateIcon";
+
+export const Checkbox = (theme) => ({
   defaultProps: {
     icon: <BlankCheckBoxIcon />,
     checkedIcon: <CheckBoxIcon />,
-    indeterminateIcon: <CheckboxIndeterminateIcon />
+    indeterminateIcon: <CheckboxIndeterminateIcon />,
   },
   styleOverrides: {
     colorSecondary: {
       [`&.${checkboxClasses.checked}`]: {
-        color: theme.palette.grey[700]
-      }
-    }
-  }
+        color: theme.palette.grey[700],
+      },
+    },
+  },
 });

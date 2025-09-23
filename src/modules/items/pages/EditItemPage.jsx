@@ -1,14 +1,16 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
-import { updateItemBySlug } from "../services/updateItemBySlug";
-import { useFetchItemBySlug } from "../hooks/useFetchItemBySlug";
-import { useFetchMaestros } from "../../maestros/hooks/useFetchMaestros";
-import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
-import { useItemsStore } from "../states/itemsStore";
-import { Box, CircularProgress } from "@mui/material";
-import ItemForm from "../components/ItemForm";
 
-export const EditItemPage = () => {
+import { Box, CircularProgress } from "@mui/material";
+
+import { ItemForm } from "../components";
+import { useFetchMaestros } from "../../maestros/hooks/useFetchMaestros";
+import { useFetchItemBySlug } from "../hooks/useFetchItemBySlug";
+import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
+import { updateItemBySlug } from "../services/updateItemBySlug";
+import { useItemsStore } from "../states/itemsStore";
+
+const EditItemPage = () => {
   const navigate = useNavigate();
   const { codigo, codigo_item } = useParams();
 
@@ -101,3 +103,5 @@ export const EditItemPage = () => {
     />
   );
 };
+
+export default EditItemPage;

@@ -1,11 +1,12 @@
 import { useCallback } from "react";
-import { styled } from "@mui/material/styles";
+
 import {
   TableHead,
   TableRow,
   TableCell,
   Checkbox,
   TableSortLabel,
+  styled,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 

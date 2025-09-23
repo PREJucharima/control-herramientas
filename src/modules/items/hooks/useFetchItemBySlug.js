@@ -1,5 +1,5 @@
-// modules/items/hooks/useFetchItemBySlug.js
 import { useEffect, useState } from "react";
+
 import { useItemsStore } from "../states/itemsStore";
 import { getItemBySlug } from "../services/getItemBySlug";
 

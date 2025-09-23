@@ -1,4 +1,5 @@
 import { alpha } from "@mui/material/styles";
+
 export default function shadows(theme) {
   const shadowColorMain =
     theme.palette.mode === "light" ? theme.palette.grey[500] : "#000000";

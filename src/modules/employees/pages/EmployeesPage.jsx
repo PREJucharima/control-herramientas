@@ -10,18 +10,18 @@ import {
   TableContainer,
   TablePagination,
 } from "@mui/material";
-
 import { useNavigate } from "react-router";
 
+import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
-import Scrollbar from "@/components/scrollbar";
-
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
+import {
+  EmployeeTableHead,
+  EmployeeTableRow,
+  EmployeesHeadingArea,
+  SearchArea,
+} from "../components";
 import { useFetchEmployees } from "../hooks/useFetchEmployees";
-import EmployeesHeadingArea from "../components/EmployeeHeadingArea";
-import EmployeeTableRow from "../components/EmployeeTableRow";
-import EmployeeTableHead from "../components/EmployeeTableHead";
-import SearchArea from "../components/SearchArea";
 
 const nowISO = new Date().toISOString();
 
@@ -79,7 +79,7 @@ const employeesFakeData = [
   },
 ];
 
-export const EmployeesPage = () => {
+const EmployeesPage = () => {
   const navigate = useNavigate();
   const { employees = [], isLoading, error } = useFetchEmployees();
 
@@ -274,3 +274,5 @@ export const EmployeesPage = () => {
     </Box>
   );
 };
+
+export default EmployeesPage;

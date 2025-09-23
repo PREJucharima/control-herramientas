@@ -1,1 +1,1 @@
-export { default } from './AvatarBadge';
+export { default as AvatarBadge } from "./AvatarBadge";

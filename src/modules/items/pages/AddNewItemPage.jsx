@@ -1,11 +1,12 @@
 import { useNavigate, useParams } from "react-router";
+
+import { ItemForm } from "../components";
+import { useFetchMaestros } from "@/modules/maestros/hooks/useFetchMaestros";
+import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 import { createItem } from "../services/createItem";
 import { useItemsStore } from "../states/itemsStore";
-import { useFetchMaestros } from "../../maestros/hooks/useFetchMaestros";
-import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
-import ItemForm from "../components/ItemForm";
 
-export const AddNewItemPage = () => {
+const AddNewItemPage = () => {
   const { codigo } = useParams();
   const { maestros } = useFetchMaestros();
   const addItem = useItemsStore((s) => s.addItem);
@@ -45,3 +46,5 @@ export const AddNewItemPage = () => {
     </>
   );
 };
+
+export default AddNewItemPage;

@@ -3,7 +3,7 @@ export const Link = () => ({
     root: {
       fontSize: 14,
       fontWeight: 500,
-      textDecoration: 'none'
-    }
-  }
+      textDecoration: "none",
+    },
+  },
 });

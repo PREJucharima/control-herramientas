@@ -1,9 +1,8 @@
-import { alpha } from "@mui/material/styles"; // MUI ICON COMPONENTS
-
-import Info from "@mui/icons-material/Info";
-import Error from "@mui/icons-material/Error";
-import Warning from "@mui/icons-material/Warning";
 import CheckCircle from "@mui/icons-material/CheckCircle";
+import Error from "@mui/icons-material/Error";
+import Info from "@mui/icons-material/Info";
+import Warning from "@mui/icons-material/Warning";
+import { alpha } from "@mui/material/styles";
 
 const standardStyle = (color) => ({
   color: color.main,

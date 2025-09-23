@@ -1,1 +1,1 @@
-export { default } from './AvatarLoading';
+export { default as AvatarLoading } from "./AvatarLoading";
