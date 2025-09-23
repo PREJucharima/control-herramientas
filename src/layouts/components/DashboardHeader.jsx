@@ -1,4 +1,3 @@
-// import { use } from "react";
 import { useContext } from "react";
 
 import {
@@ -10,7 +9,8 @@ import {
 } from "@mui/material";
 
 import Menu from "@/icons/Menu";
-import ThemeIcon from "@/icons/ThemeIcon";
+import SunIcon from "@/icons/SunIcon";
+import MoonIcon from "@/icons/MoonIcon";
 import useLayout from "@/layouts/context/useLayout";
 import { useAuth } from "@/auth/hooks/useAuth";
 import { SettingsContext } from "@/contexts/SettingsContext";
@@ -20,7 +20,6 @@ import { useCompanyBranchStore } from "@/modules/company-branch/states/companyBr
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
-  // const { settings, saveSettings } = use(SettingsContext);
   const { settings, saveSettings } = useContext(SettingsContext);
   const { user } = useAuth();
   const { empresa, sucursal } = useCompanyBranchStore();
@@ -68,7 +67,7 @@ export default function DashboardHeader() {
           }
           color="inherit"
         >
-          <ThemeIcon />
+          {settings.theme === "light" ? <SunIcon /> : <MoonIcon />}
         </IconButton>
 
         <ProfilePopover />
