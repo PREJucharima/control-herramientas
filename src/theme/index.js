@@ -61,11 +61,6 @@ const baseOptions = {
 };
 
 export function createCustomTheme(settings) {
-  /**
-   * settings.theme value is 'light' or 'dark'
-   * update settings in contexts/SettingsContext.tsx
-   */
-
   const themeOption =
     themesOptions[settings.theme] ?? themesOptions[THEMES.LIGHT];
 
