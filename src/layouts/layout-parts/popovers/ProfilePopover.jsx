@@ -15,7 +15,6 @@ import {
   MenuList,
   Stack,
   Typography,
-  alpha,
   styled,
   useTheme,
 } from "@mui/material";
@@ -59,10 +58,7 @@ const PrettyItem = styled(MenuItem)(({ theme }) => ({
   margin: "2px 8px",
   padding: "8px 10px",
   "&:hover": {
-    backgroundColor:
-      theme.palette.mode === "light"
-        ? alpha(theme.palette.primary.main, 0.06)
-        : alpha(theme.palette.primary.main, 0.18),
+    backgroundColor: theme.palette.action.hover,
   },
 }));
 

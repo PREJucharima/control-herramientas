@@ -1,15 +1,15 @@
-import { ThemeProvider } from "@emotion/react";
+import { use, useMemo } from "react";
+
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { PropTypes } from "prop-types";
 
+import { SettingsContext } from "@/contexts/SettingsContext";
 import { createCustomTheme } from ".";
 
-const settings = {
-  theme: "light", // 'light' or 'dark'
-};
-
 export const AppTheme = ({ children }) => {
-  const theme = createCustomTheme(settings);
+  const { settings } = use(SettingsContext);
+  const theme = useMemo(() => createCustomTheme(settings), [settings]);
 
   return (
     <ThemeProvider theme={theme}>

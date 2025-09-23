@@ -24,7 +24,6 @@ export default function UserAccount() {
           variant="outlined"
           label={`Rol - ${user?.rol_nombre}`}
           size="small"
-          color="customTeal"
         />
 
         <Typography

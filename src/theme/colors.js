@@ -15,18 +15,18 @@ const grey = {
 };
 
 export const primary = {
-  25: "#f1f3f4",
-  50: "#e1e4e6",
-  100: "#c2c7cb",
-  200: "#a3aab0",
-  300: "#657884",
-  400: "#405360",
-  500: "#2a3a45",
-  600: "#1f2b34",
-  700: "#141d23",
-  800: "#0d151b",
-  900: "#070e13",
-  main: "#0a1a28",
+  25: "#e0fdf7",
+  50: "#ccfbf1",
+  100: "#99f6e4",
+  200: "#5eead4",
+  300: "#2dd4bf",
+  400: "#14b8a6",
+  500: "#10a191",
+  600: "#0e9384",
+  700: "#0c8376",
+  800: "#0a7166",
+  900: "#08594f",
+  main: "#21E0B2",
 };
 
 export const success = {
@@ -41,12 +41,12 @@ export const success = {
   700: "#088477",
   800: "#056A6A",
   900: "#035058",
-  main: "#11b886",
+  main: "#11b843ff",
 };
 
 export const warning = {
   25: "#FFFCF5",
-  50: "#FFF8E",
+  50: "#FFF8E6",
   100: "#FFF8E6",
   200: "#FFEBB3",
   300: "#FEDE80",
@@ -76,7 +76,7 @@ export const error = {
 
 export const secondary = { ...grey, main: "#F1F5F9" };
 
-export const customTeal = {
+export const teal = {
   25: "#e0fdf7",
   50: "#ccfbf1",
   100: "#99f6e4",
@@ -91,24 +91,41 @@ export const customTeal = {
   main: "#21e0b2",
 };
 
+export const tertiary = {
+  25: "#f1f3f4",
+  50: "#e1e4e6",
+  100: "#c2c7cb",
+  200: "#a3aab0",
+  300: "#657884",
+  400: "#405360",
+  500: "#2a3a45",
+  600: "#1f2b34",
+  700: "#141d23",
+  800: "#0d151b",
+  900: "#070e13",
+  main: "#0a1a28",
+};
+
 export const info = {
   light: "#F4F4FF",
   main: "#0a1a28",
   dark: "#0C53B7",
-}; // FOR LIGHT THEME ACTION COLORS
+};
 
+// TEXT
 export const textLight = {
   primary: grey[900],
   disabled: grey[200],
   secondary: grey[500],
-}; // FOR DARK THEME TEXT COLORS
+};
 
 export const textDark = {
   primary: "#ffffff",
   disabled: grey[200],
   secondary: grey[400],
-}; // FOR LIGHT THEME ACTION COLORS
+};
 
+// ACTION
 export const actionLight = {
   focusOpacity: 0.12,
   hoverOpacity: 0.04,
@@ -121,7 +138,7 @@ export const actionLight = {
   hover: alpha(grey[900], 0.04),
   active: alpha(grey[900], 0.54),
   disabledBackground: alpha(grey[900], 0.12),
-}; // FOR DARK THEME ACTION COLORS
+};
 
 export const actionDark = {
   focusOpacity: 0.12,
@@ -130,13 +147,13 @@ export const actionDark = {
   disabledOpacity: 0.38,
   selectedOpacity: 0.16,
   activatedOpacity: 0.24,
-  // disabled: grey[200],
   focus: alpha(grey[100], 0.12),
   hover: alpha(grey[100], 0.04),
   active: alpha(grey[100], 0.54),
   disabledBackground: alpha(grey[100], 0.12),
-}; // COMMON COLOR PALETTE
+};
 
+// BASE
 const basePalette = {
   grey,
   info,
@@ -145,12 +162,14 @@ const basePalette = {
   success,
   warning,
   secondary,
-  customTeal,
-}; // LIGHT THEME COLOR PALETTE
+  teal,
+  tertiary,
+};
 
 export const lightPalette = {
   ...basePalette,
   mode: "light",
+  primary: { ...tertiary },
   text: textLight,
   divider: grey[200],
   action: actionLight,
@@ -158,7 +177,7 @@ export const lightPalette = {
     paper: "#ffffff",
     default: "rgb(244 244 244)",
   },
-}; // DARK THEME COLOR PALETTE
+};
 
 export const darkPalette = {
   ...basePalette,

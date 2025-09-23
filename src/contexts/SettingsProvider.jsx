@@ -1,18 +1,25 @@
+import { useMemo, useCallback } from "react";
+
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { THEMES } from "@/utils/constants";
-import { useMemo } from "react";
-import { SettingsContext } from "./settingsContext";
+import { SettingsContext } from "./SettingsContext";
 
 const initialSettings = {
   theme: THEMES.LIGHT,
-  responsiveFontSizes: true,
 };
 
 export default function SettingsProvider({ children }) {
-  const storage = useLocalStorage("settings", initialSettings);
-  const { data: settings, storeData: setStoreSettings } = storage;
+  const [settings, setStoreSettings] = useLocalStorage(
+    "settings",
+    initialSettings
+  );
 
-  const saveSettings = (updateSettings) => setStoreSettings(updateSettings);
+  const saveSettings = useCallback(
+    (update) => {
+      setStoreSettings(update);
+    },
+    [setStoreSettings]
+  );
 
   const contextValue = useMemo(
     () => ({
@@ -21,5 +28,10 @@ export default function SettingsProvider({ children }) {
     }),
     [settings, saveSettings]
   );
-  return <SettingsContext value={contextValue}>{children}</SettingsContext>;
+
+  return (
+    <SettingsContext.Provider value={contextValue}>
+      {children}
+    </SettingsContext.Provider>
+  );
 }

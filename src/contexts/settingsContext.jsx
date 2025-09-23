@@ -1,3 +1,8 @@
 import { createContext } from "react";
 
-export const SettingsContext = createContext({});
+import { THEMES } from "@/utils/constants";
+
+export const SettingsContext = createContext({
+  settings: { theme: THEMES.LIGHT },
+  saveSettings: () => {},
+});

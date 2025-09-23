@@ -58,7 +58,11 @@ const SidebarContent = memo(({ isCompact }) => (
 ));
 
 const SidebarHeader = memo(({ isCompact, onToggle }) => (
-  <FlexBetween padding="1.5rem 1rem .5rem 1.8rem" height={TOP_HEADER_AREA}>
+  <FlexBetween
+    padding="1.5rem 1rem .5rem 1.8rem"
+    height={TOP_HEADER_AREA}
+    sx={{ marginTop: 0, marginBottom: 2 }}
+  >
     <Logo isCompact={isCompact} />
     {!isCompact && <CollapseButton onClick={onToggle} />}
   </FlexBetween>
@@ -80,8 +84,13 @@ const Logo = memo(({ isCompact }) => (
           variant="h6"
           fontWeight={900}
           ml={1}
-          color="primary"
           letterSpacing={1}
+          sx={(theme) => ({
+            color:
+              theme.palette.mode === "dark"
+                ? theme.palette.tertiary[50]
+                : theme.palette.tertiary.main,
+          })}
         >
           PRECISION
         </Typography>

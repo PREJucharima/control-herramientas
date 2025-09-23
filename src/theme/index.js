@@ -63,18 +63,15 @@ const baseOptions = {
 export function createCustomTheme(settings) {
   /**
    * settings.theme value is 'light' or 'dark'
-   * update settings in contexts/settingsContext.tsx
+   * update settings in contexts/SettingsContext.tsx
    */
 
-  let themeOption = themesOptions[settings.theme];
-
-  if (!themeOption) {
-    themeOption = themesOptions[THEMES.LIGHT];
-  }
+  const themeOption =
+    themesOptions[settings.theme] ?? themesOptions[THEMES.LIGHT];
 
   const theme = createTheme({
     ...baseOptions,
-    ...themesOptions.light,
+    ...themeOption,
   });
 
   theme.shadows = shadows(theme);

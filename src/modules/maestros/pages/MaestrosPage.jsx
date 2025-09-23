@@ -79,7 +79,6 @@ const MaestrosPage = () => {
           <Chip
             size="small"
             color="primary"
-            onClick={() => {}}
             label={`${count} ${count === 1 ? "resultado" : "resultados"}`}
             aria-label={`Se muestran ${count} resultados`}
             sx={{
@@ -93,7 +92,6 @@ const MaestrosPage = () => {
         <Box sx={{ flexGrow: 1 }} />
         <Button
           variant="contained"
-          color="primary"
           startIcon={<Add />}
           onClick={() => navigate("/catalogos/maestros/agregar-maestro")}
         >

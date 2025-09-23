@@ -1,7 +1,7 @@
 import { useCallback } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 import { CircularProgress } from "@mui/material";
-import { useLocation, useNavigate } from "react-router";
 
 import { useFetchNavigation } from "@/hooks/useNavigation";
 import useLayout from "@/layouts/context/useLayout";

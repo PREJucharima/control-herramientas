@@ -1,9 +1,9 @@
-import { use } from "react";
+import { useContext } from "react";
 
-import { SettingsContext } from "@/contexts/settingsContext";
+import { SettingsContext } from "@/contexts/SettingsContext";
 
 export default function useSettings() {
-  const context = use(SettingsContext);
+  const context = useContext(SettingsContext);
 
   if (!context) {
     throw new Error("useSettings must be used within an SettingsProvider");

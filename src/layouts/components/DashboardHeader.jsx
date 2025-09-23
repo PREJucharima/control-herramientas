@@ -1,4 +1,5 @@
-import { use } from "react";
+// import { use } from "react";
+import { useContext } from "react";
 
 import {
   Box,
@@ -8,24 +9,26 @@ import {
   useMediaQuery,
 } from "@mui/material";
 
-import { useAuth } from "@/auth/hooks/useAuth";
-import { SettingsContext } from "@/contexts/settingsContext";
 import Menu from "@/icons/Menu";
 import ThemeIcon from "@/icons/ThemeIcon";
 import useLayout from "@/layouts/context/useLayout";
+import { useAuth } from "@/auth/hooks/useAuth";
+import { SettingsContext } from "@/contexts/SettingsContext";
 import { ProfilePopover } from "@/layouts/layout-parts";
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
 import { useCompanyBranchStore } from "@/modules/company-branch/states/companyBranchStore";
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
-  const { settings, saveSettings } = use(SettingsContext);
+  // const { settings, saveSettings } = use(SettingsContext);
+  const { settings, saveSettings } = useContext(SettingsContext);
   const { user } = useAuth();
   const { empresa, sucursal } = useCompanyBranchStore();
   const downMd = useMediaQuery((theme) => theme.breakpoints.down(1200));
 
   const handleChangeTheme = (value) => {
     saveSettings({ ...settings, theme: value });
+    console.log({ ...settings, theme: value });
   };
 
   return (
@@ -59,9 +62,11 @@ export default function DashboardHeader() {
         </Breadcrumbs>
 
         <IconButton
+          sx={{ ml: 1 }}
           onClick={() =>
             handleChangeTheme(settings.theme === "light" ? "dark" : "light")
           }
+          color="inherit"
         >
           <ThemeIcon />
         </IconButton>

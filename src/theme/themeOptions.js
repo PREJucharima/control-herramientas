@@ -9,4 +9,5 @@ const themesOptions = {
     palette: darkPalette,
   },
 };
+
 export default themesOptions;
