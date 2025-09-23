@@ -1,6 +1,6 @@
 import SvgIcon from "@mui/material/SvgIcon";
 
-const ThemeIcon = (props) => (
+const SunIcon = (props) => (
   <SvgIcon {...props}>
     <path
       fill="#FFC675"
@@ -11,4 +11,4 @@ const ThemeIcon = (props) => (
   </SvgIcon>
 );
 
-export default ThemeIcon;
+export default SunIcon;
