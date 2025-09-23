@@ -88,6 +88,8 @@ const MyProfilePage = () => {
 
         <Grid size={{ xs: 12, md: 9 }} sx={{ minWidth: 300, mt: 1 }}>
           {active === tabList[0].name && <TabComponent.BasicInformation />}
+          {active === tabList[1].name && <TabComponent.Password />}
+          {active === tabList[2].name && <TabComponent.Preferences />}
         </Grid>
       </Grid>
     </div>
@@ -99,6 +101,16 @@ const tabList = [
     id: 1,
     name: "Información Básica",
     Icon: Icons.UserOutlined,
+  },
+  {
+    id: 2,
+    name: "Contraseña",
+    Icon: Icons.LockOutlined,
+  },
+  {
+    id: 3,
+    name: "Preferencias",
+    Icon: Icons.SettingsOutlined,
   },
 ];
 
