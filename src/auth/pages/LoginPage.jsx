@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 import { Button, Grid } from "@mui/material";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useNavigate } from "react-router";
 
 import { CustomSnackbar } from "@/components/custom-snackbar";
 import { useSnackbar } from "@/hooks/useSnackbar";
@@ -80,6 +80,10 @@ const LoginPage = () => {
             gap: 1,
             py: { xs: 1.25, md: 1.5 },
             fontSize: { xs: "0.95rem", md: "1rem" },
+            backgroundColor: "tertiary.main",
+            "&:hover": {
+              backgroundColor: "#112a40ff",
+            },
           }}
           onClick={() => login()}
         >

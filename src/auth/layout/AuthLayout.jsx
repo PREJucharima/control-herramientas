@@ -9,7 +9,7 @@ export const AuthLayout = ({ children }) => {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: "100vh", backgroundColor: "primary.main", padding: 4 }}
+      sx={{ minHeight: "100vh", backgroundColor: "tertiary.main", padding: 4 }}
     >
       <Grid
         size={{ xs: 12 }}
@@ -42,7 +42,10 @@ export const AuthLayout = ({ children }) => {
           Control de Herramientas
         </Typography>
 
-        <Typography variant="body1" sx={{ mb: 4, lineHeight: 1.6 }}>
+        <Typography
+          variant="body1"
+          sx={{ mb: 4, lineHeight: 1.6, color: "#0a1a28" }}
+        >
           Inicia sesión con tu cuenta de Google corporativa{" "}
           <strong>PRECISION</strong> para continuar.
         </Typography>
