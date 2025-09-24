@@ -75,7 +75,7 @@ export default function EmployeeTableRow({
           position: "sticky",
           right: -1,
           backgroundColor: (theme) => theme.palette.background.paper,
-          zIndex: (theme) => theme.zIndex.drawer + 1,
+          zIndex: 10,
           boxShadow: `-5px 0 5px -5px rgba(0,0,0,0.2)`,
         }}
       >
