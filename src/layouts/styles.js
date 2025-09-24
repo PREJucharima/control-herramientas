@@ -176,6 +176,7 @@ export const DashboardHeaderRoot = styled(AppBar)({
   paddingBottom: "1rem",
   backdropFilter: "blur(6px)",
   background: "transparent",
+  zIndex: 10000,
 });
 
 export const StyledToolBar = styled(Toolbar)({
