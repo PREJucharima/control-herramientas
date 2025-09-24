@@ -19,8 +19,8 @@ export const useFetchNavigation = () => {
       setError(null);
 
       try {
-        const response = await getNavigation();
-        setMenus(response.results || []);
+        const data = await getNavigation();
+        setMenus(data || []);
       } catch (err) {
         console.error("Error cargando menús:", err);
         setError(err);
