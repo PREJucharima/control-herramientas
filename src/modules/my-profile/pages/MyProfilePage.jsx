@@ -12,6 +12,7 @@ import {
 import TabComponent from "@/modules/my-profile";
 import Apps from "@/icons/Apps";
 import Icons from "@/icons/account";
+import SyncIcon from "@mui/icons-material/Sync";
 import { FlexBox } from "@/components/flexbox";
 import { StyledButton } from "../styles";
 
@@ -90,6 +91,7 @@ const MyProfilePage = () => {
           {active === tabList[0].name && <TabComponent.BasicInformation />}
           {active === tabList[1].name && <TabComponent.Password />}
           {active === tabList[2].name && <TabComponent.Preferences />}
+          {active === tabList[3].name && <TabComponent.Synchronize />}
         </Grid>
       </Grid>
     </div>
@@ -111,6 +113,11 @@ const tabList = [
     id: 3,
     name: "Preferencias",
     Icon: Icons.SettingsOutlined,
+  },
+  {
+    id: 4,
+    name: "Integraciones",
+    Icon: SyncIcon,
   },
 ];
 
