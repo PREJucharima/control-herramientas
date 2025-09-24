@@ -9,7 +9,7 @@ export const TablePagination = (theme) => {
         },
       },
       actions: {
-        color: theme.palette.grey[600],
+        color: theme.palette.primary.main,
       },
       menuItem: {
         marginInline: 8,
