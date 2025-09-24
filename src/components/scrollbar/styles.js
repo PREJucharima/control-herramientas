@@ -18,7 +18,7 @@ export const StyledScrollBar = styled(SimpleBar)(({ theme }) => ({
     width: 9,
   },
   "& .simplebar-track.simplebar-horizontal .simplebar-scrollbar": {
-    height: 6,
+    height: 10,
   },
   "& .simplebar-mask": {
     zIndex: "inherit",
