@@ -24,10 +24,8 @@ const headCells = [
   { id: "rut", label: "RUT" },
   { id: "nombre_completo", label: "Nombre completo" },
   { id: "email", label: "Email" },
-  { id: "centrocosto_id", label: "Centro costo" },
+  { id: "centrocosto", label: "Centro costo" },
   { id: "empresa", label: "Empresa" },
-  { id: "sucursal", label: "Sucursal" },
-  { id: "categoria", label: "Categoría" },
   { id: "esta_activo", label: "Activo" },
   { id: "fecha_creacion", label: "Creación" },
   { id: "fecha_modificacion", label: "Modificación" },
@@ -67,6 +65,18 @@ export default function EmployeeTableHead({
           <HeaderCell
             key={h.id}
             sortDirection={orderBy === h.id ? order : false}
+            sx={
+              h.id === "actions"
+                ? {
+                    position: "sticky",
+                    right: -1,
+                    backgroundColor: (theme) => theme.palette.background.paper,
+                    zIndex: 1,
+                    boxShadow: (theme) =>
+                      `-2px 0 4px -2px ${theme.palette.divider}`,
+                  }
+                : {}
+            }
           >
             {h.id !== "actions" ? (
               <TableSortLabel

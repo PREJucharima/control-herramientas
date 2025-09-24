@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 import {
   Alert,
@@ -10,11 +10,11 @@ import {
   TableContainer,
   TablePagination,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
-import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
+import { useMuiTable } from "@/hooks/useMuiTable";
 import {
   EmployeeTableHead,
   EmployeeTableRow,
@@ -23,151 +23,86 @@ import {
 } from "../components";
 import { useFetchEmployees } from "../hooks/useFetchEmployees";
 
-const nowISO = new Date().toISOString();
-
-const employeesFakeData = [
-  {
-    id: 1,
-    rut: "11.111.111-1",
-    nombre: "Ana",
-    apellido_paterno: "Pérez",
-    apellido_materno: "Luna",
-    email: "ana.perez@example.com",
-    centrocosto_id: 101,
-    esta_activo: true,
-    usuario_creacion: "seed",
-    fecha_creacion: nowISO,
-    usuario_modificacion: "seed",
-    fecha_modificacion: nowISO,
-    empresa: 1,
-    sucursal: 1,
-    categoria: 2,
-  },
-  {
-    id: 2,
-    rut: "22.222.222-2",
-    nombre: "Bruno",
-    apellido_paterno: "García",
-    apellido_materno: "Ramos",
-    email: "bruno.garcia@example.com",
-    centrocosto_id: 102,
-    esta_activo: false,
-    usuario_creacion: "seed",
-    fecha_creacion: nowISO,
-    usuario_modificacion: "seed",
-    fecha_modificacion: nowISO,
-    empresa: 1,
-    sucursal: 2,
-    categoria: 3,
-  },
-  {
-    id: 3,
-    rut: "33.333.333-3",
-    nombre: "Carla",
-    apellido_paterno: "Torres",
-    apellido_materno: "Vega",
-    email: "carla.torres@example.com",
-    centrocosto_id: 103,
-    esta_activo: true,
-    usuario_creacion: "seed",
-    fecha_creacion: nowISO,
-    usuario_modificacion: "seed",
-    fecha_modificacion: nowISO,
-    empresa: 2,
-    sucursal: 1,
-    categoria: 1,
-  },
-];
-
 const EmployeesPage = () => {
   const navigate = useNavigate();
-  const { employees = [], isLoading, error } = useFetchEmployees();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log("employees from useFetchEmployees:", employees);
-  console.log("employeesFakeData:", employeesFakeData);
+  // 1. LEEMOS EL ESTADO INICIAL DESDE LA URL
+  const initialFilters = {
+    search: searchParams.get("search") || "",
+    status: searchParams.get("status") || "",
+  };
+  const initialSort = {
+    order: searchParams.get("order") || "asc",
+    orderBy: searchParams.get("orderBy") || "rut",
+  };
+  const initialPage = parseInt(searchParams.get("page"), 10) || 1;
+  const initialPageSize = parseInt(searchParams.get("pageSize"), 10) || 10;
 
-  const [filters, setFilters] = useState({ status: "", search: "" });
-
-  // const [params, setParams] = useSearchParams();
-  // const viewEmployee = params.get("ver");
-  // const openView = (id) => setParams({ ver: String(id) });
-  // const closeView = () => {
-  //   params.delete("ver");
-  //   setParams(params);
-  // };
-
+  // 2. `useMuiTable` ahora solo gestiona la UI del orden y la selección
   const {
-    page,
     order,
     orderBy,
     selected,
     isSelected,
-    rowsPerPage,
-    setPage,
     handleSelectRow,
-    handleChangePage,
     handleRequestSort,
     handleSelectAllRows,
-    handleChangeRowsPerPage,
-  } = useMuiTable({ defaultOrderBy: "rut" });
+  } = useMuiTable({
+    defaultOrder: initialSort.order,
+    defaultOrderBy: initialSort.orderBy,
+  });
 
-  useEffect(() => {
-    setPage(0);
-  }, [filters, setPage]);
-
-  const handleChangeTab = useCallback((_, v) => {
-    setFilters((f) => ({ ...f, status: v }));
-  }, []);
-  const handleSearchChange = useCallback((e) => {
-    setFilters((f) => ({ ...f, search: e.target.value }));
-  }, []);
-
-  const filtered = useMemo(() => {
-    const withDerived = (employeesFakeData || []).map((x) => {
-      const nombre_completo = [
-        x?.nombre,
-        x?.apellido_paterno,
-        x?.apellido_materno,
-      ]
-        .filter(Boolean)
-        .join(" ");
-      return { ...x, nombre_completo };
-    });
-
-    const sorted = stableSort(withDerived, getComparator(order, orderBy));
-
-    return sorted.filter((it) => {
-      if (filters.status === "active" && !it.esta_activo) return false;
-      if (filters.status === "inactive" && it.esta_activo) return false;
-
-      if (filters.search) {
-        const q = filters.search.toLowerCase();
-        const haystack = [
-          it.rut,
-          it.nombre,
-          it.apellido_paterno,
-          it.apellido_materno,
-          it.nombre_completo,
-          it.email,
-          String(it.centrocosto_id ?? ""),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        if (!haystack.includes(q)) return false;
-      }
-      return true;
-    });
-  }, [order, orderBy, filters.status, filters.search]);
-
-  const paginated = useMemo(
-    () => filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [filtered, page, rowsPerPage]
+  // 3. `useEmployees` recibe el estado inicial y es nuestra fuente de verdad para los datos
+  const {
+    employees,
+    pagination,
+    isLoading,
+    error,
+    filters,
+    setFilters,
+    setSort,
+    handleChangePage,
+    handleChangePageSize,
+  } = useFetchEmployees(
+    initialFilters,
+    initialSort,
+    initialPage,
+    initialPageSize
   );
 
-  const allIds = useMemo(() => filtered.map((r) => r.id), [filtered]);
-  const count = filtered.length;
+  console.log("empleados", employees);
+
+  // 4. SINCRONIZAMOS LOS CAMBIOS DE ESTADO HACIA LA URL
+  useEffect(() => {
+    setSort({ order, orderBy });
+  }, [order, orderBy, setSort]);
+
+  useEffect(() => {
+    const params = {};
+    if (filters.search) params.search = filters.search;
+    if (filters.status) params.status = filters.status;
+    if (pagination.page > 1) params.page = pagination.page;
+    if (pagination.pageSize !== 10) params.pageSize = pagination.pageSize;
+    if (orderBy !== "rut") params.orderBy = orderBy;
+    if (order !== "asc") params.order = order;
+
+    setSearchParams(params, { replace: true });
+  }, [
+    filters,
+    pagination.page,
+    pagination.pageSize,
+    order,
+    orderBy,
+    setSearchParams,
+  ]);
+
+  const handleSearchChange = useCallback(
+    (e) => {
+      setFilters((f) => ({ ...f, search: e.target.value }));
+    },
+    [setFilters]
+  );
 
   return (
     <Box pt={2}>
@@ -176,10 +111,12 @@ const EmployeesPage = () => {
           <EmployeesHeadingArea
             value={filters.status}
             title="Empleados"
-            onChange={handleChangeTab}
+            onChange={(e, v) =>
+              setFilters((f) => ({ ...f, search: "", page: 1, status: v }))
+            }
             isLoading={isLoading}
             error={error}
-            count={count}
+            count={pagination.count}
             gridRoute="/catalogos/empleados-grid"
             listRoute="/catalogos/empleados"
           />
@@ -200,23 +137,37 @@ const EmployeesPage = () => {
           <>
             <TableContainer>
               <Scrollbar autoHide={false}>
-                <Table>
+                <Table sx={{ marginBottom: 1, overflow: "visible" }}>
                   <EmployeeTableHead
                     order={order}
                     orderBy={orderBy}
-                    numSelected={selected.length}
-                    rowCount={filtered.length}
                     onRequestSort={handleRequestSort}
-                    onSelectAllRows={handleSelectAllRows(allIds)}
+                    rowCount={pagination.count}
+                    numSelected={selected.length}
+                    onSelectAllRows={handleSelectAllRows(
+                      employees.map((e) => e.id)
+                    )}
                   />
                   <TableBody>
-                    {paginated.length === 0 ? (
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={10} align="center">
+                          <CircularProgress />
+                        </TableCell>
+                      </TableRow>
+                    ) : error ? (
+                      <TableRow>
+                        <TableCell colSpan={10} align="center">
+                          <Alert severity="error">Error al cargar datos.</Alert>
+                        </TableCell>
+                      </TableRow>
+                    ) : employees.length === 0 ? (
                       <TableDataNotFound query={filters.search} />
                     ) : (
-                      paginated.map((emp) => (
+                      employees.map((emp) => (
                         <EmployeeTableRow
                           key={emp.id}
-                          item={emp}
+                          employee={emp}
                           isSelected={isSelected(emp.id)}
                           handleSelectRow={handleSelectRow}
                           onEdit={() =>
@@ -235,13 +186,13 @@ const EmployeesPage = () => {
 
             <Box padding={1}>
               <TablePagination
-                page={page}
                 component="div"
-                rowsPerPage={rowsPerPage}
-                count={count}
+                count={pagination.count}
+                page={pagination.page - 1}
+                rowsPerPage={pagination.pageSize}
                 onPageChange={handleChangePage}
                 rowsPerPageOptions={[5, 10, 25]}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onRowsPerPageChange={handleChangePageSize}
                 showFirstButton
                 showLastButton
                 labelRowsPerPage="Filas por página:"

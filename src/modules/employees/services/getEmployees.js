@@ -1,7 +1,26 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
 
-export const getEmployees = async () => {
-  const response = await fetchWithAuth(`api/empleados/`);
+/**
+ * Obtiene una lista paginada de empleados.
+ * @param {object} params - Los parámetros para la paginación y el filtrado.
+ * @param {number} [params.page] - El número de página a solicitar.
+ * @param {number} [params.pageSize] - El número de resultados por página.
+ * @param {string} [params.search] - Un término de búsqueda.
+ * @returns {Promise<object>} - El objeto de paginación de la API ({ count, next, previous, results }).
+ */
+export const getEmployeesPaginated = async (params = {}) => {
+  const queryParams = new URLSearchParams();
+  if (params.ordering) queryParams.append("ordering", params.ordering);
+  if (params.page) queryParams.append("page", params.page);
+  if (params.pageSize) queryParams.append("page_size", params.pageSize);
+  if (params.search) queryParams.append("search", params.search);
+
+  if (params.esta_activo !== undefined && params.esta_activo !== null) {
+    queryParams.append("esta_activo", params.esta_activo);
+  }
+
+  const url = `api/empleados/?${queryParams.toString()}`;
+  const response = await fetchWithAuth(url);
   const data = await response.json();
   return data;
 };

@@ -1,13 +1,28 @@
 import { create } from "zustand";
 
 export const useEmployeesStore = create((set) => ({
-  employees: [],
-  employeeById: null,
+  // --- STATE ---
+  employees: [], // Para la lista completa de empleados
+  employeeDetail: null, // Para el detalle de un solo empleado
 
-  setEmployees: (employees) =>
-    set({ employees: Array.isArray(employees) ? employees : [] }),
+  // --- ACTIONS ---
+
+  /**
+   * Reemplaza la lista de empleados con una nueva. Ideal para la carga inicial.
+   */
+  setEmployees: (newEmployees) =>
+    set({ employees: Array.isArray(newEmployees) ? newEmployees : [] }),
+
+  /**
+   * Añade un nuevo empleado al inicio de la lista.
+   */
   addEmployee: (e) => set((state) => ({ employees: [e, ...state.employees] })),
 
+  /**
+   * Actualiza un empleado en la lista y en el detalle (si está cargado).
+   * @param {number} id - El ID del empleado a actualizar.
+   * @param {object} patch - El objeto con los campos a actualizar.
+   */
   updateEmployee: (id, patch) =>
     set((state) => {
       const employees = Array.isArray(state.employees) ? state.employees : [];
@@ -23,5 +38,8 @@ export const useEmployeesStore = create((set) => ({
       return { maestros: updatedList, maestroBySlug: updatedDetail };
     }),
 
-  setEmployeeBySlug: (employee) => set({ employeeBySlug: employee }),
+  /**
+   * Guarda el detalle de un empleado específico.
+   */
+  setEmployeeDetail: (employee) => set({ employeeDetail: employee }),
 }));

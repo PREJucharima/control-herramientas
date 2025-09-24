@@ -4,7 +4,7 @@ import { useAuthStore } from "@/auth/states/authStore";
 import { getEmployeeById } from "../services/getEmployeeById";
 import { useEmployeesStore } from "../states/employeesStore";
 
-export const useFetchEmployeeById = (id) => {
+export const useFetchEmployeeByRut = (rut) => {
   const user = useAuthStore((state) => state.user);
   const setEmployeeById = useEmployeesStore((s) => s.setEmployeeById);
   const { employeeById } = useEmployeesStore();
@@ -18,7 +18,7 @@ export const useFetchEmployeeById = (id) => {
       setError(null);
 
       try {
-        const data = await getEmployeeById(id);
+        const data = await getEmployeeById(rut);
         setEmployeeById(data);
       } catch (err) {
         console.error("Error cargando empleados:", err);
@@ -30,7 +30,7 @@ export const useFetchEmployeeById = (id) => {
 
     if (user) fetch();
     else setIsLoading(false);
-  }, [user, setEmployeeById, id]);
+  }, [user, setEmployeeById, rut]);
 
   return { employeeById, isLoading, error };
 };
