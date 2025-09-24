@@ -1,5 +1,6 @@
-import { Button, Container } from "@mui/material";
 import { Navigate } from "react-router";
+
+import { Button, Container } from "@mui/material";
 
 import { useAuth } from "@/auth/hooks/useAuth";
 import { useAuthStore } from "@/auth/states/authStore";
@@ -9,7 +10,6 @@ const HomePage = () => {
   const { handleLogout } = useAuth();
 
   if (!user) return <Navigate to="/auth/login" />;
-
   return (
     <Container>
       <h1>

@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from "react-router";
 
 import { CircularProgress } from "@mui/material";
 
-import { useFetchNavigation } from "@/hooks/useNavigation";
 import useLayout from "@/layouts/context/useLayout";
+import { useFetchNavigation } from "@/hooks/useNavigation";
 import {
   BulletIcon,
   ExternalLink,
