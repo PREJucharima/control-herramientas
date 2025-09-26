@@ -15,22 +15,15 @@ import {
 } from "@/layouts/styles";
 import { normalizeNavigation } from "@/utils/normalizeNavigation";
 import SidebarAccordion from "./SidebarAccordion";
+import { isItemActive } from "@/utils";
 
 export default function MultiLevelMenu({ sidebarCompact }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { handleCloseMobileSidebar } = useLayout();
+
   const { menus, loading, error } = useFetchNavigation();
   const menuItems = normalizeNavigation(menus || []);
-
-  const activeRoute = useCallback(
-    (path) => {
-      if (!path) return false;
-      if (path === "/") return pathname === path;
-      return pathname.startsWith(path);
-    },
-    [pathname]
-  );
 
   const handleNavigation = useCallback(
     (path) => {
@@ -43,7 +36,6 @@ export default function MultiLevelMenu({ sidebarCompact }) {
   const insertLabelBefore = (items, targetName, label) => {
     const index = items.findIndex((item) => item.name === targetName);
     if (index === -1) return items;
-
     return [
       ...items.slice(0, index),
       { type: "label", label },
@@ -57,7 +49,6 @@ export default function MultiLevelMenu({ sidebarCompact }) {
   ];
 
   if (loading) return <CircularProgress />;
-
   if (error) {
     return (
       <Alert severity="error" sx={{ borderRadius: 2, mb: 2 }}>
@@ -66,53 +57,52 @@ export default function MultiLevelMenu({ sidebarCompact }) {
     );
   }
 
-  const renderIcon = (item) => {
-    if (item.icon) {
-      return <item.icon sx={ICON_STYLE(activeRoute(item.path))} />;
-    } else if (item.iconText) {
+  const renderIcon = (item, active) => {
+    if (item.icon) return <item.icon sx={ICON_STYLE(active)} />;
+    if (item.iconText)
       return <span className="item-icon icon-text">{item.iconText}</span>;
-    }
-
-    return <BulletIcon active={activeRoute(item.path)} />;
+    return <BulletIcon active={active} />;
   };
 
-  const renderLevels = (data) => {
-    return data.map((item, index) => {
+  const renderLevels = (data, level = 1) =>
+    data.map((item, index) => {
       if (item.type === "label") {
         return (
-          <ListLabel key={index} compact={sidebarCompact}>
+          <ListLabel key={`label-${index}`} compact={sidebarCompact}>
             {item.label}
           </ListLabel>
         );
       }
 
       if (item.children) {
+        const active = isItemActive(item, level, pathname);
         return (
           <SidebarAccordion
-            key={index}
+            key={`acc-${index}`}
             item={item}
-            activeRoute={activeRoute}
+            activeRoute={(p) => isItemActive({ path: p }, level, pathname)}
             sidebarCompact={sidebarCompact}
+            active={active}
+            renderIcon={(it) => renderIcon(it, active)}
           >
-            {renderLevels(item.children)}
+            {renderLevels(item.children, level + 1)}
           </SidebarAccordion>
         );
       }
 
+      const active = isItemActive(item, level, pathname);
+
       if (item.type === "extLink") {
         return (
           <ExternalLink
-            key={index}
+            key={`ext-${index}`}
             href={item.path}
             rel="noopener noreferrer"
             target="_blank"
           >
-            <NavItemButton key={item.name} name="child" active>
-              {renderIcon(item)}
-              <ItemText
-                compact={sidebarCompact}
-                active={activeRoute(item.path)}
-              >
+            <NavItemButton name="child" active>
+              {renderIcon(item, active)}
+              <ItemText compact={sidebarCompact} active={active}>
                 {item.name}
               </ItemText>
             </NavItemButton>
@@ -122,19 +112,18 @@ export default function MultiLevelMenu({ sidebarCompact }) {
 
       return (
         <NavItemButton
-          key={index}
+          key={`itm-${index}`}
           disabled={item.disabled}
-          active={activeRoute(item.path)}
+          active={active}
           onClick={() => handleNavigation(item.path)}
         >
-          {renderIcon(item)}
-          <ItemText compact={sidebarCompact} active={activeRoute(item.path)}>
+          {renderIcon(item, active)}
+          <ItemText compact={sidebarCompact} active={active}>
             {item.name}
           </ItemText>
         </NavItemButton>
       );
     });
-  };
 
   return <>{renderLevels(menuWithLabels)}</>;
 }

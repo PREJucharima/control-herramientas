@@ -1,5 +1,6 @@
 import duotone from "@/icons/duotone";
 import LockOutlined from "@/icons/LockOutlined";
+import SyncIcon from "@mui/icons-material/Sync";
 
 export const iconMap = {
   "bi-speedometer2": duotone.Dashboard,
@@ -13,4 +14,33 @@ export const iconMap = {
   "bi-people-fill": duotone.UserList,
   "bi-map": duotone.Map,
   "bi-gear-wide-connected": duotone.Settings,
+};
+
+export const normalizeKey = (s) =>
+  (s ?? "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+export const iconByNameMap = {
+  [normalizeKey("Inicio")]: duotone.Dashboard,
+  [normalizeKey("Catálogos")]: duotone.DataTable,
+  [normalizeKey("Productos")]: duotone.DataTable,
+  [normalizeKey("Maestros")]: duotone.DataTable,
+  [normalizeKey("Empleados")]: duotone.UserList,
+
+  [normalizeKey("Inventario")]: duotone.PersonChalkboard,
+  [normalizeKey("Transacciones")]: duotone.DiagramProject,
+  [normalizeKey("Reportes")]: duotone.RectangleCirclePlus,
+
+  [normalizeKey("Seguridad")]: LockOutlined,
+  [normalizeKey("Usuarios")]: duotone.UserList,
+  [normalizeKey("Roles y Permisos")]: duotone.UserRole,
+  [normalizeKey("Empresa y Sucursal")]: duotone.Map,
+
+  [normalizeKey("Configuración")]: duotone.Settings,
+  [normalizeKey("Preferencias")]: duotone.Settings,
+  [normalizeKey("Integraciones")]: SyncIcon,
 };

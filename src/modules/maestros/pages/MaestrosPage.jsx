@@ -93,7 +93,7 @@ const MaestrosPage = () => {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => navigate("/catalogos/maestros/agregar-maestro")}
+          onClick={() => navigate("/catalogos/maestros/agregar")}
         >
           Agregar maestro
         </Button>

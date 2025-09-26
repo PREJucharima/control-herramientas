@@ -1,5 +1,5 @@
-import { Fragment, useCallback, useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { matchPath, Outlet, useLocation, useNavigate } from "react-router";
 
 import {
   Box,
@@ -9,28 +9,24 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import SyncIcon from "@mui/icons-material/Sync";
 
-import TabComponent from "@/modules/my-profile";
 import Apps from "@/icons/Apps";
 import Icons from "@/icons/account";
-import SyncIcon from "@mui/icons-material/Sync";
 import { FlexBox } from "@/components/flexbox";
 import { StyledButton } from "../styles";
 
 const SettingsLayout = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [active, setActive] = useState("Información Básica");
   const downMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  const handleListItemBtn = useCallback(
-    (name, to) => () => {
-      setActive(name);
-      setOpenDrawer(false);
-      navigate(to);
-    },
-    [navigate]
-  );
+  const isActive = (to) =>
+    !!(
+      matchPath({ path: to, end: true }, pathname) ||
+      matchPath({ path: `${to}/*` }, pathname)
+    );
 
   const TabListContent = (
     <FlexBox flexDirection="column">
@@ -39,8 +35,18 @@ const SettingsLayout = () => {
           key={id}
           variant="text"
           startIcon={Icon ? <Icon /> : null}
-          active={active === name}
-          onClick={handleListItemBtn(name, to)}
+          active={isActive(to)}
+          onClick={() => {
+            if (downMd) setOpenDrawer(false);
+            navigate(to);
+          }}
+          sx={{
+            justifyContent: "flex-start",
+            ...(isActive(to) && {
+              bgcolor: (t) => t.palette.action.selected,
+              fontWeight: 600,
+            }),
+          }}
         >
           {name}
         </StyledButton>
@@ -53,7 +59,7 @@ const SettingsLayout = () => {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 3 }} sx={{ minWidth: 200, mt: 1 }}>
           {downMd ? (
-            <Fragment>
+            <>
               <Box
                 onClick={() => setOpenDrawer(true)}
                 sx={{
@@ -64,12 +70,7 @@ const SettingsLayout = () => {
                   color: "text.secondary",
                 }}
               >
-                <Apps
-                  sx={{
-                    color: "text.primary",
-                    fontSize: 16,
-                  }}
-                />
+                <Apps sx={{ color: "text.primary", fontSize: 16 }} />
                 <Typography variant="body2" fontWeight={500}>
                   Más
                 </Typography>
@@ -78,23 +79,14 @@ const SettingsLayout = () => {
               <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
                 <Box p={1}>{TabListContent}</Box>
               </Drawer>
-            </Fragment>
+            </>
           ) : (
-            <Card
-              sx={{
-                p: "1rem 0",
-              }}
-            >
-              {TabListContent}
-            </Card>
+            <Card sx={{ p: "1rem 0" }}>{TabListContent}</Card>
           )}
         </Grid>
 
         <Grid size={{ xs: 12, md: 9 }} sx={{ minWidth: 300, mt: 1 }}>
-          {active === tabList[0].name && <TabComponent.BasicInformation />}
-          {active === tabList[1].name && <TabComponent.Password />}
-          {active === tabList[2].name && <TabComponent.Preferences />}
-          {active === tabList[3].name && <TabComponent.Synchronize />}
+          <Outlet />
         </Grid>
       </Grid>
     </div>

@@ -1,10 +1,24 @@
 import { Suspense, useEffect } from "react";
 
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import { useAuthStore } from "@/auth/states/authStore";
 import { AppTheme } from "@/theme/AppTheme";
 import { AppRouter } from "@/routes/AppRouter";
+
+function FullscreenLoader() {
+  return (
+    <Box
+      sx={{
+        minHeight: "100dvh",
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
 
 function App() {
   const restoreSession = useAuthStore((state) => state.restoreSession);
@@ -16,7 +30,7 @@ function App() {
   return (
     <>
       <AppTheme>
-        <Suspense fallback={<CircularProgress />}>
+        <Suspense fallback={<FullscreenLoader />}>
           <AppRouter />
         </Suspense>
       </AppTheme>

@@ -1,53 +1,67 @@
 import { useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router";
 
-import { Navigate, Route, Routes } from "react-router";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 import { AuthRoutes } from "@/auth/routes/AuthRoutes";
 import { useAuthStore } from "@/auth/states/authStore";
-import { protectedRoutes, RootLayout } from "./routes";
+import { protectedRoutes } from "./routes";
+
+function FullscreenLoader() {
+  return (
+    <Box
+      sx={{
+        minHeight: "100dvh",
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
+
+function renderRoute(r, idx) {
+  if (r.index) {
+    return <Route key={`idx-${idx}`} index element={r.element} />;
+  }
+
+  if (r.children?.length) {
+    return (
+      <Route key={r.path ?? `key-${idx}`} path={r.path} element={r.element}>
+        {r.children.map((child, cIdx) => renderRoute(child, `${idx}-${cIdx}`))}
+      </Route>
+    );
+  }
+
+  return (
+    <Route key={r.path ?? `key-${idx}`} path={r.path} element={r.element} />
+  );
+}
 
 export const AppRouter = () => {
-  const status = useAuthStore((state) => state.status);
-  const restoreSession = useAuthStore((state) => state.restoreSession);
+  const status = useAuthStore((s) => s.status);
+  const restoreSession = useAuthStore((s) => s.restoreSession);
 
   useEffect(() => {
     restoreSession();
   }, [restoreSession]);
 
-  console.log(status);
-
-  if (status === "checking") {
-    return <CircularProgress />;
-  }
+  if (status === "checking") return <FullscreenLoader />;
 
   return (
     <Routes>
       {status === "authenticated" ? (
         <>
-          {/* Protegidas dentro del layout */}
-          <Route path="/" element={<RootLayout />}>
-            {protectedRoutes.map(({ path, Component }) => (
-              <Route
-                key={path}
-                path={path}
-                element={Component ? <Component /> : null}
-              />
-            ))}
-          </Route>
+          {protectedRoutes.map((r, idx) => renderRoute(r, idx))}
 
-          {/* Si entra a /auth, redirige a inicio */}
-          <Route index element={<Navigate to="/inicio" />} />
+          <Route path="/auth/*" element={<Navigate to="/inicio" replace />} />
         </>
       ) : (
         <>
           <Route path="/auth/*" element={<AuthRoutes />} />
-          <Route path="/*" element={<Navigate to="/auth/login" />} />
+          <Route path="/*" element={<Navigate to="/auth/login" replace />} />
         </>
-      )}
-
-      {status === "authenticated" && (
-        <Route path="/auth/*" element={<Navigate to="/inicio" />} />
       )}
     </Routes>
   );

@@ -130,7 +130,7 @@ export default memo(function ProfilePopover() {
       <Box pt={0.5}>
         <SectionTitle>Mi cuenta</SectionTitle>
         <MenuList autoFocusItem>
-          <PrettyItem onClick={go("/seguridad/mi-perfil", onClose)}>
+          <PrettyItem onClick={go("/configuracion/perfil", onClose)}>
             <PersonOutline sx={{ mr: 1 }} />
             <Text>Ver mi perfil</Text>
           </PrettyItem>
@@ -138,7 +138,7 @@ export default memo(function ProfilePopover() {
             <Business sx={{ mr: 1 }} />
             <Text>Empresa y sucursal</Text>
           </PrettyItem>
-          <PrettyItem onClick={go("/inicio", onClose)}>
+          <PrettyItem onClick={go("/configuracion/preferencias", onClose)}>
             <Settings sx={{ mr: 1 }} />
             <Text>Configuración</Text>
           </PrettyItem>
