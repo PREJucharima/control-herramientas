@@ -1,73 +1,28 @@
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Box,
-  Button,
-} from "@mui/material";
-import SyncIcon from "@mui/icons-material/Sync";
-import { synchronizeEmployees } from "../../../settings/services/synchronizeEmployees";
+import { Grid } from "@mui/material";
+import { integrationsEmployees } from "../../../settings/services/integrations/employees";
+import { integrationsCostCenters } from "../../../settings/services/integrations/centroDeCostos";
+import SynchronizeCard from "./components/SynchronizeCard";
 
-export default function Synchronize() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [lastSyncInfo, setLastSyncInfo] = useState(null);
-
-  const handleSyncClick = async () => {
-    setIsLoading(true);
-
-    try {
-      const syncResult = await synchronizeEmployees();
-
-      setLastSyncInfo({
-        date: new Date(),
-        created: syncResult.creados,
-        updated: syncResult.actualizados,
-      });
-    } catch (error) {
-      console.error("Error al sincronizar:", error);
-      setLastSyncInfo(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+export default function IntegrationsPage() {
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" component="h2" gutterBottom>
-          Sincronización de Empleados
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Este proceso actualiza la lista de empleados en el sistema importando
-          los datos más recientes desde BUK. Haz clic en el botón para iniciar
-          la sincronización manual.
-        </Typography>
+    <Grid container spacing={3}>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <SynchronizeCard
+          title="Sincronización de Empleados"
+          description="Este proceso actualiza la lista de empleados desde BUK. Haz clic en el botón para iniciar la sincronización manual."
+          onSync={integrationsEmployees}
+          storageKey="employees"
+        />
+      </Grid>
 
-        {lastSyncInfo && (
-          <Box mt={2} p={1.5} bgcolor={"success.light"} borderRadius={1}>
-            <Typography variant="caption" display="block">
-              Última sincronización: {lastSyncInfo.date.toLocaleString()}
-            </Typography>
-            <Typography variant="caption" display="block">
-              (Creados: {lastSyncInfo.created}, Actualizados:{" "}
-              {lastSyncInfo.updated})
-            </Typography>
-          </Box>
-        )}
-      </CardContent>
-      <CardActions sx={{ padding: 2 }}>
-        <Button
-          onClick={handleSyncClick}
-          loading={isLoading} // Controla el estado de carga del botón
-          loadingPosition="start"
-          startIcon={<SyncIcon />}
-          variant="contained"
-        >
-          {isLoading ? "Sincronizando..." : "Sincronizar ahora"}
-        </Button>
-      </CardActions>
-    </Card>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <SynchronizeCard
+          title="Sincronización de Centros de Costos"
+          description="Este proceso actualiza los centros de costos desde BUK para mantener la información financiera alineada."
+          onSync={integrationsCostCenters}
+          storageKey="costCenters"
+        />
+      </Grid>
+    </Grid>
   );
 }

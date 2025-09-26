@@ -1,6 +1,6 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
 
-export const synchronizeEmployees = async () => {
+export const integrationsEmployees = async () => {
   const res = await fetchWithAuth(`api/integraciones/sincronizar/empleados/`, {
     method: "POST",
   });
