@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 
 import {
   Alert,
@@ -10,12 +11,12 @@ import {
   TableContainer,
   TablePagination,
 } from "@mui/material";
-import { useNavigate, useSearchParams } from "react-router";
 
 import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
 import { useMuiTable } from "@/hooks/useMuiTable";
 import {
+  EmployeeQuickViewDialog,
   EmployeeTableHead,
   EmployeeTableRow,
   EmployeesHeadingArea,
@@ -26,6 +27,17 @@ import { useFetchEmployees } from "../hooks/useFetchEmployees";
 const EmployeesPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const setParam = (key, value, opts) => {
+    const next = new URLSearchParams(searchParams);
+    if (value === null || value === undefined || value === "") next.delete(key);
+    else next.set(key, value);
+    setSearchParams(next, opts);
+  };
+
+  const viewRut = searchParams.get("rut");
+  const openView = (rut) => setParam("rut", rut);
+  const closeView = () => setParam("rut", "");
 
   // 1. LEEMOS EL ESTADO INICIAL DESDE LA URL
   const initialFilters = {
@@ -79,27 +91,44 @@ const EmployeesPage = () => {
   }, [order, orderBy, setSort]);
 
   useEffect(() => {
-    const params = {};
-    if (filters.search) params.search = filters.search;
-    if (filters.status) params.status = filters.status;
-    if (pagination.page > 1) params.page = pagination.page;
-    if (pagination.pageSize !== 10) params.pageSize = pagination.pageSize;
-    if (orderBy !== "rut") params.orderBy = orderBy;
-    if (order !== "asc") params.order = order;
+    const next = new URLSearchParams(searchParams); // preserva ?ver
 
-    setSearchParams(params, { replace: true });
+    // filtros
+    if (filters.search) next.set("search", filters.search);
+    else next.delete("search");
+
+    if (filters.status) next.set("status", filters.status);
+    else next.delete("status");
+
+    // paginación
+    if (pagination.page > 1) next.set("page", String(pagination.page));
+    else next.delete("page");
+
+    if (pagination.pageSize !== 10)
+      next.set("pageSize", String(pagination.pageSize));
+    else next.delete("pageSize");
+
+    // orden
+    if (orderBy !== "rut") next.set("orderBy", orderBy);
+    else next.delete("orderBy");
+
+    if (order !== "asc") next.set("order", order);
+    else next.delete("order");
+
+    setSearchParams(next, { replace: true });
   }, [
     filters,
     pagination.page,
     pagination.pageSize,
     order,
     orderBy,
+    searchParams,
     setSearchParams,
   ]);
 
   const handleSearchChange = useCallback(
     (e) => {
-      setFilters((f) => ({ ...f, search: e.target.value }));
+      setFilters((f) => ({ ...f, search: e.target.value, page: 1 })); // resetea a página 1
     },
     [setFilters]
   );
@@ -175,7 +204,7 @@ const EmployeesPage = () => {
                               `/empleados/${encodeURIComponent(emp.id)}/editar`
                             )
                           }
-                          onViewDetails={() => {}}
+                          onViewDetails={() => openView(emp.rut)}
                         />
                       ))
                     )}
@@ -221,6 +250,14 @@ const EmployeesPage = () => {
         <Alert severity="error" sx={{ mb: 2 }}>
           Error al cargar empleados: {error.message || "Intenta nuevamente."}
         </Alert>
+      )}
+
+      {viewRut && (
+        <EmployeeQuickViewDialog
+          open={Boolean(viewRut)}
+          rut={viewRut}
+          onClose={closeView}
+        />
       )}
     </Box>
   );

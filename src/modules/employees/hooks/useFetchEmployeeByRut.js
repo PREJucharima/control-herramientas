@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/auth/states/authStore";
-import { getEmployeeById } from "../services/getEmployeeById";
+import { getEmployeeByRut } from "../services/getEmployeeByRut";
 import { useEmployeesStore } from "../states/employeesStore";
 
 export const useFetchEmployeeByRut = (rut) => {
   const user = useAuthStore((state) => state.user);
-  const setEmployeeById = useEmployeesStore((s) => s.setEmployeeById);
-  const { employeeById } = useEmployeesStore();
+  const setEmployeeDetail = useEmployeesStore((s) => s.setEmployeeDetail);
+  const { employeeDetail } = useEmployeesStore();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,8 +18,8 @@ export const useFetchEmployeeByRut = (rut) => {
       setError(null);
 
       try {
-        const data = await getEmployeeById(rut);
-        setEmployeeById(data);
+        const data = await getEmployeeByRut(rut);
+        setEmployeeDetail(data);
       } catch (err) {
         console.error("Error cargando empleados:", err);
         setError(err);
@@ -30,7 +30,7 @@ export const useFetchEmployeeByRut = (rut) => {
 
     if (user) fetch();
     else setIsLoading(false);
-  }, [user, setEmployeeById, rut]);
+  }, [user, setEmployeeDetail, rut]);
 
-  return { employeeById, isLoading, error };
+  return { employeeDetail, isLoading, error };
 };

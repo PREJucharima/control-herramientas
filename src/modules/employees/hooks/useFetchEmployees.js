@@ -25,6 +25,10 @@ export const useFetchEmployees = (
 
   const debouncedSearch = useDebounce(filters.search, 500);
 
+  useEffect(() => {
+    setPagination((prev) => (prev.page !== 1 ? { ...prev, page: 1 } : prev));
+  }, [debouncedSearch, filters.status]);
+
   // --- FUNCIÓN DE FETCHEO ---
   const fetchEmployees = useCallback(async () => {
     setIsLoading(true);
