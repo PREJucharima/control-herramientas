@@ -27,11 +27,6 @@ const EmployeesPage = lazy(() =>
 const CompanyBranchPage = lazy(() =>
   import("@/modules/company-branch/pages/CompanyBranchPage")
 );
-
-const MyProfilePage = lazy(() =>
-  import("@/modules/my-profile/pages/MyProfilePage")
-);
-
 const SettingsLayout = lazy(() =>
   import("@/modules/settings/layouts/SettingsLayout")
 );
@@ -85,7 +80,6 @@ export const protectedRoutes = [
         path: "/seguridad/empresa-y-sucursal",
         element: createElement(CompanyBranchPage),
       },
-      { path: "/seguridad/mi-perfil", element: createElement(MyProfilePage) },
       {
         path: "/configuracion",
         element: createElement(SettingsLayout),
