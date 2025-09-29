@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { Edit, Visibility } from "@mui/icons-material";
+import { CloudDone, Edit, SyncProblem, Visibility } from "@mui/icons-material";
 import {
   Checkbox,
   TableRow,
@@ -8,6 +8,8 @@ import {
   Chip,
   IconButton,
   useTheme,
+  Stack,
+  Tooltip,
 } from "@mui/material";
 import dayjs from "dayjs";
 
@@ -32,7 +34,24 @@ export default function EmployeeTableRow({
   const fechaModificacion = dateFormat(employee.fecha_modificacion || "");
 
   return (
-    <TableRow hover>
+    <TableRow
+      hover
+      sx={{
+        ...(employee.pendiente_sincronizar && {
+          "& td:first-of-type": { position: "relative" },
+          "& td:first-of-type::before": {
+            content: '""',
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            bgcolor: "warning.main",
+            borderRadius: 1,
+          },
+        }),
+      }}
+    >
       <TableCell padding="checkbox">
         <Checkbox
           size="small"
@@ -51,18 +70,42 @@ export default function EmployeeTableRow({
       <TableCell>{employee?.empresa.nombre ?? "—"}</TableCell>
 
       <TableCell>
-        <Chip
-          size="small"
-          label={employee.esta_activo ? "Sí" : "No"}
-          color={employee.esta_activo ? "success" : "error"}
-          variant={"outlined"}
-          sx={{
-            backgroundColor: employee.esta_activo
-              ? theme.palette.success[100]
-              : theme.palette.error[100],
-            color: employee.esta_activo ? "success.main" : "error.main",
-          }}
-        />
+        <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
+          <Chip
+            size="small"
+            label={employee.esta_activo ? "Activo" : "Inactivo"}
+            color={employee.esta_activo ? "success" : "error"}
+            variant={"outlined"}
+            sx={{
+              backgroundColor: employee.esta_activo
+                ? theme.palette.success[100]
+                : theme.palette.error[100],
+              color: employee.esta_activo ? "success.main" : "error.main",
+            }}
+          />
+
+          {employee.pendiente_sincronizar ? (
+            <Tooltip title="Hay cambios pendientes desde BUK.">
+              <Chip
+                size="small"
+                color="warning"
+                variant="outlined"
+                icon={<SyncProblem fontSize="small" />}
+                label="Pendiente"
+              />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Sincronizado con BUK.">
+              <Chip
+                size="small"
+                color="success"
+                variant="outlined"
+                icon={<CloudDone fontSize="small" />}
+                label="Sincronizado"
+              />
+            </Tooltip>
+          )}
+        </Stack>
       </TableCell>
 
       <TableCell>{fechaCreacion}</TableCell>

@@ -26,7 +26,7 @@ const headCells = [
   { id: "email", label: "Email" },
   { id: "centrocosto", label: "Centro costo" },
   { id: "empresa", label: "Empresa" },
-  { id: "esta_activo", label: "Activo" },
+  { id: "esta_activo", label: "Estado" },
   { id: "fecha_creacion", label: "Creación" },
   { id: "fecha_modificacion", label: "Modificación" },
   { id: "actions", label: "Acciones" },
