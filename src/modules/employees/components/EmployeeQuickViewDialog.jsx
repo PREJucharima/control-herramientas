@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import {
   Alert,
   Avatar,
+  Badge,
   Box,
   Button,
   Chip,
@@ -84,10 +85,8 @@ const FieldRow = ({ label, value, icon, action }) => (
 export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
   const navigate = useNavigate();
 
-  // Carga segura: sólo consulta si hay RUT y el diálogo está abierto
   const { employeeDetail, loading, error } = useFetchEmployeeByRut(rut);
 
-  // Evitamos null/undefined abajo
   const emp = employeeDetail ?? null;
 
   const statusChips = useMemo(() => {
@@ -181,33 +180,62 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
 
         {!loading && !error && emp && (
           <Stack gap={2}>
-            <Stack direction="row" gap={2} alignItems="center">
-              <Avatar sx={{ width: 56, height: 56 }}>
-                {initials(emp.nombre_completo)}
-              </Avatar>
-
-              <Stack sx={{ minWidth: 0, flex: 1 }} gap={1}>
-                <Typography
-                  variant="subtitle1"
-                  fontWeight={700}
-                  noWrap
-                  title={emp.nombre_completo}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              alignItems={{ xs: "flex-start", sm: "end" }}
+              justifyContent="space-between"
+              gap={2}
+            >
+              <Stack
+                direction="row"
+                gap={2}
+                alignItems="center"
+                sx={{ minWidth: 0, flex: 1 }}
+              >
+                <Badge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  color={emp.pendiente_sincronizar ? "warning" : "success"}
+                  badgeContent=" "
+                  variant="dot"
                 >
-                  {emp.nombre_completo}
-                </Typography>
-
-                <Stack direction="row" gap={1} alignItems="center">
-                  <Typography variant="body2" color="text.secondary">
-                    RUT: <b>{emp.rut}</b>
+                  <Avatar sx={{ width: 56, height: 56 }}>
+                    {initials(emp.nombre_completo)}
+                  </Avatar>
+                </Badge>
+                <Stack sx={{ minWidth: 0 }}>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={700}
+                    noWrap
+                    title={emp.nombre_completo}
+                  >
+                    {emp.nombre_completo}
                   </Typography>
-
-                  <Tooltip title="Copiar RUT">
-                    <IconButton size="small" onClick={() => copy(emp.rut)}>
-                      <ContentCopy fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
+                  <Stack
+                    direction="row"
+                    gap={1}
+                    alignItems="center"
+                    flexWrap="wrap"
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      RUT: <b>{emp.rut}</b>
+                    </Typography>
+                    <Tooltip title="Copiar RUT">
+                      <IconButton size="small" onClick={() => copy(emp.rut)}>
+                        <ContentCopy fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
                 </Stack>
+              </Stack>
 
+              <Stack
+                direction="row"
+                gap={1}
+                flexWrap="wrap"
+                sx={{ mb: 0.5, ml: { xs: 0.5 } }}
+              >
                 {statusChips}
               </Stack>
             </Stack>
@@ -314,9 +342,9 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
           variant="outlined"
           startIcon={<Sync />}
           onClick={() => {}}
-          disabled={!emp || !emp.pendiente_sincronizar}
+          disabled={!emp || !emp?.pendiente_sincronizar}
         >
-          {emp.pendiente_sincronizar ? "Sincronizar ahora" : "Sincronizado"}
+          {emp?.pendiente_sincronizar ? "Sincronizar ahora" : "Sincronizado"}
         </Button>
 
         <Button variant="outlined" onClick={onClose}>
