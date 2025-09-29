@@ -5,10 +5,10 @@ export const TableCell = (theme) => ({
   styleOverrides: {
     root: {
       border: "none",
-      padding: "12px 16px",
+      padding: "6px 10px",
       borderBottom: `1px solid ${theme.palette.divider}`,
       fontSize: "0.875rem",
-      // whiteSpace: "nowrap",
+      whiteSpace: "nowrap",
 
       color: theme.palette.grey[500],
       ...theme.applyStyles("dark", {

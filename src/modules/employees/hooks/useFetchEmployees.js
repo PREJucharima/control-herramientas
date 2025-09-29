@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { useDebounce } from "@/hooks/useDebounce";
 import { getEmployeesPaginated } from "../services/getEmployees";
 // import { useEmployeesStore } from "../states/employeesStore";
 
@@ -23,11 +22,9 @@ export const useFetchEmployees = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const debouncedSearch = useDebounce(filters.search, 500);
-
   useEffect(() => {
     setPagination((prev) => (prev.page !== 1 ? { ...prev, page: 1 } : prev));
-  }, [debouncedSearch, filters.status]);
+  }, [filters.search, filters.status, filters.syncStatus]);
 
   // --- FUNCIÓN DE FETCHEO ---
   const fetchEmployees = useCallback(async () => {
@@ -44,12 +41,20 @@ export const useFetchEmployees = (
         estaActivoParam = false;
       }
 
+      let pendSincronizarParam = null;
+      if (filters.syncStatus === "pending") {
+        pendSincronizarParam = true;
+      } else if (filters.syncStatus === "synced") {
+        pendSincronizarParam = false;
+      }
+
       const params = {
         page: pagination.page,
         pageSize: pagination.pageSize,
-        search: debouncedSearch,
+        search: filters.search,
         ordering: ordering,
         esta_activo: estaActivoParam,
+        pendiente_sincronizar: pendSincronizarParam,
       };
 
       const data = await getEmployeesPaginated(params);
@@ -65,10 +70,11 @@ export const useFetchEmployees = (
   }, [
     pagination.page,
     pagination.pageSize,
-    debouncedSearch,
+    filters.search,
     sort.order,
     sort.orderBy,
     filters.status,
+    filters.syncStatus,
   ]);
 
   // --- EFECTO PARA RE-FETCHEAR ---

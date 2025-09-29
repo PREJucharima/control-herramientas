@@ -6,6 +6,8 @@ import { fetchWithAuth } from "@/auth/services/apiClient";
  * @param {number} [params.page] - El número de página a solicitar.
  * @param {number} [params.pageSize] - El número de resultados por página.
  * @param {string} [params.search] - Un término de búsqueda.
+ * @param {boolean} [params.esta_activo] - Filtra por empleados activos o inactivos.
+ * @param {boolean} [params.pendiente_sincronizar] - Filtra por empleados pendientes de sincronizar.
  * @returns {Promise<object>} - El objeto de paginación de la API ({ count, next, previous, results }).
  */
 export const getEmployeesPaginated = async (params = {}) => {
@@ -17,6 +19,13 @@ export const getEmployeesPaginated = async (params = {}) => {
 
   if (params.esta_activo !== undefined && params.esta_activo !== null) {
     queryParams.append("esta_activo", params.esta_activo);
+  }
+
+  if (
+    params.pendiente_sincronizar !== undefined &&
+    params.pendiente_sincronizar !== null
+  ) {
+    queryParams.append("pendiente_sincronizar", params.pendiente_sincronizar);
   }
 
   const url = `api/empleados/?${queryParams.toString()}`;

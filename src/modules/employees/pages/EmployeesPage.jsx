@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
 import {
@@ -14,19 +14,24 @@ import {
 
 import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
+import { useDebounce } from "@/hooks/useDebounce";
 import { useMuiTable } from "@/hooks/useMuiTable";
 import {
   EmployeeQuickViewDialog,
   EmployeeTableHead,
   EmployeeTableRow,
   EmployeesHeadingArea,
-  SearchArea,
 } from "../components";
 import { useFetchEmployees } from "../hooks/useFetchEmployees";
 
 const EmployeesPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || ""
+  );
+  const debouncedSearch = useDebounce(searchInput, 300);
 
   const setParam = (key, value, opts) => {
     const next = new URLSearchParams(searchParams);
@@ -43,10 +48,11 @@ const EmployeesPage = () => {
   const initialFilters = {
     search: searchParams.get("search") || "",
     status: searchParams.get("status") || "",
+    syncStatus: searchParams.get("syncStatus") || "",
   };
   const initialSort = {
     order: searchParams.get("order") || "asc",
-    orderBy: searchParams.get("orderBy") || "rut",
+    orderBy: searchParams.get("orderBy") || "",
   };
   const initialPage = parseInt(searchParams.get("page"), 10) || 1;
   const initialPageSize = parseInt(searchParams.get("pageSize"), 10) || 10;
@@ -83,7 +89,9 @@ const EmployeesPage = () => {
     initialPageSize
   );
 
-  console.log("empleados", employees);
+  useEffect(() => {
+    setFilters((f) => ({ ...f, search: debouncedSearch, page: 1 }));
+  }, [debouncedSearch, setFilters]);
 
   // 4. SINCRONIZAMOS LOS CAMBIOS DE ESTADO HACIA LA URL
   useEffect(() => {
@@ -91,29 +99,26 @@ const EmployeesPage = () => {
   }, [order, orderBy, setSort]);
 
   useEffect(() => {
-    const next = new URLSearchParams(searchParams); // preserva ?ver
+    const next = new URLSearchParams(searchParams);
 
     // filtros
-    if (filters.search) next.set("search", filters.search);
-    else next.delete("search");
-
-    if (filters.status) next.set("status", filters.status);
-    else next.delete("status");
+    filters.search ? next.set("search", filters.search) : next.delete("search");
+    filters.status ? next.set("status", filters.status) : next.delete("status");
+    filters.syncStatus
+      ? next.set("syncStatus", filters.syncStatus)
+      : next.delete("syncStatus");
 
     // paginación
-    if (pagination.page > 1) next.set("page", String(pagination.page));
-    else next.delete("page");
-
-    if (pagination.pageSize !== 10)
-      next.set("pageSize", String(pagination.pageSize));
-    else next.delete("pageSize");
+    pagination.page > 1
+      ? next.set("page", String(pagination.page))
+      : next.delete("page");
+    pagination.pageSize !== 10
+      ? next.set("pageSize", String(pagination.pageSize))
+      : next.delete("pageSize");
 
     // orden
-    if (orderBy !== "rut") next.set("orderBy", orderBy);
-    else next.delete("orderBy");
-
-    if (order !== "asc") next.set("order", order);
-    else next.delete("order");
+    orderBy !== "" ? next.set("orderBy", orderBy) : next.delete("orderBy");
+    order !== "asc" ? next.set("order", order) : next.delete("order");
 
     setSearchParams(next, { replace: true });
   }, [
@@ -126,31 +131,46 @@ const EmployeesPage = () => {
     setSearchParams,
   ]);
 
-  const handleSearchChange = useCallback(
-    (e) => {
-      setFilters((f) => ({ ...f, search: e.target.value, page: 1 })); // resetea a página 1
-    },
-    [setFilters]
-  );
+  // const handleSearchChange = useCallback(
+  //   (e) => {
+  //     setFilters((f) => ({ ...f, search: e.target.value, page: 1 }));
+  //   },
+  //   [setFilters]
+  // );
+
+  // const handleSyncStatusChange = useCallback(
+  //   (e) => {
+  //     setFilters((f) => ({ ...f, syncStatus: e.target.value, page: 1 }));
+  //   },
+  //   [setFilters]
+  // );
 
   return (
     <Box pt={2}>
       <Card sx={{ marginBottom: 3 }}>
         <Box px={2} pt={2}>
           <EmployeesHeadingArea
-            value={filters.status}
             title="Empleados"
+            value={filters.status}
             onChange={(e, v) =>
               setFilters((f) => ({ ...f, search: "", page: 1, status: v }))
             }
+            searchValue={searchInput}
+            onSearchChange={(e) => setSearchInput(e.target.value)}
+            onClearSearch={() => setSearchInput("")}
+            syncStatusValue={filters.syncStatus}
+            onSyncStatusChange={(e) =>
+              setFilters((f) => ({ ...f, syncStatus: e.target.value, page: 1 }))
+            }
+            count={pagination.count}
+            counts={undefined}
             isLoading={isLoading}
             error={error}
-            count={pagination.count}
             gridRoute="/catalogos/empleados-grid"
             listRoute="/catalogos/empleados"
           />
 
-          <SearchArea value={filters.search} onChange={handleSearchChange} />
+          {/* <SearchArea value={filters.search} onChange={handleSearchChange} /> */}
         </Box>
 
         {selected.length > 0 && (

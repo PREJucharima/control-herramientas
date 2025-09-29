@@ -61,13 +61,15 @@ export default function EmployeeTableRow({
         />
       </TableCell>
 
-      <TableCell>{employee.rut ?? "—"}</TableCell>
-      <TableCell sx={{ minWidth: 180 }}>{employee.nombre_completo}</TableCell>
+      <TableCell sx={{ fontSize: "0.75rem" }}>{employee.rut ?? "—"}</TableCell>
+      <TableCell>{employee.nombre_completo}</TableCell>
       <TableCell>{employee.email ?? "—"}</TableCell>
-      <TableCell sx={{ minWidth: 180 }}>
+      <TableCell sx={{ fontSize: "0.75rem" }}>
         {employee.centrocosto?.centro_costo_nombre ?? "No Asignado"}
       </TableCell>
-      <TableCell>{employee?.empresa.nombre ?? "—"}</TableCell>
+      <TableCell sx={{ fontSize: "0.75rem" }}>
+        {employee?.empresa.nombre ?? "—"}
+      </TableCell>
 
       <TableCell>
         <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
@@ -108,8 +110,8 @@ export default function EmployeeTableRow({
         </Stack>
       </TableCell>
 
-      <TableCell>{fechaCreacion}</TableCell>
-      <TableCell>{fechaModificacion}</TableCell>
+      <TableCell sx={{ fontSize: "0.75rem" }}>{fechaCreacion}</TableCell>
+      <TableCell sx={{ fontSize: "0.75rem" }}>{fechaModificacion}</TableCell>
 
       <TableCell
         align="right"
