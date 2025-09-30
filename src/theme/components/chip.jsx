@@ -1,3 +1,5 @@
+import { Padding } from "@mui/icons-material";
+
 export const Chip = (theme) => {
   return {
     defaultProps: {
@@ -8,6 +10,7 @@ export const Chip = (theme) => {
         lineHeight: 1,
         fontWeight: 500,
         borderRadius: 16,
+        padding: "0 8px",
       },
       sizeSmall: {
         fontSize: 13,

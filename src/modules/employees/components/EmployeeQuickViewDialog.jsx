@@ -100,18 +100,16 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
           variant="outlined"
           icon={<SyncProblem fontSize="small" />}
           label="Pendiente de sincronizar"
-          sx={{ padding: "0 8px" }}
         />
       </Tooltip>
     ) : (
       <Tooltip title="Este empleado está sincronizado con BUK.">
         <Chip
           size="small"
-          color="success"
+          color="info"
           variant="outlined"
           icon={<CloudDone fontSize="small" />}
           label="Sincronizado"
-          sx={{ padding: "0 8px" }}
         />
       </Tooltip>
     );
@@ -123,7 +121,6 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
           label={emp.esta_activo ? "Activo" : "Inactivo"}
           color={emp.esta_activo ? "success" : "default"}
           variant={emp.esta_activo ? "filled" : "outlined"}
-          sx={{ padding: "0 8px" }}
         />
         {syncChip}
       </Stack>
@@ -135,7 +132,7 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="sm"
+      maxWidth="md"
       aria-labelledby="ver-empleado"
     >
       <DialogTitle id="ver-empleado" sx={{ py: 1.5 }}>
@@ -230,12 +227,7 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
                 </Stack>
               </Stack>
 
-              <Stack
-                direction="row"
-                gap={1}
-                flexWrap="wrap"
-                sx={{ mb: 0.5, ml: { xs: 0.5 } }}
-              >
+              <Stack direction="row" gap={1} flexWrap="wrap">
                 {statusChips}
               </Stack>
             </Stack>
@@ -286,11 +278,6 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
                     label="Empresa"
                     value={emp.empresa?.nombre}
                     icon={<Business fontSize="small" />}
-                  />
-                  <FieldRow
-                    label="Sucursal"
-                    value={emp.sucursal?.nombre}
-                    icon={<Apartment fontSize="small" />}
                   />
                   <FieldRow
                     label="Centro de costos"

@@ -7,8 +7,6 @@ import {
   TableCell,
   Chip,
   IconButton,
-  useTheme,
-  Stack,
   Tooltip,
 } from "@mui/material";
 import dayjs from "dayjs";
@@ -20,14 +18,13 @@ export default function EmployeeTableRow({
   onEdit,
   onViewDetails,
 }) {
-  const theme = useTheme();
   const handleCheck = useCallback(
     (e) => handleSelectRow(e, employee.id),
     [handleSelectRow, employee.id]
   );
 
   const dateFormat = (dateStr) => {
-    return dayjs(dateStr).format("DD/MM/YYYY HH:mm");
+    return dayjs(dateStr).format("DD/MM/YYYY");
   };
 
   const fechaCreacion = dateFormat(employee.fecha_creacion || "");
@@ -45,7 +42,7 @@ export default function EmployeeTableRow({
             left: 0,
             top: 0,
             bottom: 0,
-            width: 3,
+            width: 4,
             bgcolor: "warning.main",
             borderRadius: 1,
           },
@@ -72,46 +69,40 @@ export default function EmployeeTableRow({
       </TableCell>
 
       <TableCell>
-        <Stack direction="row" gap={1} alignItems="center" flexWrap="wrap">
-          <Chip
-            size="small"
-            label={employee.esta_activo ? "Activo" : "Inactivo"}
-            color={employee.esta_activo ? "success" : "error"}
-            variant={"outlined"}
-            sx={{
-              backgroundColor: employee.esta_activo
-                ? theme.palette.success[100]
-                : theme.palette.error[100],
-              color: employee.esta_activo ? "success.main" : "error.main",
-            }}
-          />
-
-          {employee.pendiente_sincronizar ? (
-            <Tooltip title="Hay cambios pendientes desde BUK.">
-              <Chip
-                size="small"
-                color="warning"
-                variant="outlined"
-                icon={<SyncProblem fontSize="small" />}
-                label="Pendiente"
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip title="Sincronizado con BUK.">
-              <Chip
-                size="small"
-                color="success"
-                variant="outlined"
-                icon={<CloudDone fontSize="small" />}
-                label="Sincronizado"
-              />
-            </Tooltip>
-          )}
-        </Stack>
+        <Chip
+          size="small"
+          label={employee.esta_activo ? "Activo" : "Inactivo"}
+          color={employee.esta_activo ? "success" : "error"}
+          variant={"outlined"}
+        />
       </TableCell>
 
-      <TableCell sx={{ fontSize: "0.75rem" }}>{fechaCreacion}</TableCell>
-      <TableCell sx={{ fontSize: "0.75rem" }}>{fechaModificacion}</TableCell>
+      <TableCell>
+        {employee.pendiente_sincronizar ? (
+          <Tooltip title="Hay cambios pendientes desde BUK.">
+            <Chip
+              size="small"
+              color="warning"
+              variant="outlined"
+              icon={<SyncProblem fontSize="small" />}
+              label="Pendiente"
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip title="Sincronizado con BUK.">
+            <Chip
+              size="small"
+              color="info"
+              variant="outlined"
+              icon={<CloudDone fontSize="small" />}
+              label="Sincronizado"
+            />
+          </Tooltip>
+        )}
+      </TableCell>
+
+      <TableCell>{fechaCreacion}</TableCell>
+      <TableCell>{fechaModificacion}</TableCell>
 
       <TableCell
         align="right"

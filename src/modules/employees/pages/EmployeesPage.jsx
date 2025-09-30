@@ -99,51 +99,50 @@ const EmployeesPage = () => {
   }, [order, orderBy, setSort]);
 
   useEffect(() => {
-    const next = new URLSearchParams(searchParams);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
 
-    // filtros
-    filters.search ? next.set("search", filters.search) : next.delete("search");
-    filters.status ? next.set("status", filters.status) : next.delete("status");
-    filters.syncStatus
-      ? next.set("syncStatus", filters.syncStatus)
-      : next.delete("syncStatus");
+        // filtros
+        filters.search
+          ? next.set("search", filters.search)
+          : next.delete("search");
+        filters.status
+          ? next.set("status", filters.status)
+          : next.delete("status");
+        filters.syncStatus
+          ? next.set("syncStatus", filters.syncStatus)
+          : next.delete("syncStatus");
 
-    // paginación
-    pagination.page > 1
-      ? next.set("page", String(pagination.page))
-      : next.delete("page");
-    pagination.pageSize !== 10
-      ? next.set("pageSize", String(pagination.pageSize))
-      : next.delete("pageSize");
+        // paginación
+        pagination.page > 1
+          ? next.set("page", String(pagination.page))
+          : next.delete("page");
+        pagination.pageSize !== 10
+          ? next.set("pageSize", String(pagination.pageSize))
+          : next.delete("pageSize");
 
-    // orden
-    orderBy !== "" ? next.set("orderBy", orderBy) : next.delete("orderBy");
-    order !== "asc" ? next.set("order", order) : next.delete("order");
+        // orden
+        orderBy !== "" ? next.set("orderBy", orderBy) : next.delete("orderBy");
+        order !== "asc" ? next.set("order", order) : next.delete("order");
 
-    setSearchParams(next, { replace: true });
+        return next.toString() === prev.toString() ? prev : next;
+      },
+      { replace: true }
+    );
   }, [
     filters,
     pagination.page,
     pagination.pageSize,
     order,
     orderBy,
-    searchParams,
     setSearchParams,
   ]);
 
-  // const handleSearchChange = useCallback(
-  //   (e) => {
-  //     setFilters((f) => ({ ...f, search: e.target.value, page: 1 }));
-  //   },
-  //   [setFilters]
-  // );
-
-  // const handleSyncStatusChange = useCallback(
-  //   (e) => {
-  //     setFilters((f) => ({ ...f, syncStatus: e.target.value, page: 1 }));
-  //   },
-  //   [setFilters]
-  // );
+  const pageIds = employees.map((e) => e.id);
+  const numSelectedOnPage = selected.filter((id) =>
+    pageIds.includes(id)
+  ).length;
 
   return (
     <Box pt={2}>
@@ -191,11 +190,9 @@ const EmployeesPage = () => {
                     order={order}
                     orderBy={orderBy}
                     onRequestSort={handleRequestSort}
-                    rowCount={pagination.count}
-                    numSelected={selected.length}
-                    onSelectAllRows={handleSelectAllRows(
-                      employees.map((e) => e.id)
-                    )}
+                    rowCount={employees.length}
+                    numSelected={numSelectedOnPage}
+                    onSelectAllRows={handleSelectAllRows(pageIds)}
                   />
                   <TableBody>
                     {isLoading ? (

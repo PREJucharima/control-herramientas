@@ -5,7 +5,7 @@ export const TableCell = (theme) => ({
   styleOverrides: {
     root: {
       border: "none",
-      padding: "6px 10px",
+      padding: "8px 10px",
       borderBottom: `1px solid ${theme.palette.divider}`,
       fontSize: "0.875rem",
       whiteSpace: "nowrap",

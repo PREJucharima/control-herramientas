@@ -25,22 +25,13 @@ import {
   SyncProblem,
 } from "@mui/icons-material";
 
+import { FilterPill } from "@/components/Filters/FilterPill";
 import FormatBullets from "@/icons/FormatBullets";
 import Apps from "@/icons/Apps";
-import { FilterPill } from "../../../components/Filters/FilterPill";
 
 export const SearchTextField = styled(TextField)(() => ({
-  maxWidth: 400,
+  maxWidth: 320,
   width: "100%",
-
-  '& .MuiInputBase-input[type="search"]::-webkit-search-decoration, \
-   & .MuiInputBase-input[type="search"]::-webkit-search-cancel-button, \
-   & .MuiInputBase-input[type="search"]::-webkit-search-results-button, \
-   & .MuiInputBase-input[type="search"]::-webkit-search-results-decoration': {
-    WebkitAppearance: "none",
-    appearance: "none",
-    display: "none",
-  },
 }));
 
 export default function EmployeesHeadingArea({
@@ -216,7 +207,6 @@ export default function EmployeesHeadingArea({
         />
 
         <Stack direction="row" gap={1} flexWrap="wrap">
-          {/* === Pill: Estado === */}
           <FilterPill
             label={`Estado · ${estadoText}`}
             active={Boolean(value)}
@@ -231,7 +221,7 @@ export default function EmployeesHeadingArea({
                   value={value ?? ""}
                   onChange={(e) => {
                     onChange?.(null, e.target.value);
-                    close(); // cierra al seleccionar
+                    close();
                   }}
                 >
                   <MenuItem value="">Todos</MenuItem>
@@ -242,7 +232,6 @@ export default function EmployeesHeadingArea({
             )}
           </FilterPill>
 
-          {/* === Pill: Sincronización === */}
           <FilterPill
             label={`Sincronización · ${syncText}`}
             active={Boolean(syncStatusValue)}
@@ -265,7 +254,7 @@ export default function EmployeesHeadingArea({
                   value={syncStatusValue || ""}
                   onChange={(e) => {
                     onSyncStatusChange?.(e);
-                    close(); // cierra al seleccionar
+                    close();
                   }}
                 >
                   <MenuItem value="">Todos</MenuItem>
