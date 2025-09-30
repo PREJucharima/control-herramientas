@@ -1,6 +1,6 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
 
-export const updateEmployeeById = async (id, payload) => {
+export const updateEmployeeByRut = async (id, payload) => {
   const url = `api/empleados/${encodeURIComponent(id)}/`;
 
   const res = await fetchWithAuth(url, {
