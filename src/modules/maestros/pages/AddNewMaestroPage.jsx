@@ -1,15 +1,13 @@
 import { useNavigate } from "react-router";
 
 import { MaestroForm } from "../components";
-import { useFetchMaestros } from "../hooks/useFetchMaestros";
 import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
 import { createMaestro } from "../services/createMaestro";
 import { useMaestrosStore } from "../states/maestrosStore";
 
 const AddNewMaestroPage = () => {
   const navigate = useNavigate();
-  const { isLoading } = useFetchMaestros();
-  const { maestrosLookup } = useFetchMaestrosLookup();
+  const { maestrosLookup, loading } = useFetchMaestrosLookup();
   const addMaestro = useMaestrosStore((s) => s.setMaestros);
 
   const handleSubmit = async (payload) => {
@@ -28,7 +26,7 @@ const AddNewMaestroPage = () => {
     <>
       <MaestroForm
         maestros={maestrosLookup || []}
-        isLoadingMaestros={isLoading}
+        isLoadingMaestros={loading}
         onSubmit={handleSubmit}
         onCancel={() => navigate(-1)}
       />

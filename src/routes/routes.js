@@ -24,6 +24,9 @@ const EditItemPage = lazy(() => import("@/modules/items/pages/EditItemPage"));
 const EmployeesPage = lazy(() =>
   import("@/modules/employees/pages/EmployeesPage")
 );
+const AddNewEmployeePage = lazy(() =>
+  import("@/modules/employees/pages/AddNewEmployeePage")
+);
 const CompanyBranchPage = lazy(() =>
   import("@/modules/company-branch/pages/CompanyBranchPage")
 );
@@ -56,7 +59,7 @@ export const protectedRoutes = [
       { path: "/inicio", element: createElement(HomePage) },
       { path: "/catalogos/maestros", element: createElement(MaestrosPage) },
       {
-        path: "/catalogos/maestros/agregar",
+        path: "/catalogos/maestros/nuevo",
         element: createElement(AddNewMaestroPage),
       },
       {
@@ -68,7 +71,7 @@ export const protectedRoutes = [
         element: createElement(ItemsPage),
       },
       {
-        path: "/catalogos/maestros/:codigo/agregar",
+        path: "/catalogos/maestros/:codigo/nuevo",
         element: createElement(AddNewItemPage),
       },
       {
@@ -76,6 +79,10 @@ export const protectedRoutes = [
         element: createElement(EditItemPage),
       },
       { path: "/catalogos/empleados", element: createElement(EmployeesPage) },
+      {
+        path: "/catalogos/empleados/nuevo",
+        element: createElement(AddNewEmployeePage),
+      },
       {
         path: "/seguridad/empresa-y-sucursal",
         element: createElement(CompanyBranchPage),

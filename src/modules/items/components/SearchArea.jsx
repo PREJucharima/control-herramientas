@@ -31,7 +31,7 @@ export default function SearchArea({ value = "", onChange }) {
         variant="contained"
         startIcon={<Add />}
         onClick={() =>
-          navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/agregar`)
+          navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/nuevo`)
         }
       >
         Agregar item
