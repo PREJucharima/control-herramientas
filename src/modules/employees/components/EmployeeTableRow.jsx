@@ -79,7 +79,7 @@ export default function EmployeeTableRow({
         />
       </TableCell>
 
-      {/* <TableCell>
+      <TableCell>
         {employee.pendiente_sincronizar ? (
           <Tooltip title="Hay cambios pendientes desde BUK.">
             <Chip
@@ -101,7 +101,7 @@ export default function EmployeeTableRow({
             />
           </Tooltip>
         )}
-      </TableCell> */}
+      </TableCell>
 
       <TableCell>{fechaCreacion}</TableCell>
       <TableCell>{fechaModificacion}</TableCell>

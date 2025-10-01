@@ -27,6 +27,9 @@ const EmployeesPage = lazy(() =>
 const AddNewEmployeePage = lazy(() =>
   import("@/modules/employees/pages/AddNewEmployeePage")
 );
+const EditEmployeePage = lazy(() =>
+  import("@/modules/employees/pages/EditEmployeePage")
+);
 const CompanyBranchPage = lazy(() =>
   import("@/modules/company-branch/pages/CompanyBranchPage")
 );
@@ -82,6 +85,10 @@ export const protectedRoutes = [
       {
         path: "/catalogos/empleados/nuevo",
         element: createElement(AddNewEmployeePage),
+      },
+      {
+        path: "/catalogos/empleados/:rut/editar",
+        element: createElement(EditEmployeePage),
       },
       {
         path: "/seguridad/empresa-y-sucursal",

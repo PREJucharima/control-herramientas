@@ -19,7 +19,6 @@ import {
   FormControlLabel,
   FormHelperText,
   Autocomplete,
-  Box,
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 
@@ -30,6 +29,15 @@ export default function EmployeeForm({
   onSubmit,
   onCancel,
 }) {
+  const initialCentroCostoObject = React.useMemo(() => {
+    if (!initialEmpleado?.centrocosto?.id || centrosCosto.length === 0) {
+      return null;
+    }
+    console.log(initialEmpleado?.centrocosto?.id);
+    // Buscamos en la lista de opciones el objeto que coincida con el ID del empleado
+    return centrosCosto.find((cc) => cc.id === initialEmpleado.centrocosto.id);
+  }, [initialEmpleado, centrosCosto]);
+
   // ---------- Valores iniciales ----------
   const initialValues = {
     rut: initialEmpleado?.rut ?? "",
@@ -38,7 +46,9 @@ export default function EmployeeForm({
     apellido_paterno: initialEmpleado?.apellido_paterno ?? "",
     apellido_materno: initialEmpleado?.apellido_materno ?? "",
     nombre_completo: initialEmpleado?.nombre_completo ?? "",
-    centrocosto: initialEmpleado?.centrocosto ?? null,
+    centrocosto: initialCentroCostoObject ?? null,
+
+    esta_activo: initialEmpleado?.esta_activo ?? "",
   };
 
   // ---------- Validación ----------
@@ -69,8 +79,21 @@ export default function EmployeeForm({
     criteriaMode: "all",
   });
 
-  const { handleSubmit, control, setValue, formState } = methods;
+  const { control, handleSubmit, setValue, reset, formState } = methods;
   const { isSubmitting, isDirty, isValid } = formState;
+
+  React.useEffect(() => {
+    reset({
+      rut: initialEmpleado?.rut ?? "",
+      email: initialEmpleado?.email ?? "",
+      nombre: initialEmpleado?.nombre ?? "",
+      apellido_paterno: initialEmpleado?.apellido_paterno ?? "",
+      apellido_materno: initialEmpleado?.apellido_materno ?? "",
+      nombre_completo: initialEmpleado?.nombre_completo ?? "",
+      centrocosto: initialCentroCostoObject ?? null,
+      esta_activo: initialEmpleado?.esta_activo ?? false,
+    });
+  }, [reset, initialEmpleado, initialCentroCostoObject]);
 
   // Autocompletar nombre_completo si el usuario no lo escribe
   const nombre = useWatch({ control, name: "nombre" });
@@ -104,7 +127,14 @@ export default function EmployeeForm({
       apellido_paterno: values.apellido_paterno.trim(),
       apellido_materno: values.apellido_materno?.trim() || "",
       nombre_completo: nombreCompleto,
-      centrocosto: values.centrocosto ? values.centrocosto.id : null,
+      // centrocosto: values.centrocosto ? values.centrocosto.id : null,
+      ...(initialEmpleado
+        ? {
+            centrocosto: values.centrocosto
+              ? { id: values.centrocosto.id }
+              : null,
+          }
+        : { centrocosto: values.centrocosto ? values.centrocosto.id : null }),
 
       ...(initialEmpleado && { esta_activo: !!values.esta_activo }),
     };
@@ -126,10 +156,10 @@ export default function EmployeeForm({
           options={options}
           value={field.value}
           onChange={(_, val) => field.onChange(val)}
+          onBlur={field.onBlur}
           loading={loadingLookups}
           disabled={disabled}
           sx={{ minWidth: 400 }}
-          // isOptionEqualToValue={(o, v) => o?.id === v?.id}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(o) => (o?.descripcion ? o.descripcion : "")}
           size="medium"
@@ -241,7 +271,6 @@ export default function EmployeeForm({
                 />
               </Grid>
             </Grid>
-
             <Grid container spacing={4} sx={{ mb: 3 }}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -281,7 +310,6 @@ export default function EmployeeForm({
                 />
               </Grid>
             </Grid>
-
             <Grid container spacing={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 {renderAC(
@@ -291,9 +319,27 @@ export default function EmployeeForm({
                   false
                 )}
               </Grid>
-            </Grid>
 
-            {initialEmpleado ? (
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="centrocosto"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      label="Centro de costo *"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      size="small"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+            {initialEmpleado.centrocosto.id} -{" "}
+            {initialEmpleado.centrocosto.centro_costo_nombre}
+            {initialEmpleado && (
               <>
                 <Typography variant="subtitle2" sx={{ mt: 3, mb: 1.5 }}>
                   Estado
@@ -325,8 +371,6 @@ export default function EmployeeForm({
                   </Grid>
                 </Grid>
               </>
-            ) : (
-              <></>
             )}
           </CardContent>
 

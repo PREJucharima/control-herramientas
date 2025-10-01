@@ -216,7 +216,9 @@ const EmployeesPage = () => {
                           handleSelectRow={handleSelectRow}
                           onEdit={() =>
                             navigate(
-                              `/empleados/${encodeURIComponent(emp.id)}/editar`
+                              `/catalogos/empleados/${encodeURIComponent(
+                                emp.rut
+                              )}/editar`
                             )
                           }
                           onViewDetails={() => openView(emp.rut)}
