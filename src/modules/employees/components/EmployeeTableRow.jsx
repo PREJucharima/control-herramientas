@@ -62,12 +62,14 @@ export default function EmployeeTableRow({
       <TableCell>{employee.nombre_completo}</TableCell>
       <TableCell>{employee.email ?? "—"}</TableCell>
       <TableCell sx={{ fontSize: "0.75rem" }}>
-        {employee.centrocosto?.centro_costo_nombre ?? "No Asignado"}
+        {employee.centrocosto?.centro_costo_nombre
+          ? `${employee.centrocosto?.centro_costo_codigo} - 
+        ${employee.centrocosto?.centro_costo_nombre}`
+          : "No Asignado"}
       </TableCell>
       <TableCell sx={{ fontSize: "0.75rem" }}>
-        {employee?.empresa.nombre ?? "—"}
+        {employee?.empresa.nombre ?? "No Asignado"}
       </TableCell>
-
       <TableCell>
         <Chip
           size="small"
@@ -77,7 +79,7 @@ export default function EmployeeTableRow({
         />
       </TableCell>
 
-      <TableCell>
+      {/* <TableCell>
         {employee.pendiente_sincronizar ? (
           <Tooltip title="Hay cambios pendientes desde BUK.">
             <Chip
@@ -99,7 +101,7 @@ export default function EmployeeTableRow({
             />
           </Tooltip>
         )}
-      </TableCell>
+      </TableCell> */}
 
       <TableCell>{fechaCreacion}</TableCell>
       <TableCell>{fechaModificacion}</TableCell>
