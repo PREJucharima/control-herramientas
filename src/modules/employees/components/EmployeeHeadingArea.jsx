@@ -15,8 +15,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Button,
 } from "@mui/material";
 import {
+  Add,
   ArrowBack,
   Clear,
   CloudDone,
@@ -166,113 +168,124 @@ export default function EmployeesHeadingArea({
           </Tooltip>
         </Stack>
       </Stack>
-
       <Stack
         direction={{ xs: "column", sm: "row" }}
+        justifyContent={"space-between"}
         alignItems={{ xs: "stretch", sm: "center" }}
         gap={1.25}
         mt={4.25}
         mb={2.25}
       >
-        <SearchTextField
-          type="search"
-          value={searchValue}
-          onChange={onSearchChange}
-          placeholder="Buscar por nombre, RUT o email…"
-          size="small"
-          fullWidth
-          slotProps={{
-            input: {
-              "aria-label": "Buscar empleados",
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search fontSize="small" />
-                </InputAdornment>
-              ),
-              endAdornment: !!searchValue && (
-                <InputAdornment position="end">
-                  <Tooltip title="Limpiar (Esc)">
-                    <IconButton
-                      size="small"
-                      onClick={onClearSearch}
-                      aria-label="Limpiar búsqueda"
-                    >
-                      <Clear fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
-
-        <Stack direction="row" gap={1} flexWrap="wrap">
-          <FilterPill
-            label={`Estado · ${estadoText}`}
-            active={Boolean(value)}
-            onClear={() => onChange?.(null, "")}
-          >
-            {(close) => (
-              <FormControl fullWidth size="small">
-                <InputLabel id="estado-label">Estado</InputLabel>
-                <Select
-                  labelId="estado-label"
-                  label="Estado"
-                  value={value ?? ""}
-                  onChange={(e) => {
-                    onChange?.(null, e.target.value);
-                    close();
-                  }}
-                >
-                  <MenuItem value="">Todos</MenuItem>
-                  <MenuItem value="active">Activos</MenuItem>
-                  <MenuItem value="inactive">Inactivos</MenuItem>
-                </Select>
-              </FormControl>
-            )}
-          </FilterPill>
-
-          <FilterPill
-            label={`Sincronización · ${syncText}`}
-            active={Boolean(syncStatusValue)}
-            onClear={() => onSyncStatusChange?.({ target: { value: "" } })}
-            chipProps={{
-              icon:
-                syncStatusValue === "pending" ? (
-                  <SyncProblem />
-                ) : syncStatusValue === "synced" ? (
-                  <CloudDone />
-                ) : undefined,
+        <Stack direction={{ xs: "column", sm: "row" }} gap={1.25} flexGrow={1}>
+          <SearchTextField
+            type="search"
+            value={searchValue}
+            onChange={onSearchChange}
+            placeholder="Buscar por nombre, RUT o email…"
+            size="small"
+            fullWidth
+            slotProps={{
+              input: {
+                "aria-label": "Buscar empleados",
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: !!searchValue && (
+                  <InputAdornment position="end">
+                    <Tooltip title="Limpiar (Esc)">
+                      <IconButton
+                        size="small"
+                        onClick={onClearSearch}
+                        aria-label="Limpiar búsqueda"
+                      >
+                        <Clear fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              },
             }}
-          >
-            {(close) => (
-              <FormControl fullWidth size="small">
-                <InputLabel id="sync-label">Sincronización</InputLabel>
-                <Select
-                  labelId="sync-label"
-                  label="Sincronización"
-                  value={syncStatusValue || ""}
-                  onChange={(e) => {
-                    onSyncStatusChange?.(e);
-                    close();
-                  }}
-                >
-                  <MenuItem value="">Todos</MenuItem>
-                  <MenuItem value="pending">
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      <Sync fontSize="small" /> Pendientes
-                    </Stack>
-                  </MenuItem>
-                  <MenuItem value="synced">
-                    <Stack direction="row" alignItems="center" gap={1}>
-                      <CloudDone fontSize="small" /> Sincronizados
-                    </Stack>
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            )}
-          </FilterPill>
+          />
+          <Stack direction="row" gap={1} flexWrap="wrap">
+            <FilterPill
+              label={`Estado · ${estadoText}`}
+              active={Boolean(value)}
+              onClear={() => onChange?.(null, "")}
+            >
+              {(close) => (
+                <FormControl fullWidth size="small">
+                  <InputLabel id="estado-label">Estado</InputLabel>
+                  <Select
+                    labelId="estado-label"
+                    label="Estado"
+                    value={value ?? ""}
+                    onChange={(e) => {
+                      onChange?.(null, e.target.value);
+                      close();
+                    }}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="active">Activos</MenuItem>
+                    <MenuItem value="inactive">Inactivos</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+            </FilterPill>
+
+            <FilterPill
+              label={`Sincronización · ${syncText}`}
+              active={Boolean(syncStatusValue)}
+              onClear={() => onSyncStatusChange?.({ target: { value: "" } })}
+              chipProps={{
+                icon:
+                  syncStatusValue === "pending" ? (
+                    <SyncProblem />
+                  ) : syncStatusValue === "synced" ? (
+                    <CloudDone />
+                  ) : undefined,
+              }}
+            >
+              {(close) => (
+                <FormControl fullWidth size="small">
+                  <InputLabel id="sync-label">Sincronización</InputLabel>
+                  <Select
+                    labelId="sync-label"
+                    label="Sincronización"
+                    value={syncStatusValue || ""}
+                    onChange={(e) => {
+                      onSyncStatusChange?.(e);
+                      close();
+                    }}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="pending">
+                      <Stack direction="row" alignItems="center" gap={1}>
+                        <Sync fontSize="small" /> Pendientes
+                      </Stack>
+                    </MenuItem>
+                    <MenuItem value="synced">
+                      <Stack direction="row" alignItems="center" gap={1}>
+                        <CloudDone fontSize="small" /> Sincronizados
+                      </Stack>
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+            </FilterPill>
+          </Stack>
         </Stack>
+        <Box sx={{ ml: { md: 2 } }}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => navigate("/catalogos/empleados/nuevo")}
+            fullWidth={false}
+          >
+            Nuevo empleado
+          </Button>
+        </Box>
       </Stack>
 
       {(!!searchValue || !!syncStatusValue || value) && (

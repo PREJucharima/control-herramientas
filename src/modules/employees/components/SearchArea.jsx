@@ -29,7 +29,7 @@ export default function SearchArea({ value = "", onChange }) {
       {/* <Button
         variant="contained"
         startIcon={<Add />}
-        onClick={() => navigate("/catalogos/empleados/agregar")}
+        onClick={() => navigate("/catalogos/empleados/nuevo")}
       >
         Agregar empleado
       </Button> */}

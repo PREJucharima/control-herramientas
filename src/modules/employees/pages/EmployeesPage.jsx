@@ -168,8 +168,6 @@ const EmployeesPage = () => {
             gridRoute="/catalogos/empleados-grid"
             listRoute="/catalogos/empleados"
           />
-
-          {/* <SearchArea value={filters.search} onChange={handleSearchChange} /> */}
         </Box>
 
         {selected.length > 0 && (
