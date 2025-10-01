@@ -25,13 +25,8 @@ import { InfoOutlined } from "@mui/icons-material";
 
 export default function EmployeeForm({
   initialEmpleado,
-  empresas = [],
-  sucursales = [],
   centrosCosto = [],
-  categorias = [],
   loadingLookups = false,
-  onFetchSucursalesByEmpresa,
-  onFetchCentrosBySucursal,
   onSubmit,
   onCancel,
 }) {
@@ -43,14 +38,7 @@ export default function EmployeeForm({
     apellido_paterno: initialEmpleado?.apellido_paterno ?? "",
     apellido_materno: initialEmpleado?.apellido_materno ?? "",
     nombre_completo: initialEmpleado?.nombre_completo ?? "",
-
-    empresa: initialEmpleado?.empresa ?? null,
-    sucursal: initialEmpleado?.sucursal ?? null,
     centrocosto: initialEmpleado?.centrocosto ?? null,
-    categoria: initialEmpleado?.categoria ?? null,
-
-    pendiente_sincronizar: !!initialEmpleado?.pendiente_sincronizar,
-    esta_activo: initialEmpleado?.esta_activo ?? true,
   };
 
   // ---------- Validación ----------
@@ -66,22 +54,11 @@ export default function EmployeeForm({
       .required("El apellido paterno es requerido"),
     apellido_materno: Yup.string()
       .trim()
-      .nullable()
       .required("El apellido materno es requerido"),
     nombre_completo: Yup.string()
       .trim()
-      .nullable()
       .required("El nombre completo es requerido"),
-
-    empresa: Yup.mixed().nullable().required("La empresa es requerida"),
-    sucursal: Yup.mixed().nullable().required("La sucursal es requerida"),
-    centrocosto: Yup.mixed()
-      .nullable()
-      .required("El centro de costos es requerida"),
-    categoria: Yup.mixed().nullable().required("La empresa es requerida"),
-
-    pendiente_sincronizar: Yup.boolean().required(),
-    esta_activo: Yup.boolean().required(),
+    centrocosto: Yup.mixed().required("El centro de costo es requerido"),
   });
 
   // ---------- RHF ----------
@@ -111,25 +88,6 @@ export default function EmployeeForm({
     );
   }, [nombre, apPat, apMat, setValue]);
 
-  // Cascada: empresa -> sucursal -> centro
-  const empresaSel = useWatch({ control, name: "empresa" });
-  const sucursalSel = useWatch({ control, name: "sucursal" });
-
-  React.useEffect(() => {
-    setValue("sucursal", null, { shouldDirty: true });
-    setValue("centrocosto", null, { shouldDirty: true });
-    if (empresaSel?.id && onFetchSucursalesByEmpresa) {
-      onFetchSucursalesByEmpresa(empresaSel.id);
-    }
-  }, [empresaSel, onFetchSucursalesByEmpresa, setValue]);
-
-  React.useEffect(() => {
-    setValue("centrocosto", null, { shouldDirty: true });
-    if (sucursalSel?.id && onFetchCentrosBySucursal) {
-      onFetchCentrosBySucursal(sucursalSel.id);
-    }
-  }, [sucursalSel, onFetchCentrosBySucursal, setValue]);
-
   // ---------- Submit ----------
   const onSubmitInternal = handleSubmit(async (values) => {
     const nombreCompleto =
@@ -140,26 +98,17 @@ export default function EmployeeForm({
         .trim();
 
     const payload = {
-      ...(values.empresa && { empresa: { nombre: values.empresa.name } }),
-      ...(values.sucursal && { sucursal: { nombre: values.sucursal.name } }),
-      ...(values.centrocosto && {
-        centrocosto: { centro_costo_nombre: values.centrocosto.name },
-      }),
-      ...(values.categoria && {
-        categoria: { nombre: values.categoria.name },
-      }),
-
       rut: values.rut.trim(),
       email: values.email.trim(),
       nombre: values.nombre.trim(),
       apellido_paterno: values.apellido_paterno.trim(),
       apellido_materno: values.apellido_materno?.trim() || "",
       nombre_completo: nombreCompleto,
+      centrocosto: values.centrocosto ? values.centrocosto.id : null,
 
-      pendiente_sincronizar: !!values.pendiente_sincronizar,
-      esta_activo: !!values.esta_activo,
+      ...(initialEmpleado && { esta_activo: !!values.esta_activo }),
     };
-    console.log(payload);
+    console.log("Payload a enviar:", payload);
     await onSubmit?.(payload);
   });
 
@@ -179,9 +128,11 @@ export default function EmployeeForm({
           onChange={(_, val) => field.onChange(val)}
           loading={loadingLookups}
           disabled={disabled}
+          sx={{ minWidth: 400 }}
           // isOptionEqualToValue={(o, v) => o?.id === v?.id}
           isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(o) => (o?.name ? o.name : "")}
+          getOptionLabel={(o) => (o?.descripcion ? o.descripcion : "")}
+          size="medium"
           fullWidth
           renderInput={(params) => (
             <TextField
@@ -198,7 +149,7 @@ export default function EmployeeForm({
   );
 
   return (
-    <Card sx={{ borderRadius: 3, maxWidth: 1040, mx: "auto" }}>
+    <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
       <CardHeader
         title={
           <Stack direction="row" aligns="center" gap={1}>
@@ -218,11 +169,8 @@ export default function EmployeeForm({
       <FormProvider {...methods}>
         <form onSubmit={onSubmitInternal} noValidate>
           <CardContent>
-            <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
-              Identidad
-            </Typography>
             <Grid container spacing={4} sx={{ mb: 3 }}>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="rut"
                   control={control}
@@ -235,13 +183,13 @@ export default function EmployeeForm({
                       helperText={fieldState.error?.message}
                       size="small"
                       fullWidth
-                      InputLabelProps={{ shrink: true }}
+                      slotProps={{ inputLabel: { shrink: true } }}
                     />
                   )}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="nombre"
                   control={control}
@@ -257,8 +205,9 @@ export default function EmployeeForm({
                   )}
                 />
               </Grid>
-
-              <Grid size={{ xs: 12, md: 4 }}>
+            </Grid>
+            <Grid container spacing={4} sx={{ mb: 3 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="apellido_paterno"
                   control={control}
@@ -274,16 +223,15 @@ export default function EmployeeForm({
                   )}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={4}>
-              <Grid size={{ xs: 12, md: 4 }}>
+
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="apellido_materno"
                   control={control}
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Apellido materno"
+                      label="Apellido materno *"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
                       size="small"
@@ -292,8 +240,10 @@ export default function EmployeeForm({
                   )}
                 />
               </Grid>
+            </Grid>
 
-              <Grid size={{ xs: 12, md: 4 }}>
+            <Grid container spacing={4} sx={{ mb: 3 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="email"
                   control={control}
@@ -311,17 +261,17 @@ export default function EmployeeForm({
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="nombre_completo"
                   control={control}
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Nombre completo"
+                      label="Nombre completo *"
                       helperText={
                         fieldState.error?.message ||
-                        "Se genera automáticamente a partir de nombre y apellidos."
+                        "Se genera automáticamente a partir del nombre y apellidos."
                       }
                       size="small"
                       fullWidth
@@ -332,84 +282,52 @@ export default function EmployeeForm({
               </Grid>
             </Grid>
 
-            <Typography variant="subtitle2" sx={{ mt: 0, mb: 1.5 }}>
-              Organización
-            </Typography>
-
-            <Box
-              sx={{
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "repeat(2, 1fr)",
-                  md: "repeat(4, 1fr)",
-                },
-              }}
-            >
-              {renderAC("empresa", "Empresa", empresas, false)}
-              {renderAC("sucursal", "Sucursal", sucursales, !empresaSel)}
-              {renderAC(
-                "centrocosto",
-                "Centro de costo",
-                centrosCosto,
-                !sucursalSel
-              )}
-              {renderAC("categoria", "Categoría", categorias, false)}
-            </Box>
-
-            <Typography variant="subtitle2" sx={{ mt: 3, mb: 1.5 }}>
-              Estado
-            </Typography>
-
-            <Grid container spacing={2}>
+            <Grid container spacing={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="esta_activo"
-                  control={control}
-                  render={({ field }) => (
-                    <Stack>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={!!field.value}
-                            onChange={(_, v) => field.onChange(v)}
-                          />
-                        }
-                        label="Activo"
-                      />
-                      <FormHelperText sx={{ ml: 1.5, mt: -1 }}>
-                        Si está desactivado, el empleado no aparecerá en flujos
-                        de selección.
-                      </FormHelperText>
-                    </Stack>
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="pendiente_sincronizar"
-                  control={control}
-                  render={({ field }) => (
-                    <Stack>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={!!field.value}
-                            onChange={(_, v) => field.onChange(v)}
-                          />
-                        }
-                        label="Pendiente de sincronizar"
-                      />
-                      <FormHelperText sx={{ ml: 1.5, mt: -1 }}>
-                        Indica si hay cambios por enviar/recibir desde BUK.
-                      </FormHelperText>
-                    </Stack>
-                  )}
-                />
+                {renderAC(
+                  "centrocosto",
+                  "Centro de costo",
+                  centrosCosto,
+                  false
+                )}
               </Grid>
             </Grid>
+
+            {initialEmpleado ? (
+              <>
+                <Typography variant="subtitle2" sx={{ mt: 3, mb: 1.5 }}>
+                  Estado
+                </Typography>
+
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Controller
+                      name="esta_activo"
+                      control={control}
+                      render={({ field }) => (
+                        <Stack>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={!!field.value}
+                                onChange={(_, v) => field.onChange(v)}
+                              />
+                            }
+                            label="Activo"
+                          />
+                          <FormHelperText sx={{ ml: 1.5, mt: -1 }}>
+                            Si está desactivado, el empleado no aparecerá en
+                            flujos de selección.
+                          </FormHelperText>
+                        </Stack>
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
           </CardContent>
 
           <Divider />

@@ -1,36 +1,15 @@
 import { useNavigate } from "react-router";
 
+import { useCentroCostos } from "@/modules/centros-costo/hooks/useCentroCostos";
 import { createEmployee } from "../services/createEmployee";
 import { useEmployeesStore } from "../states/employeesStore";
 import { EmployeeForm } from "../components";
 
-const empresas = [
-  { id: 1, name: "PRECISION PERU" },
-  { id: 2, name: "Empresa B" },
-  { id: 3, name: "Empresa C" },
-];
-
-const sucursales = [
-  { id: 1, name: "LIMA" },
-  { id: 2, name: "Empresa B" },
-  { id: 3, name: "Empresa C" },
-];
-
-const centrosCosto = [
-  { id: 1, name: "GERENCIA DE TI" },
-  { id: 2, name: "Empresa B" },
-  { id: 3, name: "Empresa C" },
-];
-
-const categorias = [
-  { id: 1, name: "Tecnologías de la Información (TI)" },
-  { id: 2, name: "Empresa B" },
-  { id: 3, name: "Empresa C" },
-];
-
 const AddNewMaestroPage = () => {
   const navigate = useNavigate();
   const addEmployee = useEmployeesStore((s) => s.addEmployee);
+  const { centroCostosLookup, loading, error } = useCentroCostos();
+  console.log({ centroCostosLookup, loading, error });
 
   const handleSubmit = async (payload) => {
     try {
@@ -45,10 +24,7 @@ const AddNewMaestroPage = () => {
   return (
     <>
       <EmployeeForm
-        empresas={empresas}
-        sucursales={sucursales}
-        centrosCosto={centrosCosto}
-        categorias={categorias}
+        centrosCosto={centroCostosLookup}
         onSubmit={handleSubmit}
         onCancel={() => navigate(-1)}
       />
