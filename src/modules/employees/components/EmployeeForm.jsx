@@ -337,8 +337,13 @@ export default function EmployeeForm({
                 />
               </Grid>
             </Grid>
-            {initialEmpleado.centrocosto.id} -{" "}
-            {initialEmpleado.centrocosto.centro_costo_nombre}
+
+            {initialEmpleado && (
+              <>
+                {initialEmpleado.centrocosto.id} -{" "}
+                {initialEmpleado.centrocosto.centro_costo_nombre}
+              </>
+            )}
             {initialEmpleado && (
               <>
                 <Typography variant="subtitle2" sx={{ mt: 3, mb: 1.5 }}>
