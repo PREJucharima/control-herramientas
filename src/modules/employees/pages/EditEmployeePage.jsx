@@ -51,7 +51,7 @@ const EditEmployeePage = () => {
       apellido_paterno: formValues.apellido_paterno.trim(),
       apellido_materno: formValues.apellido_materno?.trim() || "",
       nombre_completo: formValues.nombre_completo.trim(),
-      centrocosto: formValues.centrocosto ? formValues.centrocosto.id : null,
+      centrocosto: formValues.centrocosto ? formValues.centrocosto : null,
       esta_activo: !!formValues.esta_activo,
     };
 

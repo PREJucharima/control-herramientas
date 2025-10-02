@@ -38,6 +38,9 @@ export default function EmployeeForm({
     return centrosCosto.find((cc) => cc.id === initialEmpleado.centrocosto.id);
   }, [initialEmpleado, centrosCosto]);
 
+  console.log("Centros de costo disponibles:", centrosCosto);
+  console.log("Initial centro costo object:", initialCentroCostoObject);
+
   // ---------- Valores iniciales ----------
   const initialValues = {
     rut: initialEmpleado?.rut ?? "",
@@ -46,7 +49,8 @@ export default function EmployeeForm({
     apellido_paterno: initialEmpleado?.apellido_paterno ?? "",
     apellido_materno: initialEmpleado?.apellido_materno ?? "",
     nombre_completo: initialEmpleado?.nombre_completo ?? "",
-    centrocosto: initialCentroCostoObject ?? null,
+    // centrocosto: initialCentroCostoObject ?? null,
+    centrocosto: initialEmpleado?.centrocosto ?? null,
 
     esta_activo: initialEmpleado?.esta_activo ?? "",
   };
@@ -127,14 +131,7 @@ export default function EmployeeForm({
       apellido_paterno: values.apellido_paterno.trim(),
       apellido_materno: values.apellido_materno?.trim() || "",
       nombre_completo: nombreCompleto,
-      // centrocosto: values.centrocosto ? values.centrocosto.id : null,
-      ...(initialEmpleado
-        ? {
-            centrocosto: values.centrocosto
-              ? { id: values.centrocosto.id }
-              : null,
-          }
-        : { centrocosto: values.centrocosto ? values.centrocosto.id : null }),
+      centrocosto: values.centrocosto ? values.centrocosto.id : null,
 
       ...(initialEmpleado && { esta_activo: !!values.esta_activo }),
     };
@@ -319,31 +316,8 @@ export default function EmployeeForm({
                   false
                 )}
               </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="centrocosto"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Centro de costo *"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      size="small"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
             </Grid>
 
-            {initialEmpleado && (
-              <>
-                {initialEmpleado.centrocosto.id} -{" "}
-                {initialEmpleado.centrocosto.centro_costo_nombre}
-              </>
-            )}
             {initialEmpleado && (
               <>
                 <Typography variant="subtitle2" sx={{ mt: 3, mb: 1.5 }}>
