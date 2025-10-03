@@ -8,8 +8,7 @@ import { EmployeeForm } from "../components";
 const AddNewMaestroPage = () => {
   const navigate = useNavigate();
   const addEmployee = useEmployeesStore((s) => s.addEmployee);
-  const { centroCostosLookup, loading, error } = useCentroCostos();
-  console.log({ centroCostosLookup, loading, error });
+  const { centroCostosLookup, loading } = useCentroCostos();
 
   const handleSubmit = async (payload) => {
     try {
@@ -25,6 +24,7 @@ const AddNewMaestroPage = () => {
     <>
       <EmployeeForm
         centrosCosto={centroCostosLookup}
+        loadingLookups={loading}
         onSubmit={handleSubmit}
         onCancel={() => navigate(-1)}
       />

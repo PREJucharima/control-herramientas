@@ -38,9 +38,6 @@ export default function EmployeeForm({
     return centrosCosto.find((cc) => cc.id === initialEmpleado.centrocosto.id);
   }, [initialEmpleado, centrosCosto]);
 
-  console.log("Centros de costo disponibles:", centrosCosto);
-  console.log("Initial centro costo object:", initialCentroCostoObject);
-
   // ---------- Valores iniciales ----------
   const initialValues = {
     rut: initialEmpleado?.rut ?? "",
