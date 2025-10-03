@@ -20,7 +20,7 @@ import {
   FormHelperText,
   Autocomplete,
 } from "@mui/material";
-import { InfoOutlined } from "@mui/icons-material";
+import { InfoOutlined, Padding } from "@mui/icons-material";
 
 export default function EmployeeForm({
   initialEmpleado,
@@ -153,7 +153,7 @@ export default function EmployeeForm({
           onBlur={field.onBlur}
           loading={loadingLookups}
           disabled={disabled}
-          sx={{ minWidth: 400 }}
+          sx={{ minWidth: 400, mt: -1 }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           getOptionLabel={(o) => (o?.descripcion ? o.descripcion : "")}
           size="medium"
@@ -313,41 +313,34 @@ export default function EmployeeForm({
                   false
                 )}
               </Grid>
-            </Grid>
 
-            {initialEmpleado && (
-              <>
-                <Typography variant="subtitle2" sx={{ mt: 3, mb: 1.5 }}>
-                  Estado
-                </Typography>
-
-                <Grid container spacing={2}>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name="esta_activo"
-                      control={control}
-                      render={({ field }) => (
-                        <Stack>
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={!!field.value}
-                                onChange={(_, v) => field.onChange(v)}
-                              />
-                            }
-                            label="Activo"
-                          />
-                          <FormHelperText sx={{ ml: 1.5, mt: -1 }}>
-                            Si está desactivado, el empleado no aparecerá en
-                            flujos de selección.
-                          </FormHelperText>
-                        </Stack>
-                      )}
-                    />
-                  </Grid>
+              {initialEmpleado && (
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="esta_activo"
+                    control={control}
+                    render={({ field }) => (
+                      <Stack>
+                        <FormControlLabel
+                          sx={{ ml: 0.5 }}
+                          control={
+                            <Switch
+                              checked={!!field.value}
+                              onChange={(_, v) => field.onChange(v)}
+                            />
+                          }
+                          label="Activo"
+                        />
+                        <FormHelperText sx={{ ml: 1.5, mt: 0 }}>
+                          Si está desactivado, el empleado no aparecerá en
+                          flujos de selección.
+                        </FormHelperText>
+                      </Stack>
+                    )}
+                  />
                 </Grid>
-              </>
-            )}
+              )}
+            </Grid>
           </CardContent>
 
           <Divider />

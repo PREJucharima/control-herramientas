@@ -106,6 +106,16 @@ export default function EmployeesHeadingArea({
           onDelete={() => onSyncStatusChange({ target: { value: "" } })}
         />
       )}
+      {syncStatusValue === "synced" && (
+        <Chip
+          size="small"
+          color="info"
+          variant="outlined"
+          icon={<CloudDone fontSize="small" />}
+          label="Sincronizado"
+          onDelete={() => onSyncStatusChange({ target: { value: "" } })}
+        />
+      )}
       {!!searchValue && (
         <Chip
           size="small"
@@ -238,14 +248,14 @@ export default function EmployeesHeadingArea({
               label={`Sincronización · ${syncText}`}
               active={Boolean(syncStatusValue)}
               onClear={() => onSyncStatusChange?.({ target: { value: "" } })}
-              chipProps={{
-                icon:
-                  syncStatusValue === "pending" ? (
-                    <SyncProblem />
-                  ) : syncStatusValue === "synced" ? (
-                    <CloudDone />
-                  ) : undefined,
-              }}
+              // chipProps={{
+              //   icon:
+              //     syncStatusValue === "pending" ? (
+              //       <SyncProblem />
+              //     ) : syncStatusValue === "synced" ? (
+              //       <CloudDone />
+              //     ) : undefined,
+              // }}
             >
               {(close) => (
                 <FormControl fullWidth size="small">
