@@ -1,5 +1,5 @@
-import * as React from "react";
 import * as Yup from "yup";
+import { useEffect, useRef } from "react";
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -20,24 +20,18 @@ import {
   FormHelperText,
   Autocomplete,
 } from "@mui/material";
-import { InfoOutlined, Padding } from "@mui/icons-material";
+import { InfoOutlined } from "@mui/icons-material";
+
+import { useCentroCostos } from "@/modules/centros-costo/hooks/useCentroCostos";
 
 export default function EmployeeForm({
   initialEmpleado,
-  centrosCosto = [],
-  loadingLookups = false,
+  companies = [],
+  isLoadingCompanies,
   onSubmit,
   onCancel,
+  defaultCompany,
 }) {
-  const initialCentroCostoObject = React.useMemo(() => {
-    if (!initialEmpleado?.centrocosto?.id || centrosCosto.length === 0) {
-      return null;
-    }
-    console.log(initialEmpleado?.centrocosto?.id);
-    // Buscamos en la lista de opciones el objeto que coincida con el ID del empleado
-    return centrosCosto.find((cc) => cc.id === initialEmpleado.centrocosto.id);
-  }, [initialEmpleado, centrosCosto]);
-
   // ---------- Valores iniciales ----------
   const initialValues = {
     rut: initialEmpleado?.rut ?? "",
@@ -46,9 +40,8 @@ export default function EmployeeForm({
     apellido_paterno: initialEmpleado?.apellido_paterno ?? "",
     apellido_materno: initialEmpleado?.apellido_materno ?? "",
     nombre_completo: initialEmpleado?.nombre_completo ?? "",
-    // centrocosto: initialCentroCostoObject ?? null,
+    empresa: initialEmpleado?.empresa ?? null,
     centrocosto: initialEmpleado?.centrocosto ?? null,
-
     esta_activo: initialEmpleado?.esta_activo ?? "",
   };
 
@@ -69,6 +62,7 @@ export default function EmployeeForm({
     nombre_completo: Yup.string()
       .trim()
       .required("El nombre completo es requerido"),
+    empresa: Yup.object().nullable().required("La empresa es requerida"),
     centrocosto: Yup.mixed().required("El centro de costo es requerido"),
   });
 
@@ -76,32 +70,19 @@ export default function EmployeeForm({
   const methods = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(validationSchema),
-    mode: "onTouched",
+    mode: "onBlur",
     criteriaMode: "all",
   });
 
-  const { control, handleSubmit, setValue, reset, formState } = methods;
+  const { control, handleSubmit, setValue, formState } = methods;
   const { isSubmitting, isDirty, isValid } = formState;
 
-  React.useEffect(() => {
-    reset({
-      rut: initialEmpleado?.rut ?? "",
-      email: initialEmpleado?.email ?? "",
-      nombre: initialEmpleado?.nombre ?? "",
-      apellido_paterno: initialEmpleado?.apellido_paterno ?? "",
-      apellido_materno: initialEmpleado?.apellido_materno ?? "",
-      nombre_completo: initialEmpleado?.nombre_completo ?? "",
-      centrocosto: initialCentroCostoObject ?? null,
-      esta_activo: initialEmpleado?.esta_activo ?? false,
-    });
-  }, [reset, initialEmpleado, initialCentroCostoObject]);
-
-  // Autocompletar nombre_completo si el usuario no lo escribe
+  // Autocompletar nombre_completo
   const nombre = useWatch({ control, name: "nombre" });
   const apPat = useWatch({ control, name: "apellido_paterno" });
   const apMat = useWatch({ control, name: "apellido_materno" });
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(
       "nombre_completo",
       [nombre, apPat, apMat].filter(Boolean).join(" "),
@@ -111,6 +92,33 @@ export default function EmployeeForm({
       }
     );
   }, [nombre, apPat, apMat, setValue]);
+
+  // Lookups dependientes
+  const selectedCompany = useWatch({ control, name: "empresa" });
+  const { centroCostosLookup, isLoading: isLoadingCentrosCosto } =
+    useCentroCostos(selectedCompany?.id);
+
+  // Usamos una referencia para "recordar" el ID de la empresa anterior
+  const prevCompanyId = useRef();
+
+  useEffect(() => {
+    if (!initialEmpleado && defaultCompany) {
+      const companyToSet = companies.find((c) => c.id === defaultCompany.id);
+      if (companyToSet) {
+        setValue("empresa", companyToSet, { shouldValidate: false });
+      }
+    }
+  }, [initialEmpleado, defaultCompany, companies, setValue]);
+
+  useEffect(() => {
+    if (isDirty && selectedCompany?.id !== prevCompanyId.current) {
+      setValue("centrocosto", null, {
+        shouldValidate: false,
+        shouldDirty: true,
+      });
+    }
+    prevCompanyId.current = selectedCompany?.id;
+  }, [selectedCompany, setValue, isDirty]);
 
   // ---------- Submit ----------
   const onSubmitInternal = handleSubmit(async (values) => {
@@ -128,11 +136,12 @@ export default function EmployeeForm({
       apellido_paterno: values.apellido_paterno.trim(),
       apellido_materno: values.apellido_materno?.trim() || "",
       nombre_completo: nombreCompleto,
+      empresa: values.empresa ? values.empresa.id : null,
       centrocosto: values.centrocosto ? values.centrocosto.id : null,
-
       ...(initialEmpleado && { esta_activo: !!values.esta_activo }),
     };
-    console.log("Payload a enviar:", payload);
+
+    console.log("payload", payload);
     await onSubmit?.(payload);
   });
 
@@ -147,15 +156,21 @@ export default function EmployeeForm({
       control={control}
       render={({ field, fieldState }) => (
         <Autocomplete
-          options={options}
+          key={
+            name === "centrocosto"
+              ? `cc-${selectedCompany?.id ?? "none"}`
+              : name
+          }
+          options={options || []}
           value={field.value}
           onChange={(_, val) => field.onChange(val)}
           onBlur={field.onBlur}
-          loading={loadingLookups}
-          disabled={disabled}
+          disabled={!!disabled}
           sx={{ minWidth: 400, mt: -1 }}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          getOptionLabel={(o) => (o?.descripcion ? o.descripcion : "")}
+          isOptionEqualToValue={(option, value) => option?.id === value?.id}
+          getOptionLabel={(o) =>
+            o?.descripcion ? o.descripcion : o?.nombre ?? ""
+          }
           size="medium"
           fullWidth
           renderInput={(params) => (
@@ -230,6 +245,7 @@ export default function EmployeeForm({
                 />
               </Grid>
             </Grid>
+
             <Grid container spacing={4} sx={{ mb: 3 }}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -265,6 +281,7 @@ export default function EmployeeForm({
                 />
               </Grid>
             </Grid>
+
             <Grid container spacing={4} sx={{ mb: 3 }}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -304,13 +321,23 @@ export default function EmployeeForm({
                 />
               </Grid>
             </Grid>
+
             <Grid container spacing={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 {renderAC(
+                  "empresa",
+                  "Empresa *",
+                  companies,
+                  isLoadingCompanies
+                )}
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 6 }}>
+                {renderAC(
                   "centrocosto",
-                  "Centro de costo",
-                  centrosCosto,
-                  false
+                  "Centro de costo *",
+                  centroCostosLookup,
+                  !selectedCompany?.id || isLoadingCentrosCosto
                 )}
               </Grid>
 

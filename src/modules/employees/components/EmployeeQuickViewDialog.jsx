@@ -281,7 +281,7 @@ export default function EmployeeQuickViewDialog({ open, rut, onClose }) {
                   />
                   <FieldRow
                     label="Centro de costos"
-                    value={`${emp.centrocosto?.centro_costo_codigo} - ${emp.centrocosto?.centro_costo_nombre}`}
+                    value={`${emp.centrocosto?.codigo} - ${emp.centrocosto?.nombre}`}
                     icon={<Apartment fontSize="small" />}
                   />
                   <FieldRow

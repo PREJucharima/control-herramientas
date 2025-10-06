@@ -1,7 +1,16 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
+import { API_PATHS } from "@/config/apiPaths";
 
-export const getCentroCostosLookup = async () => {
-  const response = await fetchWithAuth(`api/centros-costo/lookup/`);
+export const getCentroCostosLookup = async (companyId) => {
+  const queryParams = new URLSearchParams();
+
+  if (companyId) {
+    queryParams.append("empresa_id", companyId);
+  }
+
+  const url = `${API_PATHS.lookup.costCenters}?${queryParams.toString()}`;
+
+  const response = await fetchWithAuth(url);
   const data = await response.json();
   return data;
 };

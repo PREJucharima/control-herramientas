@@ -62,9 +62,9 @@ export default function EmployeeTableRow({
       <TableCell>{employee.nombre_completo}</TableCell>
       <TableCell>{employee.email ?? "—"}</TableCell>
       <TableCell sx={{ fontSize: "0.75rem" }}>
-        {employee.centrocosto?.centro_costo_nombre
-          ? `${employee.centrocosto?.centro_costo_codigo} - 
-        ${employee.centrocosto?.centro_costo_nombre}`
+        {employee.centrocosto?.nombre
+          ? `${employee.centrocosto?.codigo} - 
+        ${employee.centrocosto?.nombre}`
           : "No Asignado"}
       </TableCell>
       <TableCell sx={{ fontSize: "0.75rem" }}>

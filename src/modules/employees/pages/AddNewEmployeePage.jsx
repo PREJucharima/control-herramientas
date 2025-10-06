@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 
-import { useCentroCostos } from "@/modules/centros-costo/hooks/useCentroCostos";
+import { useAuthStore } from "@/auth/states/authStore";
+import { useCompaniesLookups } from "@/modules/companies/hooks/useCompanies";
 import { createEmployee } from "../services/createEmployee";
 import { useEmployeesStore } from "../states/employeesStore";
 import { EmployeeForm } from "../components";
@@ -8,7 +9,9 @@ import { EmployeeForm } from "../components";
 const AddNewMaestroPage = () => {
   const navigate = useNavigate();
   const addEmployee = useEmployeesStore((s) => s.addEmployee);
-  const { centroCostosLookup, loading } = useCentroCostos();
+  const user = useAuthStore((state) => state.user);
+  const userCompany = user?.profile?.sucursal_principal?.empresa;
+  const { companies, isLoading } = useCompaniesLookups();
 
   const handleSubmit = async (payload) => {
     try {
@@ -23,10 +26,11 @@ const AddNewMaestroPage = () => {
   return (
     <>
       <EmployeeForm
-        centrosCosto={centroCostosLookup}
-        loadingLookups={loading}
+        companies={companies}
+        isLoadingCompanies={isLoading}
         onSubmit={handleSubmit}
         onCancel={() => navigate(-1)}
+        defaultCompany={userCompany}
       />
     </>
   );
