@@ -27,13 +27,13 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
   const navigate = useNavigate();
 
   const nombreCatalogoDependiente = useMemo(() => {
-    if (!maestroBySlug?.depende_de_catalogo) return null;
+    if (!maestroBySlug?.depende_de_maestro) return null;
 
     const maestroDependiente = maestros.find(
-      (m) => m.id === maestroBySlug.depende_de_catalogo
+      (m) => m.id === maestroBySlug.depende_de_maestro
     );
 
-    return maestroDependiente?.nombre_catalogo;
+    return maestroDependiente?.nombre;
   }, [maestros, maestroBySlug]);
 
   console.log(nombreCatalogoDependiente);
@@ -92,7 +92,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
         {!loading && !error && Object.keys(maestroBySlug).length > 0 && (
           <Stack gap={1}>
             <Typography variant="subtitle1" fontWeight={700}>
-              {maestroBySlug.nombre_catalogo}
+              {maestroBySlug.nombre}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
@@ -107,7 +107,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
               Depende de catálogo:{" "}
               <b>
                 {nombreCatalogoDependiente ??
-                  maestroBySlug?.depende_de_catalogo ??
+                  maestroBySlug?.depende_de_maestro ??
                   "—"}
               </b>
             </Typography>
