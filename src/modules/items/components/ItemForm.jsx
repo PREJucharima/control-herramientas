@@ -83,7 +83,7 @@ export default function ItemForm({
       }),
   });
 
-  const hasShowInputsDads = typeCatalog?.depende_de_catalogo != null;
+  const hasShowInputsDads = typeCatalog?.depende_de_maestro != null;
 
   const methods = useForm({
     defaultValues: initialValues,

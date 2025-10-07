@@ -13,7 +13,7 @@ const AddNewItemPage = () => {
   const navigate = useNavigate();
 
   const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
-  const dependeDeCatalogo = maestroActual?.depende_de_catalogo;
+  const dependeDeCatalogo = maestroActual?.depende_de_maestro;
 
   // const maestroId = dependeDeCatalogo?.id;
 
@@ -22,6 +22,7 @@ const AddNewItemPage = () => {
 
   console.log("Maestro actual:", maestroActual);
   console.log("Depende de catálogo:", dependeDeCatalogo);
+  console.log("Items by maestro (lookup):", itemsByMaestro);
 
   const handleSubmit = async (payload) => {
     try {

@@ -15,7 +15,7 @@ import {
 import { Scrollbar } from "@/components/scrollbar";
 import { TableDataNotFound, TableToolbar } from "@/components/table";
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
-import { useMaestrosStore } from "../../maestros/states/maestrosStore";
+import { useMaestrosStore } from "@/modules/maestros/states/maestrosStore";
 import {
   ItemQuickViewDialog,
   ItemTableHead,
@@ -32,7 +32,7 @@ const ItemsPage = () => {
   const navigate = useNavigate();
 
   const maestroCurrent = maestros?.find((m) => m.codigo_unico === codigo);
-  const maestroName = maestroCurrent?.nombre_catalogo;
+  const maestroName = maestroCurrent?.nombre;
 
   const [filters, setFilters] = useState({ status: "", search: "" });
 
@@ -74,7 +74,7 @@ const ItemsPage = () => {
   const filtered = useMemo(() => {
     const withDerived = (items || []).map((x) => ({
       ...x,
-      tipo_nombre: x?.tipo_catalogo?.nombre_catalogo ?? "",
+      tipo_nombre: x?.tipo_catalogo?.nombre ?? "",
     }));
 
     const sorted = stableSort(withDerived, getComparator(order, orderBy));
