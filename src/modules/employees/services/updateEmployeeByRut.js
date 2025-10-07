@@ -1,7 +1,8 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
+import { API_PATHS } from "@/config/apiPaths";
 
 export const updateEmployeeByRut = async (rut, payload) => {
-  const url = `api/empleados/${encodeURIComponent(rut)}/`;
+  const url = API_PATHS.employees.update(rut);
   const res = await fetchWithAuth(url, {
     method: "PUT",
     body: JSON.stringify(payload),

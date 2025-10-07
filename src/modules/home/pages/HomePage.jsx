@@ -9,6 +9,8 @@ const HomePage = () => {
   const user = useAuthStore((state) => state.user);
   const { handleLogout } = useAuth();
 
+  console.log("Usuario en HomePage:", user);
+
   if (!user) return <Navigate to="/auth/login" />;
   return (
     <Container>

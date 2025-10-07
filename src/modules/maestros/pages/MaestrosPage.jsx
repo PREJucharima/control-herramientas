@@ -50,7 +50,7 @@ const MaestrosPage = () => {
     const q = query.trim().toLowerCase();
     if (!q) return maestros;
     return maestros.filter((c) =>
-      String(c?.nombre_catalogo || "")
+      String(c?.nombre || "")
         .toLowerCase()
         .includes(q)
     );
@@ -238,7 +238,7 @@ const MaestrosPage = () => {
                       <Tooltip title="Ver maestro">
                         <IconButton
                           size="small"
-                          aria-label={`Ver maestro ${maestro.nombre_catalogo}`}
+                          aria-label={`Ver maestro ${maestro.nombre}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             openView(maestro.codigo_unico);
@@ -251,7 +251,7 @@ const MaestrosPage = () => {
                       <Tooltip title="Editar maestro">
                         <IconButton
                           size="small"
-                          aria-label={`Editar maestro ${maestro.nombre_catalogo}`}
+                          aria-label={`Editar maestro ${maestro.nombre}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(
@@ -274,7 +274,7 @@ const MaestrosPage = () => {
                           )}/items`
                         )
                       }
-                      aria-label={`Abrir ítems del catálogo ${maestro?.nombre_catalogo}`}
+                      aria-label={`Abrir ítems del catálogo ${maestro?.nombre}`}
                     >
                       <CardContent
                         sx={{
@@ -289,9 +289,9 @@ const MaestrosPage = () => {
                           variant="subtitle1"
                           fontWeight={700}
                           noWrap
-                          title={maestro?.nombre_catalogo}
+                          title={maestro?.nombre}
                         >
-                          {maestro?.nombre_catalogo || "Catálogo sin nombre"}
+                          {maestro?.nombre || "Catálogo sin nombre"}
                         </Typography>
 
                         <Chip

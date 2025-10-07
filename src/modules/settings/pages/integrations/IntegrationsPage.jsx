@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import SynchronizeCard from "./components/SynchronizeCard";
-import { integrationsEmployees } from "../../services/integrations/employees";
+import { integrationsEmployees } from "../../services/integrations/employeesBUK";
 import { integrationsCostCenters } from "../../services/integrations/centroDeCostos";
 
 export default function IntegrationsPage() {

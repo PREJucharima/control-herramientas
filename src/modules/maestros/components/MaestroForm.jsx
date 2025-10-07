@@ -27,19 +27,19 @@ export default function MaestroForm({
   onSubmit,
 }) {
   const initialValues = {
-    nombre_catalogo: initialMaestro?.nombre_catalogo ?? "",
+    nombre: initialMaestro?.nombre ?? "",
     usa_descripcion_corta: initialMaestro?.usa_descripcion_corta ?? false,
     usa_fechas_vigencia: initialMaestro?.usa_fechas_vigencia ?? false,
     esta_activo: initialMaestro?.esta_activo ?? true,
-    depende_de_catalogo: initialMaestro?.depende_de_catalogo ?? null,
+    depende_de_maestro: initialMaestro?.depende_de_maestro ?? null,
   };
 
   const validationSchema = Yup.object({
-    nombre_catalogo: Yup.string().trim().required("El nombre es requerido"),
+    nombre: Yup.string().trim().required("El nombre es requerido"),
     usa_descripcion_corta: Yup.boolean().required(),
     usa_fechas_vigencia: Yup.boolean().required(),
     esta_activo: Yup.boolean().required(),
-    depende_de_catalogo: Yup.number().nullable().typeError("Debe ser numérico"),
+    depende_de_maestro: Yup.number().nullable().typeError("Debe ser numérico"),
   });
 
   const methods = useForm({
@@ -57,12 +57,12 @@ export default function MaestroForm({
 
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = {
-      nombre_catalogo: values.nombre_catalogo.trim(),
+      nombre: values.nombre.trim(),
       usa_descripcion_corta: !!values.usa_descripcion_corta,
       usa_fechas_vigencia: !!values.usa_fechas_vigencia,
       esta_activo: !!values.esta_activo,
-      depende_de_catalogo: values.depende_de_catalogo
-        ? Number(values.depende_de_catalogo)
+      depende_de_maestro: values.depende_de_maestro
+        ? Number(values.depende_de_maestro)
         : null,
     };
 
@@ -98,7 +98,7 @@ export default function MaestroForm({
           <Grid container spacing={2.5}>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                name="nombre_catalogo"
+                name="nombre"
                 label="Nombre del catálogo *"
                 placeholder="Ej. Contratos"
                 fullWidth
@@ -189,12 +189,12 @@ export default function MaestroForm({
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <SelectField
-                name="depende_de_catalogo"
+                name="depende_de_maestro"
                 label="Depende de catálogo"
                 loading={isLoadingMaestros}
                 options={maestros || []}
                 valueKey="id"
-                labelKey="nombre_catalogo"
+                labelKey="nombre"
                 allowEmpty
                 emptyLabel="— Ninguno —"
               />

@@ -1,7 +1,10 @@
-import { Tooltip, Toolbar, IconButton, Typography } from "@mui/material";
-import Delete from "@/icons/Delete";
+import { Toolbar, Typography, Button } from "@mui/material";
+import { Sync } from "@mui/icons-material";
 
-export default function TableToolbar({ selected, handleDeleteRows }) {
+export default function TableToolbar({ selected, handleSyncRows }) {
+  const count = selected.length;
+  if (count === 0) return null;
+
   return (
     <Toolbar
       sx={{
@@ -15,14 +18,20 @@ export default function TableToolbar({ selected, handleDeleteRows }) {
           flex: "1 1 100%",
         }}
       >
-        {selected} {selected.length > 1 ? "seleccionados" : "seleccionado"}
+        {selected} seleccionado(s)
       </Typography>
 
-      <Tooltip title="Eliminar los seleccionado(s)">
-        <IconButton onClick={handleDeleteRows} color="error">
-          <Delete />
-        </IconButton>
-      </Tooltip>
+      <span>
+        <Button
+          onClick={handleSyncRows}
+          disabled={count === 0}
+          variant="text"
+          color="primary"
+          startIcon={<Sync />}
+        >
+          {count === 1 ? "Sincronizar" : "Sincronizar seleccionados"}
+        </Button>
+      </span>
     </Toolbar>
   );
 }

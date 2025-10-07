@@ -24,16 +24,16 @@ const EditMaestroPage = () => {
 
   const handleSubmit = async (values) => {
     const payload = {
-      nombre_catalogo: values.nombre_catalogo?.trim(),
+      nombre: values.nombre?.trim(),
       codigo_unico: initialMaestro?.codigo_unico,
       usa_descripcion_corta: !!values.usa_descripcion_corta,
       usa_fechas_vigencia: !!values.usa_fechas_vigencia,
       esta_activo: !!values.esta_activo,
       empresa: initialMaestro?.empresa,
-      depende_de_catalogo:
-        values.depende_de_catalogo === "" || values.depende_de_catalogo == null
+      depende_de_maestro:
+        values.depende_de_maestro === "" || values.depende_de_maestro == null
           ? null
-          : Number(values.depende_de_catalogo),
+          : Number(values.depende_de_maestro),
     };
 
     try {

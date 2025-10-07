@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
+import { API_PATHS } from "@/config/apiPaths";
 
 /**
  * Obtiene una lista paginada de empleados.
@@ -28,7 +29,7 @@ export const getEmployeesPaginated = async (params = {}) => {
     queryParams.append("pendiente_sincronizar", params.pendiente_sincronizar);
   }
 
-  const url = `api/empleados/?${queryParams.toString()}`;
+  const url = `${API_PATHS.employees.list}?${queryParams.toString()}`;
   const response = await fetchWithAuth(url);
   const data = await response.json();
   return data;

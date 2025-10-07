@@ -1,8 +1,9 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
+import { API_PATHS } from "@/config/apiPaths";
 
 export const createItem = async (codigoCatalogo, payload) => {
   const res = await fetchWithAuth(
-    `api/catalogos/${encodeURIComponent(codigoCatalogo)}/items/`,
+    API_PATHS.masterElements.create(codigoCatalogo),
     {
       method: "POST",
       body: JSON.stringify(payload),

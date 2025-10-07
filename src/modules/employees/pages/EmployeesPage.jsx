@@ -173,8 +173,8 @@ const EmployeesPage = () => {
         {selected.length > 0 && (
           <TableToolbar
             selected={selected.length}
-            handleDeleteRows={() => {
-              /* bulk delete empleados seleccionados */
+            handleSyncRows={() => {
+              /* bulk sincronizar empleados seleccionados */
             }}
           />
         )}

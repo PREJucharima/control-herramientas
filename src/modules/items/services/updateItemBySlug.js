@@ -1,9 +1,8 @@
 import { fetchWithAuth } from "@/auth/services/apiClient";
+import { API_PATHS } from "@/config/apiPaths";
 
 export const updateItemBySlug = async (codigoMaestro, codigoItem, payload) => {
-  const url = `api/catalogos/${encodeURIComponent(
-    codigoMaestro
-  )}/items/${encodeURIComponent(codigoItem)}/`;
+  const url = API_PATHS.masterElements.update(codigoMaestro, codigoItem);
 
   const res = await fetchWithAuth(url, {
     method: "PUT",
@@ -19,9 +18,7 @@ export const updateItemBySlug = async (codigoMaestro, codigoItem, payload) => {
 };
 
 export const patchItemBySlug = async (codigoMaestro, codigoItem, patch) => {
-  const url = `api/catalogos/${encodeURIComponent(
-    codigoMaestro
-  )}/items/${encodeURIComponent(codigoItem)}/`;
+  const url = API_PATHS.masterElements.partialUpdate(codigoMaestro, codigoItem);
 
   const res = await fetchWithAuth(url, {
     method: "PATCH",
