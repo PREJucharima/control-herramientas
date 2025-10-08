@@ -48,8 +48,12 @@ const PreferencesPage = lazy(() =>
 const IntegrationsPage = lazy(() =>
   import("@/modules/settings/pages/integrations/IntegrationsPage")
 );
-
-export { RootLayout };
+const ProductsPage = lazy(() =>
+  import("@/modules/products/pages/ProductsPage")
+);
+const AddNewProductPage = lazy(() =>
+  import("@/modules/products/pages/AddNewProductPage")
+);
 
 export const protectedRoutes = [
   {
@@ -89,6 +93,14 @@ export const protectedRoutes = [
       {
         path: "/catalogos/empleados/:rut/editar",
         element: createElement(EditEmployeePage),
+      },
+      {
+        path: "/catalogos/productos",
+        element: createElement(ProductsPage),
+      },
+      {
+        path: "/catalogos/productos/nuevo",
+        element: createElement(AddNewProductPage),
       },
       {
         path: "/seguridad/empresa-y-sucursal",
