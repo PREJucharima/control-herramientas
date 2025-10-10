@@ -204,7 +204,7 @@ const ProductsPage = () => {
                           onEdit={() =>
                             navigate(
                               `/catalogos/productos/${encodeURIComponent(
-                                prod.id
+                                prod.codigo
                               )}/editar`
                             )
                           }

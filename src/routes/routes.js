@@ -54,6 +54,9 @@ const ProductsPage = lazy(() =>
 const AddNewProductPage = lazy(() =>
   import("@/modules/products/pages/AddNewProductPage")
 );
+const EditProductPage = lazy(() =>
+  import("@/modules/products/pages/EditProductPage")
+);
 
 export const protectedRoutes = [
   {
@@ -101,6 +104,10 @@ export const protectedRoutes = [
       {
         path: "/catalogos/productos/nuevo",
         element: createElement(AddNewProductPage),
+      },
+      {
+        path: "/catalogos/productos/:codigo/editar",
+        element: createElement(EditProductPage),
       },
       {
         path: "/seguridad/empresa-y-sucursal",
