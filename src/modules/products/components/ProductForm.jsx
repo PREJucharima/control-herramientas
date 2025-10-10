@@ -21,6 +21,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
+
 import { useFetchItemsByMaestro } from "../../items/hooks/useFetchItemsByMaestro";
 import { useCatalogChildren } from "../hooks/useCatalogChildren";
 import { useBranches } from "../../branch/hooks/useBranches";
@@ -31,6 +32,16 @@ const MAESTROS = {
   TYPE: 5,
   BRAND: 2,
 };
+
+const accessories = [
+  { title: "Mouse", year: 1994 },
+  { title: "Keyboard", year: 1995 },
+  { title: "Monitor", year: 2000 },
+  { title: "Printer", year: 2005 },
+  { title: "Webcam", year: 2010 },
+  { title: "Microphone", year: 2015 },
+  { title: "Headphones", year: 2020 },
+];
 
 const ProductForm = ({
   initialProduct,
@@ -193,6 +204,10 @@ const ProductForm = ({
     prevBrandId.current = selectedBrand?.id ?? null;
   }, [selectedBrand?.id, setValue]);
 
+  // Es accesorio
+  const isAccessory = useWatch({ control, name: "es_accesorio" });
+  console.log("isAccessory", isAccessory);
+
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = {
       empresa: values.empresa ? values.empresa.id : null,
@@ -330,19 +345,13 @@ const ProductForm = ({
 
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="nro_serie"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Nro de Serie *"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
+                {renderAC(
+                  "tipo_producto",
+                  "Tipo de producto",
+                  productTypeOptions,
+                  isProductTypeLoading,
+                  productTypeError
+                )}
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -363,13 +372,19 @@ const ProductForm = ({
 
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "tipo_producto",
-                  "Tipo de producto",
-                  productTypeOptions,
-                  isProductTypeLoading,
-                  productTypeError
-                )}
+                <Controller
+                  name="nro_serie"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      label="Nro de Serie *"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      fullWidth
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 {renderAC(
@@ -415,9 +430,6 @@ const ProductForm = ({
                   !selectedBrand || isModelLoading
                 )}
               </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="es_accesorio"
@@ -445,6 +457,33 @@ const ProductForm = ({
                   )}
                 />
               </Grid>
+            </Grid>
+
+            {!isAccessory && (
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 12 }}>
+                  <Autocomplete
+                    multiple
+                    limitTags={2}
+                    fullWidth
+                    id="multiple-limit-tags"
+                    options={accessories}
+                    getOptionLabel={(option) => option?.title}
+                    // defaultValue={[accessories[1]]}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Accesorios"
+                        placeholder="accesorios"
+                      />
+                    )}
+                    // sx={{ width: "500px" }}
+                  />
+                </Grid>
+              </Grid>
+            )}
+
+            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="es_nuevo"
@@ -472,9 +511,6 @@ const ProductForm = ({
                   )}
                 />
               </Grid>
-            </Grid>
-
-            <Grid container spacing={4}>
               {initialProduct && (
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
