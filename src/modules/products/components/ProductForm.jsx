@@ -126,14 +126,12 @@ const ProductForm = ({
 
   // Lookups dependientes
   const selectedCompany = useWatch({ control, name: "empresa" });
-  console.log(selectedCompany);
+  const prevCompanyId = useRef();
   const {
     branchesLookup,
     isLoading: isLoadingBranches,
     error: errorBranches,
   } = useBranches(selectedCompany?.id);
-
-  console.log(branchesLookup);
 
   useEffect(() => {
     if (!initialProduct && defaultCompany) {
@@ -143,6 +141,16 @@ const ProductForm = ({
       }
     }
   }, [initialProduct, defaultCompany, companies, setValue]);
+
+  useEffect(() => {
+    if (
+      prevCompanyId.current != null &&
+      selectedCompany?.id !== prevCompanyId.current
+    ) {
+      setValue("sucursal", null, { shouldValidate: true, shouldDirty: true });
+    }
+    prevCompanyId.current = selectedCompany?.id ?? null;
+  }, [selectedCompany?.id, setValue]);
 
   // Obtener los items
   const {
@@ -206,7 +214,15 @@ const ProductForm = ({
 
   // Es accesorio
   const isAccessory = useWatch({ control, name: "es_accesorio" });
-  console.log("isAccessory", isAccessory);
+
+  // Tipo de producto
+  const productType = useWatch({ control, name: "tipo_producto" });
+
+  const productTypeWithSerie =
+    (productType?.descripcion || "").toUpperCase().trim() === "CON SERIE";
+
+  console.log("render", { productType });
+  console.log({ productTypeWithSerie });
 
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = {
@@ -259,7 +275,6 @@ const ProductForm = ({
           getOptionLabel={(o) =>
             o?.descripcion ? o.descripcion : o?.nombre ?? ""
           }
-          sx={{ minWidth: 400, mt: -1 }}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -382,6 +397,7 @@ const ProductForm = ({
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
                       fullWidth
+                      disabled={!productTypeWithSerie}
                     />
                   )}
                 />
