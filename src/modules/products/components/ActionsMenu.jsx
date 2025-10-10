@@ -22,7 +22,7 @@ const PrettyItem = styled(MenuItem)(({ theme }) => ({
 }));
 
 const Text = styled("p")(() => ({
-  fontSize: "13",
+  fontSize: "13px",
   display: "block",
 }));
 
@@ -65,7 +65,7 @@ export default function ActionsMenu({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        <MenuList sx={{ m: 0, p: 0 }}>
+        <MenuList sx={{ m: 0, p: 0, minWidth: 200 }}>
           <PrettyItem onClick={handleAdd}>
             <ListItemIcon>
               <Add fontSize="small" />
