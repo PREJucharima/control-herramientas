@@ -1,8 +1,21 @@
-import { Edit, Visibility } from "@mui/icons-material";
-import { TableRow, TableCell, Chip, IconButton } from "@mui/material";
+import { useState } from "react";
+
 import dayjs from "dayjs";
+import { MoreHoriz } from "@mui/icons-material";
+import { TableRow, TableCell, Chip, IconButton } from "@mui/material";
+
+import RowActionsMenu from "./RowActionsMenu";
 
 export default function ProductsTableRow({ product, onEdit, onViewDetails }) {
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const menuOpen = Boolean(menuAnchor);
+
+  const openMenu = (e) => {
+    e.stopPropagation();
+    setMenuAnchor(e.currentTarget);
+  };
+  const closeMenu = () => setMenuAnchor(null);
+
   const dateFormat = (dateStr) => {
     return dayjs(dateStr).format("DD/MM/YYYY");
   };
@@ -50,12 +63,24 @@ export default function ProductsTableRow({ product, onEdit, onViewDetails }) {
           boxShadow: `-5px 0 5px -5px rgba(0,0,0,0.2)`,
         }}
       >
-        <IconButton size="small" onClick={() => onViewDetails?.(product.id)}>
-          <Visibility fontSize="small" />
+        <IconButton
+          size="small"
+          onClick={openMenu}
+          aria-label="mas-acciones"
+          aria-controls={menuOpen ? `row-menu-${product.id}` : undefined}
+          aria-haspopup="true"
+          aria-expanded={menuOpen ? "true" : undefined}
+        >
+          <MoreHoriz fontSize="small" />
         </IconButton>
-        <IconButton size="small" onClick={() => onEdit?.(product.id)}>
-          <Edit fontSize="small" />
-        </IconButton>
+
+        <RowActionsMenu
+          anchorEl={menuAnchor}
+          open={menuOpen}
+          onClose={closeMenu}
+          onViewDetails={() => onViewDetails?.(product.id)}
+          onEdit={() => onEdit?.(product.id)}
+        />
       </TableCell>
     </TableRow>
   );
