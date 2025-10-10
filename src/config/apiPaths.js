@@ -8,6 +8,12 @@ export const API_PATHS = {
     masters: `api/maestros/lookup/`,
     itemsByMaster: (masterId) =>
       `/api/maestros/lookup/${encodeURIComponent(masterId)}/elementos/`,
+    itemsByParent: (parentItemId) =>
+      `/api/maestros/lookup/elementos/padre/${encodeURIComponent(
+        parentItemId
+      )}/`,
+    branches: `api/sucursales/lookup/`,
+    categories: `api/categorias/lookup/`,
   },
 
   /**
@@ -63,6 +69,17 @@ export const API_PATHS = {
       `api/maestros/definiciones/${encodeURIComponent(uniqueCode)}/`,
     partialUpdate: (uniqueCode) =>
       `api/maestros/definiciones/${encodeURIComponent(uniqueCode)}/`,
+  },
+
+  /**
+   * @_section Productos - Endpoints para gestión de productos
+   */
+  products: {
+    list: "api/productos/",
+    create: "api/productos/",
+    detail: (code) => `api/productos/${encodeURIComponent(code)}/`,
+    update: (code) => `api/productos/${encodeURIComponent(code)}/`,
+    partialUpdate: (code) => `api/productos/${encodeURIComponent(code)}/`,
   },
 
   /**
