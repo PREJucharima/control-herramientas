@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 
-import { useItemsStore } from "../states/itemsStore";
 import { getItemsByMaestro } from "../services/getItemsByMaestro";
 
 export const useFetchItemsByMaestro = (id) => {
-  const setItemsByMaestro = useItemsStore((state) => state.setItemsByMaestro);
-  const { itemsByMaestro } = useItemsStore();
+  const [itemsByMaestro, setItemsByMaestro] = useState();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
