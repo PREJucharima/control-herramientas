@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router";
+
 import {
   Menu,
   MenuItem,
@@ -13,12 +15,11 @@ import {
   KeyboardAltOutlined,
   Feed,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router";
 
 const PrettyItem = styled(MenuItem)(({ theme }) => ({
   borderRadius: 10,
-  margin: "2px 4px",
-  padding: "6px 12px",
+  margin: "0px 4px",
+  padding: "8px 12px",
   "&:hover": { backgroundColor: theme.palette.action.hover },
 }));
 
