@@ -57,6 +57,7 @@ const AddNewProductPage = lazy(() =>
 const EditProductPage = lazy(() =>
   import("@/modules/products/pages/EditProductPage")
 );
+const HistoryTable = lazy(() => import("@/modules/history/pages/HistoryPage"));
 
 export const protectedRoutes = [
   {
@@ -108,6 +109,10 @@ export const protectedRoutes = [
       {
         path: "/catalogos/productos/:codigo/editar",
         element: createElement(EditProductPage),
+      },
+      {
+        path: "/catalogos/historial",
+        element: createElement(HistoryTable),
       },
       {
         path: "/seguridad/empresa-y-sucursal",
