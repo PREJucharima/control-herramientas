@@ -27,7 +27,7 @@ import {
   SyncProblem,
 } from "@mui/icons-material";
 
-import { FilterPill } from "@/components/Filters/FilterPill";
+import { FilterPill } from "@/components/filters";
 import FormatBullets from "@/icons/FormatBullets";
 import Apps from "@/icons/Apps";
 
