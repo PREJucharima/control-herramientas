@@ -1,21 +1,8 @@
-import { useCallback } from "react";
-
 import { Edit, Visibility } from "@mui/icons-material";
-import { Checkbox, TableRow, TableCell, Chip, IconButton } from "@mui/material";
+import { TableRow, TableCell, Chip, IconButton } from "@mui/material";
 import dayjs from "dayjs";
 
-export default function ProductsTableRow({
-  product,
-  isSelected,
-  handleSelectRow,
-  onEdit,
-  onViewDetails,
-}) {
-  const handleCheck = useCallback(
-    (e) => handleSelectRow(e, product.id),
-    [handleSelectRow, product.id]
-  );
-
+export default function ProductsTableRow({ product, onEdit, onViewDetails }) {
   const dateFormat = (dateStr) => {
     return dayjs(dateStr).format("DD/MM/YYYY");
   };
@@ -24,44 +11,12 @@ export default function ProductsTableRow({
   const fechaModificacion = dateFormat(product.fecha_modificacion || "");
 
   return (
-    <TableRow
-      hover
-      sx={{
-        ...(product.pendiente_sincronizar && {
-          "& td:first-of-type": { position: "relative" },
-          "& td:first-of-type::before": {
-            content: '""',
-            position: "absolute",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 4,
-            bgcolor: "warning.main",
-            borderRadius: 1,
-          },
-        }),
-      }}
-    >
-      <TableCell padding="checkbox">
-        <Checkbox
-          size="small"
-          color="primary"
-          checked={isSelected}
-          onClick={handleCheck}
-        />
-      </TableCell>
-
-      <TableCell sx={{ fontSize: "0.75rem" }}>
-        {product?.codigo ?? "—"}
-      </TableCell>
-      <TableCell>{product?.estado_producto.nombre ?? "—"}</TableCell>
-      <TableCell sx={{ fontSize: "0.75rem" }}>
-        {product?.descripcion ?? "—"}
-      </TableCell>
-      <TableCell sx={{ fontSize: "0.75rem" }}>
-        {product?.nro_serie ?? "-"}
-      </TableCell>
-      <TableCell>{product?.tipo.nombre}</TableCell>
+    <TableRow hover>
+      <TableCell sx={{ paddingLeft: 2 }}>{product?.codigo ?? "—"}</TableCell>
+      <TableCell>{product?.estado_producto.descripcion ?? "—"}</TableCell>
+      <TableCell>{product?.descripcion ?? "—"}</TableCell>
+      <TableCell>{product?.nro_serie ?? "-"}</TableCell>
+      <TableCell>{product?.tipo.descripcion}</TableCell>
       <TableCell>
         <Chip
           size="small"
@@ -78,6 +33,9 @@ export default function ProductsTableRow({
           variant={"outlined"}
         />
       </TableCell>
+      <TableCell>{product?.empresa.nombre ?? "—"}</TableCell>
+      <TableCell>{product?.sucursal.nombre ?? "—"}</TableCell>
+      <TableCell>{product?.categoria.nombre ?? "—"}</TableCell>
       <TableCell>{fechaCreacion}</TableCell>
       <TableCell>{fechaModificacion}</TableCell>
 

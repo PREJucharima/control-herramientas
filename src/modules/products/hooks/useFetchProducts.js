@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getProductsPaginated } from "../services/getProductsPaginated"; // ahora es mock
+import { getProductsPaginated } from "../services/getProducts";
 
 export const useFetchProducts = (
   initialFilters,
@@ -7,24 +7,27 @@ export const useFetchProducts = (
   initialPage,
   initialPageSize
 ) => {
-  // --- ESTADOS ---
   const [products, setProducts] = useState([]);
-  const [filters, setFilters] = useState(initialFilters); // { search, status }
-  const [sort, setSort] = useState(initialSort); // { order, orderBy }
+  const [filters, setFilters] = useState({
+    search: initialFilters.search || "",
+    status: initialFilters.status || "",
+  });
+  const [sort, setSort] = useState({
+    order: initialSort.order || "asc",
+    orderBy: initialSort.orderBy || "codigo",
+  });
   const [pagination, setPagination] = useState({
     count: 0,
-    page: initialPage,
-    pageSize: initialPageSize,
+    page: initialPage || 1,
+    pageSize: initialPageSize || 10,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // resetear a página 1 cuando cambian filtros principales
   useEffect(() => {
     setPagination((prev) => (prev.page !== 1 ? { ...prev, page: 1 } : prev));
   }, [filters.search, filters.status]);
 
-  // --- FETCH ---
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -33,25 +36,21 @@ export const useFetchProducts = (
         sort.orderBy || "codigo"
       }`;
 
-      // mapear status -> esta_activo (true/false/null)
-      let estaActivoParam = null;
-      if (filters.status === "active") estaActivoParam = true;
-      else if (filters.status === "inactive") estaActivoParam = false;
+      let esta_activo = null;
+      if (filters.status === "active") esta_activo = true;
+      if (filters.status === "inactive") esta_activo = false;
 
-      const params = {
+      const data = await getProductsPaginated({
         page: pagination.page,
-        pageSize: pagination.pageSize,
+        page_size: pagination.pageSize,
         search: filters.search,
         ordering,
-        esta_activo: estaActivoParam,
-      };
-
-      const data = await getProductsPaginated(params);
+        esta_activo,
+      });
 
       setProducts(data.results || []);
       setPagination((prev) => ({ ...prev, count: data.count || 0 }));
     } catch (err) {
-      console.error("Error cargando productos:", err);
       setError(err);
     } finally {
       setIsLoading(false);
@@ -69,18 +68,15 @@ export const useFetchProducts = (
     fetchProducts();
   }, [fetchProducts]);
 
-  // --- UI ---
-  const handleChangePage = (_e, newPage) => {
+  const handleChangePage = (_e, newPage) =>
     setPagination((prev) => ({ ...prev, page: newPage + 1 }));
-  };
 
-  const handleChangePageSize = (e) => {
+  const handleChangePageSize = (e) =>
     setPagination((prev) => ({
       ...prev,
       page: 1,
       pageSize: parseInt(e.target.value, 10),
     }));
-  };
 
   return {
     products,
@@ -89,7 +85,6 @@ export const useFetchProducts = (
     error,
     filters,
     setFilters,
-    sort,
     setSort,
     handleChangePage,
     handleChangePageSize,

@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { Add, ArrowBack, Clear, Search } from "@mui/icons-material";
 
-import { FilterPill } from "@/components/Filters/FilterPill";
+import { FilterPill } from "@/components/filters";
 import FormatBullets from "@/icons/FormatBullets";
 import Apps from "@/icons/Apps";
 import ActionsMenu from "./ActionsMenu";
@@ -29,11 +29,11 @@ export const SearchTextField = styled(TextField)(() => ({
   width: "100%",
 }));
 
-export default function EmployeesHeadingArea({
+export default function ProductsHeadingArea({
   title,
   // Tabs estado ("" | "active" | "inactive")
-  value,
-  onChange,
+  statusValue,
+  onStatusChange,
   // búsqueda
   searchValue,
   onSearchChange,
@@ -51,9 +51,9 @@ export default function EmployeesHeadingArea({
   const { pathname } = useLocation();
 
   const estadoText =
-    value === "active"
+    statusValue === "active"
       ? "Activos"
-      : value === "inactive"
+      : statusValue === "inactive"
       ? "Inactivos"
       : "Todos";
 
@@ -62,22 +62,22 @@ export default function EmployeesHeadingArea({
 
   const activeFilterChips = (
     <Stack direction="row" gap={1} flexWrap="wrap">
-      {value === "active" && (
+      {statusValue === "active" && (
         <Chip
           size="small"
           color="success"
           variant="outlined"
           label="Estado: Activos"
-          onDelete={() => onChange(null, "")}
+          onDelete={() => onStatusChange("")}
         />
       )}
-      {value === "inactive" && (
+      {statusValue === "inactive" && (
         <Chip
           size="small"
           color="default"
           variant="outlined"
           label="Estado: Inactivos"
-          onDelete={() => onChange(null, "")}
+          onDelete={() => onStatusChange("")}
         />
       )}
       {!!searchValue && (
@@ -185,8 +185,8 @@ export default function EmployeesHeadingArea({
           <Stack direction="row" gap={1} flexWrap="wrap">
             <FilterPill
               label={`Estado · ${estadoText}`}
-              active={Boolean(value)}
-              onClear={() => onChange?.(null, "")}
+              active={Boolean(statusValue)}
+              onClear={() => onStatusChange?.("")}
             >
               {(close) => (
                 <FormControl fullWidth size="small">
@@ -194,9 +194,9 @@ export default function EmployeesHeadingArea({
                   <Select
                     labelId="estado-label"
                     label="Estado"
-                    value={value ?? ""}
+                    value={statusValue ?? ""}
                     onChange={(e) => {
-                      onChange?.(null, e.target.value);
+                      onStatusChange?.(e.target.value);
                       close();
                     }}
                   >
@@ -217,7 +217,7 @@ export default function EmployeesHeadingArea({
         </Box>
       </Stack>
 
-      {(!!searchValue || value) && (
+      {(!!searchValue || statusValue) && (
         <>
           <Divider sx={{ my: 1.25 }} />
           {activeFilterChips}

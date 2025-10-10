@@ -15,16 +15,15 @@ import {
 } from "@mui/material";
 
 import { Scrollbar } from "@/components/scrollbar";
-import { TableDataNotFound, TableToolbar } from "@/components/table";
+import { TableDataNotFound } from "@/components/table";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useMuiTable } from "@/hooks/useMuiTable";
-
 import {
   ProductsTableHead,
   ProductsTableRow,
   ProductsHeadingArea,
+  ProductQuickViewDialog,
 } from "../components";
-
 import { useFetchProducts } from "../hooks/useFetchProducts";
 
 const ProductsPage = () => {
@@ -36,16 +35,16 @@ const ProductsPage = () => {
   );
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  // const setParam = (key, value, opts) => {
-  //   const next = new URLSearchParams(searchParams);
-  //   if (value === null || value === undefined || value === "") next.delete(key);
-  //   else next.set(key, value);
-  //   setSearchParams(next, opts);
-  // };
+  const setParam = (key, value, opts) => {
+    const next = new URLSearchParams(searchParams);
+    if (value === null || value === undefined || value === "") next.delete(key);
+    else next.set(key, value);
+    setSearchParams(next, opts);
+  };
 
-  // const viewId = searchParams.get("view");
-  // const openView = (id) => setParam("view", String(id));
-  // const closeView = () => setParam("view", "");
+  const viewCode = searchParams.get("view");
+  const openView = (codigo) => setParam("view", String(codigo));
+  const closeView = () => setParam("view", "");
 
   // 1) Estado inicial desde URL (sin syncStatus)
   const initialFilters = {
@@ -54,7 +53,7 @@ const ProductsPage = () => {
   };
   const initialSort = {
     order: searchParams.get("order") || "asc",
-    orderBy: searchParams.get("orderBy") || "codigo",
+    orderBy: searchParams.get("orderBy") || "",
   };
   const initialPage = parseInt(searchParams.get("page"), 10) || 1;
   const initialPageSize = parseInt(searchParams.get("pageSize"), 10) || 10;
@@ -93,7 +92,7 @@ const ProductsPage = () => {
 
   // search input -> filtros + reset page
   useEffect(() => {
-    setFilters((f) => ({ ...f, search: debouncedSearch, page: 1 }));
+    setFilters((f) => ({ ...f, search: debouncedSearch }));
   }, [debouncedSearch, setFilters]);
 
   // ordenar (UI -> hook)
@@ -106,8 +105,6 @@ const ProductsPage = () => {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-
-        // filtros
         filters.search
           ? next.set("search", filters.search)
           : next.delete("search");
@@ -115,7 +112,6 @@ const ProductsPage = () => {
           ? next.set("status", filters.status)
           : next.delete("status");
 
-        // paginación
         pagination.page > 1
           ? next.set("page", String(pagination.page))
           : next.delete("page");
@@ -123,8 +119,7 @@ const ProductsPage = () => {
           ? next.set("pageSize", String(pagination.pageSize))
           : next.delete("pageSize");
 
-        // orden
-        orderBy !== "" ? next.set("orderBy", orderBy) : next.delete("orderBy");
+        orderBy ? next.set("orderBy", orderBy) : next.delete("orderBy");
         order !== "asc" ? next.set("order", order) : next.delete("order");
 
         return next.toString() === prev.toString() ? prev : next;
@@ -149,16 +144,15 @@ const ProductsPage = () => {
     <Box pt={2}>
       <Card sx={{ mb: 3 }}>
         <Box px={2} pt={2}>
-          {/* Si tienes un header de filtros, úsalo aquí (sin syncStatus) */}
           <ProductsHeadingArea
             title="Productos"
-            value={filters.status}
-            onChange={(e, v) =>
-              setFilters((f) => ({ ...f, search: "", page: 1, status: v }))
-            }
             searchValue={searchInput}
             onSearchChange={(e) => setSearchInput(e.target.value)}
             onClearSearch={() => setSearchInput("")}
+            statusValue={filters.status}
+            onStatusChange={(v) =>
+              setFilters((f) => ({ ...f, status: v, page: 1 }))
+            }
             count={pagination.count}
             isLoading={isLoading}
             error={error}
@@ -167,25 +161,16 @@ const ProductsPage = () => {
           />
         </Box>
 
-        {selected.length > 0 && (
-          <TableToolbar
-            selectedIds={selected}
-            onSync={(ids) => {
-              /* TODO: sincronizar seleccionados (cuando exista endpoint) */
-              console.log("Sync productos:", ids);
-            }}
-            syncing={false}
-            onClear={() => {
-              /* limpia selección afuera si lo soportas */
-            }}
-          />
-        )}
-
         {!isLoading && !error && (
           <>
             <TableContainer>
               <Scrollbar autoHide={false}>
-                <Table sx={{ mb: 1, overflow: "visible" }}>
+                <Table
+                  sx={{
+                    mb: 1,
+                    overflow: "visible",
+                  }}
+                >
                   <ProductsTableHead
                     order={order}
                     orderBy={orderBy}
@@ -223,7 +208,7 @@ const ProductsPage = () => {
                               )}/editar`
                             )
                           }
-                          onViewDetails={() => {}}
+                          onViewDetails={() => openView(prod.codigo)}
                         />
                       ))
                     )}
@@ -271,13 +256,13 @@ const ProductsPage = () => {
         </Alert>
       )}
 
-      {/* {viewId && (
+      {viewCode && (
         <ProductQuickViewDialog
-          open={Boolean(viewId)}
-          id={viewId}
+          open={Boolean(viewCode)}
+          id={viewCode}
           onClose={closeView}
         />
-      )} */}
+      )}
     </Box>
   );
 };
