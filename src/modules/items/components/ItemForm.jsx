@@ -121,7 +121,7 @@ export default function ItemForm({
     : "Completa los campos requeridos para crear un nuevo ítem.";
 
   return (
-    <Card sx={{ borderRadius: 3 }}>
+    <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
       <CardHeader
         title={
           <Stack direction="row" alignItems="center" gap={1}>

@@ -20,10 +20,6 @@ export const Button = (theme) => {
           color: theme.palette.grey[400],
           cursor: "not-allowed",
           pointerEvents: "auto",
-          backgroundColor: "#e0e0e0",
-          "&:hover": {
-            backgroundColor: "#e0e0e0",
-          },
         },
       },
       // contained variants
@@ -37,6 +33,12 @@ export const Button = (theme) => {
           ...theme.applyStyles("dark", {
             backgroundColor: theme.palette.grey[600],
           }),
+          "&:hover": {
+            backgroundColor: theme.palette.grey[200],
+            ...theme.applyStyles("dark", {
+              backgroundColor: theme.palette.grey[600],
+            }),
+          },
         },
       },
       containedError: {

@@ -55,6 +55,7 @@ const baseOptions = {
       sm: 600,
       md: 900,
       lg: 1200,
+      xlm: 1400,
       xl: 1536,
     },
   },

@@ -220,7 +220,6 @@ export default function EmployeeForm({
                       placeholder="12.345.678-9"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
-                      size="small"
                       fullWidth
                       slotProps={{ inputLabel: { shrink: true } }}
                     />
@@ -238,7 +237,6 @@ export default function EmployeeForm({
                       label="Nombre *"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
-                      size="small"
                       fullWidth
                     />
                   )}
@@ -257,7 +255,6 @@ export default function EmployeeForm({
                       label="Apellido paterno *"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
-                      size="small"
                       fullWidth
                     />
                   )}
@@ -274,7 +271,6 @@ export default function EmployeeForm({
                       label="Apellido materno *"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
-                      size="small"
                       fullWidth
                     />
                   )}
@@ -294,7 +290,6 @@ export default function EmployeeForm({
                       placeholder="correo@empresa.com"
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
-                      size="small"
                       fullWidth
                     />
                   )}
@@ -313,7 +308,6 @@ export default function EmployeeForm({
                         fieldState.error?.message ||
                         "Se genera automáticamente a partir del nombre y apellidos."
                       }
-                      size="small"
                       fullWidth
                     />
                   )}

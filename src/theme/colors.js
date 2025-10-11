@@ -115,7 +115,7 @@ export const info = {
 // TEXT
 export const textLight = {
   primary: grey[900],
-  disabled: grey[200],
+  disabled: grey[400],
   secondary: grey[500],
 };
 

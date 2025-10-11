@@ -15,7 +15,7 @@ export default function LayoutBodyWrapper({ children }) {
   const { sidebarCompact } = useLayout();
   return (
     <RootStyled compact={sidebarCompact}>
-      <Container maxWidth="lg">{children}</Container>
+      <Container maxWidth="xlm">{children}</Container>
     </RootStyled>
   );
 }
