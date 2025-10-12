@@ -18,6 +18,8 @@ const AddNewProductPage = () => {
     error: companiesError,
   } = useCompaniesLookups();
 
+  const defaultProductStatus = "DISPONIBLE";
+
   const {
     categories,
     isLoading: isCategoriesLoading,
@@ -38,6 +40,7 @@ const AddNewProductPage = () => {
     <ProductForm
       companies={companies}
       defaultCompany={defaultCompany}
+      defaultProductStatus={defaultProductStatus}
       isLoadingCompanies={isCompaniesLoading}
       errorCompanies={companiesError}
       categories={categories}

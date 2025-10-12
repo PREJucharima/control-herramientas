@@ -1,4 +1,3 @@
-import * as Yup from "yup";
 import { useEffect, useRef } from "react";
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,38 +14,23 @@ import {
   Tooltip,
   Button,
   TextField,
-  Switch,
-  FormControlLabel,
-  FormHelperText,
   Autocomplete,
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 
-import { useFetchItemsByMaestro } from "../../items/hooks/useFetchItemsByMaestro";
+import { SwitchController, AutocompleteController } from "@/components/form";
+import { useBranches } from "@/modules/branch/hooks/useBranches";
+import { useFetchItemsByMaestro } from "@/modules/items/hooks/useFetchItemsByMaestro";
+import { ACCESORIES, MAESTROS } from "../constants/product.constants";
 import { useCatalogChildren } from "../hooks/useCatalogChildren";
-import { useBranches } from "../../branch/hooks/useBranches";
-
-const MAESTROS = {
-  PRODUCT_STATUS: 9,
-  PRODUCT_TYPE: 10,
-  TYPE: 5,
-  BRAND: 2,
-};
-
-const accessories = [
-  { title: "Mouse", year: 1994 },
-  { title: "Keyboard", year: 1995 },
-  { title: "Monitor", year: 2000 },
-  { title: "Printer", year: 2005 },
-  { title: "Webcam", year: 2010 },
-  { title: "Microphone", year: 2015 },
-  { title: "Headphones", year: 2020 },
-];
+import { productDefaults } from "../schemas/product.defaults";
+import { productSchema } from "../schemas/product.schema";
 
 const ProductForm = ({
   initialProduct,
   companies = [],
   defaultCompany,
+  defaultProductStatus,
   isLoadingCompanies,
   errorCompanies,
   categories,
@@ -55,80 +39,21 @@ const ProductForm = ({
   onSubmit,
   onCancel,
 }) => {
-  // ---------- Valores iniciales ----------
-  const initialValues = {
-    empresa: initialProduct?.empresa ?? null,
-    sucursal: initialProduct?.sucursal ?? null,
-    categoria: initialProduct?.categoria ?? null,
-    estado_producto: initialProduct?.estado_producto ?? null,
-    tipo_producto: initialProduct?.tipo_producto ?? null,
-    nro_serie: initialProduct?.nro_serie ?? "",
-    descripcion: initialProduct?.descripcion ?? "",
-    tipo: initialProduct?.tipo ?? null,
-    subtipo: initialProduct?.subtipo ?? null,
-    marca: initialProduct?.marca ?? null,
-    modelo: initialProduct?.modelo ?? null,
-    es_accesorio: initialProduct?.es_accesorio ?? true,
-    es_nuevo: initialProduct?.es_nuevo ?? true,
-    esta_activo: initialProduct?.esta_activo ?? true,
-  };
-
-  // ---------- Validación ----------
-  const validationSchema = Yup.object({
-    empresa: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("La empresa es requerida"),
-
-    sucursal: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("La sucursal es requerida"),
-
-    categoria: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("La categoría es requerida"),
-
-    estado_producto: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("El estado es requerido"),
-
-    tipo_producto: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("El tipo de producto es requerido"),
-
-    nro_serie: Yup.string().trim().required("El número de serie es requerido"),
-    descripcion: Yup.string().trim().required("La descripción es requerida"),
-
-    tipo: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("El tipo es requerido"),
-    subtipo: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("El subtipo es requerido"),
-
-    marca: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("La marca es requerida"),
-    modelo: Yup.object({ id: Yup.number().required() })
-      .nullable()
-      .required("El modelo es requerido"),
-  });
-
-  // ---------- RHF ----------
   const methods = useForm({
-    defaultValues: initialValues,
-    resolver: yupResolver(validationSchema),
+    defaultValues: productDefaults(initialProduct),
+    resolver: yupResolver(productSchema),
     mode: "onBlur",
     criteriaMode: "all",
   });
 
-  const { control, handleSubmit, setValue, formState } = methods;
+  const { control, handleSubmit, setValue, formState, clearErrors } = methods;
   const { isSubmitting, isDirty, isValid } = formState;
 
   // Lookups dependientes
   const selectedCompany = useWatch({ control, name: "empresa" });
   const prevCompanyId = useRef();
   const {
-    branchesLookup,
+    branchesLookup: branches,
     isLoading: isLoadingBranches,
     error: errorBranches,
   } = useBranches(selectedCompany?.id);
@@ -158,6 +83,29 @@ const ProductForm = ({
     isLoading: isProductStatusLoading,
     error: productStatusError,
   } = useFetchItemsByMaestro(MAESTROS.PRODUCT_STATUS);
+
+  const normalize = (s) => (s ?? "").toString().trim().toLowerCase();
+
+  useEffect(() => {
+    // solo al crear (no en edición)
+    if (initialProduct) return;
+    if (!defaultProductStatus) return;
+    if (!productStatusOptions || productStatusOptions.length === 0) return;
+
+    const target = normalize(defaultProductStatus);
+
+    // Estrategias de match: id, código, descripción
+    const match = productStatusOptions.find(
+      (o) => normalize(o.descripcion) === target
+    );
+
+    if (match) {
+      setValue("estado_producto", match, {
+        shouldValidate: true,
+        shouldDirty: true, // marca el form como tocado (puedes poner false si no quieres)
+      });
+    }
+  }, [initialProduct, defaultProductStatus, productStatusOptions, setValue]);
 
   const {
     itemsByMaestro: productTypeOptions,
@@ -217,14 +165,20 @@ const ProductForm = ({
 
   // Tipo de producto
   const productType = useWatch({ control, name: "tipo_producto" });
-
   const productTypeWithSerie =
     (productType?.descripcion || "").toUpperCase().trim() === "CON SERIE";
 
-  console.log("render", { productType });
-  console.log({ productTypeWithSerie });
+  useEffect(() => {
+    if (!productTypeWithSerie) {
+      // resetField("nro_serie", { defaultValue: "", keepDirty: false });
+      setValue("nro_serie", null, { shouldValidate: false, shouldDirty: true });
+      clearErrors("nro_serie");
+    }
+  }, [productTypeWithSerie, setValue, clearErrors]);
 
   const onSubmitInternal = handleSubmit(async (values) => {
+    // const nroSerie = (values.nro_serie ?? "").trim();
+
     const payload = {
       empresa: values.empresa ? values.empresa.id : null,
       sucursal: values.sucursal ? values.sucursal.id : null,
@@ -233,8 +187,8 @@ const ProductForm = ({
         ? values.estado_producto.id
         : null,
       tipo_producto: values.tipo_producto ? values.tipo_producto.id : null,
-      nro_serie: values.nro_serie.trim(),
-      descripcion: values.descripcion.trim(),
+      nro_serie: values.nro_serie ? values.nro_serie : null,
+      descripcion: values.descripcion ? values.descripcion : null,
       tipo: values.tipo ? values.tipo.id : null,
       subtipo: values.subtipo ? values.subtipo.id : null,
       marca: values.marca ? values.marca.id : null,
@@ -253,47 +207,6 @@ const ProductForm = ({
   const subheader = initialProduct
     ? "Modifica los datos del producto seleccionado."
     : "Completa los campos requeridos para crear un nuevo producto.";
-
-  const renderAC = (name, label, options, isLoading, fetchError, disabled) => (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field, fieldState }) => (
-        <Autocomplete
-          disablePortal
-          options={options ?? []}
-          value={field.value}
-          onChange={(_, val) => field.onChange(val)}
-          onBlur={field.onBlur}
-          disabled={!!disabled}
-          loading={!!isLoading}
-          loadingText="Cargando opciones…"
-          noOptionsText={
-            fetchError ? "Error al cargar opciones" : "Sin opciones"
-          }
-          isOptionEqualToValue={(o, v) => String(o?.id) === String(v?.id)}
-          getOptionLabel={(o) =>
-            o?.descripcion ? o.descripcion : o?.nombre ?? ""
-          }
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={label}
-              required
-              inputRef={field.ref}
-              error={!!fieldState.error || !!fetchError}
-              helperText={
-                fieldState.error?.message ??
-                (fetchError ? "No se pudieron cargar los datos." : undefined)
-              }
-              fullWidth
-              autoComplete="new-password"
-            />
-          )}
-        />
-      )}
-    />
-  );
 
   return (
     <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
@@ -318,55 +231,60 @@ const ProductForm = ({
           <CardContent>
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "empresa",
-                  "Empresa",
-                  companies,
-                  isLoadingCompanies,
-                  errorCompanies
-                )}
+                <AutocompleteController
+                  name="empresa"
+                  control={control}
+                  label="Empresa"
+                  options={companies}
+                  isLoading={isLoadingCompanies}
+                  fetchError={errorCompanies}
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "sucursal",
-                  "Sucursal",
-                  branchesLookup,
-                  isLoadingBranches,
-                  errorBranches
-                )}
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "categoria",
-                  "Categoría",
-                  categories,
-                  isLoadingCategories,
-                  errorCategories
-                )}
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "estado_producto",
-                  "Estado del producto ",
-                  productStatusOptions,
-                  isProductStatusLoading,
-                  productStatusError
-                )}
+                <AutocompleteController
+                  name="sucursal"
+                  control={control}
+                  label="Sucursal"
+                  options={branches}
+                  isLoading={isLoadingBranches}
+                  fetchError={errorBranches}
+                />
               </Grid>
             </Grid>
 
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "tipo_producto",
-                  "Tipo de producto",
-                  productTypeOptions,
-                  isProductTypeLoading,
-                  productTypeError
-                )}
+                <AutocompleteController
+                  name="categoria"
+                  control={control}
+                  label="Categoría"
+                  options={categories}
+                  isLoading={isLoadingCategories}
+                  fetchError={errorCategories}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="estado_producto"
+                  control={control}
+                  label="Estado del producto"
+                  options={productStatusOptions}
+                  isLoading={isProductStatusLoading}
+                  fetchError={productStatusError}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="tipo_producto"
+                  control={control}
+                  label="Tipo de producto"
+                  options={productTypeOptions}
+                  isLoading={isProductTypeLoading}
+                  fetchError={productTypeError}
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -393,7 +311,7 @@ const ProductForm = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Nro de Serie *"
+                      label={`Nro de Serie ${productTypeWithSerie ? "*" : ""}`}
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
                       fullWidth
@@ -403,74 +321,59 @@ const ProductForm = ({
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "tipo",
-                  "Tipo",
-                  typeOptions,
-                  isTypeLoading,
-                  typeError
-                )}
+                <AutocompleteController
+                  name="tipo"
+                  control={control}
+                  label="Tipo"
+                  options={typeOptions}
+                  isLoading={isTypeLoading}
+                  fetchError={typeError}
+                />
               </Grid>
             </Grid>
 
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "subtipo",
-                  "Sub Tipo",
-                  subTypeOptions,
-                  isSubTypeLoading,
-                  subTypeError,
-                  !selectedType || isSubTypeLoading
-                )}
+                <AutocompleteController
+                  name="subtipo"
+                  control={control}
+                  label="Sub Tipo"
+                  options={subTypeOptions}
+                  isLoading={isSubTypeLoading}
+                  fetchError={subTypeError}
+                  disabled={!selectedType || isSubTypeLoading}
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "marca",
-                  "Marca",
-                  brandOptions,
-                  isBrandLoading,
-                  brandError
-                )}
+                <AutocompleteController
+                  name="marca"
+                  control={control}
+                  label="Marca"
+                  options={brandOptions}
+                  isLoading={isBrandLoading}
+                  fetchError={brandError}
+                />
               </Grid>
             </Grid>
 
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "modelo",
-                  "Modelo",
-                  modelOptions,
-                  isModelLoading,
-                  modelError,
-                  !selectedBrand || isModelLoading
-                )}
+                <AutocompleteController
+                  name="modelo"
+                  control={control}
+                  label="Modelo"
+                  options={modelOptions}
+                  isLoading={isModelLoading}
+                  fetchError={modelError}
+                  disabled={!selectedBrand || isModelLoading}
+                />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
+                <SwitchController
                   name="es_accesorio"
                   control={control}
-                  render={({ field, fieldState }) => (
-                    <Stack>
-                      <FormControlLabel
-                        sx={{ ml: 0.5 }}
-                        control={
-                          <Switch
-                            checked={!!field.value}
-                            onChange={(_, v) => field.onChange(v)}
-                          />
-                        }
-                        label="Accesorio"
-                      />
-                      <FormHelperText
-                        sx={{ ml: 1.5, mt: 0 }}
-                        error={!!fieldState.error}
-                      >
-                        {fieldState.error?.message ??
-                          "Actívalo si este producto es un accesorio (ej. mouse, cargador)."}
-                      </FormHelperText>
-                    </Stack>
-                  )}
+                  label="Accesorio"
+                  helperText="Actívalo si este producto es un accesorio (ej. mouse, cargador)."
                 />
               </Grid>
             </Grid>
@@ -483,9 +386,8 @@ const ProductForm = ({
                     limitTags={2}
                     fullWidth
                     id="multiple-limit-tags"
-                    options={accessories}
+                    options={ACCESORIES}
                     getOptionLabel={(option) => option?.title}
-                    // defaultValue={[accessories[1]]}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -493,7 +395,6 @@ const ProductForm = ({
                         placeholder="accesorios"
                       />
                     )}
-                    // sx={{ width: "500px" }}
                   />
                 </Grid>
               </Grid>
@@ -501,55 +402,20 @@ const ProductForm = ({
 
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
+                <SwitchController
                   name="es_nuevo"
                   control={control}
-                  render={({ field, fieldState }) => (
-                    <Stack>
-                      <FormControlLabel
-                        sx={{ ml: 0.5 }}
-                        control={
-                          <Switch
-                            checked={!!field.value}
-                            onChange={(_, v) => field.onChange(v)}
-                          />
-                        }
-                        label="Nuevo"
-                      />
-                      <FormHelperText
-                        sx={{ ml: 1.5, mt: 0 }}
-                        error={!!fieldState.error}
-                      >
-                        {fieldState.error?.message ??
-                          "Actívalo si el producto no ha sido usado."}
-                      </FormHelperText>
-                    </Stack>
-                  )}
+                  label="Nuevo"
+                  helperText="Actívalo si el producto no ha sido usado."
                 />
               </Grid>
               {initialProduct && (
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Controller
+                  <SwitchController
                     name="esta_activo"
                     control={control}
-                    render={({ field }) => (
-                      <Stack>
-                        <FormControlLabel
-                          sx={{ ml: 0.5 }}
-                          control={
-                            <Switch
-                              checked={!!field.value}
-                              onChange={(_, v) => field.onChange(v)}
-                            />
-                          }
-                          label="Activo"
-                        />
-                        <FormHelperText sx={{ ml: 1.5, mt: 0 }}>
-                          Si está desactivado, el empleado no aparecerá en
-                          flujos de selección.
-                        </FormHelperText>
-                      </Stack>
-                    )}
+                    label="Activo"
+                    helperText="Si está desactivado, el producto no aparecerá en flujos de selección."
                   />
                 </Grid>
               )}
