@@ -23,6 +23,15 @@ export default function IntegrationsPage() {
           storageKey="costCenters"
         />
       </Grid>
+
+      <Grid size={{ xs: 12, md: 12 }}>
+        <SynchronizeCard
+          title="Carga masiva de productos"
+          description="Este proceso permite cargar múltiples productos desde un archivo CSV."
+          onSync={() => {}}
+          storageKey="massiveProducts"
+        />
+      </Grid>
     </Grid>
   );
 }

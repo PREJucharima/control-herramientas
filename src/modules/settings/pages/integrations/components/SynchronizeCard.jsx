@@ -142,8 +142,8 @@ export default function SynchronizeCard({
                 {formatDate(last.date)}
               </Typography>
               <Typography variant="caption" display="block">
-                Creados: <strong>{last.created}</strong> &nbsp;|&nbsp;
-                Actualizados: <strong>{last.updated}</strong>
+                Creados: <strong>{last.created}</strong> &nbsp;|&nbsp; Pendiente
+                a sincronizar: <strong>{last.updated}</strong>
               </Typography>
             </Alert>
           )}
