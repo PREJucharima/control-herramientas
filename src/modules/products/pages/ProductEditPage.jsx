@@ -9,7 +9,7 @@ import { ProductForm } from "../components";
 import { getProductByCode } from "../services/getProductByCode";
 import { updateProductByCode } from "../services/updateProductByCode";
 
-const EditProductPage = () => {
+const ProductEditPage = () => {
   const navigate = useNavigate();
   const { codigo } = useParams();
   const updateProductInStore = useProductsStore((s) => s.updateProduct);
@@ -81,4 +81,4 @@ const EditProductPage = () => {
   );
 };
 
-export default EditProductPage;
+export default ProductEditPage;

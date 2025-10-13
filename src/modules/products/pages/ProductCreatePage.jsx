@@ -7,7 +7,7 @@ import { useProductsStore } from "../states/productsStore";
 import { createProduct } from "../services/createProduct";
 import { ProductForm } from "../components";
 
-const AddNewProductPage = () => {
+const ProductCreatePage = () => {
   const navigate = useNavigate();
   const addProduct = useProductsStore((s) => s.addProduct);
   const user = useAuthStore((state) => state.user);
@@ -52,4 +52,4 @@ const AddNewProductPage = () => {
   );
 };
 
-export default AddNewProductPage;
+export default ProductCreatePage;

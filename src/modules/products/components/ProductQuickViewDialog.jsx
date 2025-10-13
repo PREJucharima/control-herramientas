@@ -44,9 +44,6 @@ import {
 
 import { useFetchProductByCode } from "../hooks/useFetchProductByCode";
 
-// =============================
-// Helpers
-// =============================
 function formatDateTime(dateStr) {
   const d = dayjs(dateStr);
   return d.isValid() ? d.format("DD/MM/YYYY HH:mm") : "—";

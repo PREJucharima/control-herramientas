@@ -51,11 +51,14 @@ const IntegrationsPage = lazy(() =>
 const ProductsPage = lazy(() =>
   import("@/modules/products/pages/ProductsPage")
 );
-const AddNewProductPage = lazy(() =>
-  import("@/modules/products/pages/AddNewProductPage")
+const ProductCreatePage = lazy(() =>
+  import("@/modules/products/pages/ProductCreatePage")
 );
-const EditProductPage = lazy(() =>
-  import("@/modules/products/pages/EditProductPage")
+const ProductEditPage = lazy(() =>
+  import("@/modules/products/pages/ProductEditPage")
+);
+const ProductDetailPage = lazy(() =>
+  import("@/modules/products/pages/ProductDetailPage")
 );
 const HistoryTable = lazy(() => import("@/modules/history/pages/HistoryPage"));
 
@@ -104,11 +107,15 @@ export const protectedRoutes = [
       },
       {
         path: "/catalogos/productos/nuevo",
-        element: createElement(AddNewProductPage),
+        element: createElement(ProductCreatePage),
       },
       {
         path: "/catalogos/productos/:codigo/editar",
-        element: createElement(EditProductPage),
+        element: createElement(ProductEditPage),
+      },
+      {
+        path: "/catalogos/productos/:codigo",
+        element: createElement(ProductDetailPage),
       },
       {
         path: "/catalogos/historial",
