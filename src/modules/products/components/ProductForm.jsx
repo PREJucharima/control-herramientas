@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import dayjs from "dayjs";
 import {
   Card,
   CardHeader,
@@ -15,10 +16,15 @@ import {
   Button,
   TextField,
   Autocomplete,
+  IconButton,
 } from "@mui/material";
-import { InfoOutlined } from "@mui/icons-material";
+import { Clear, InfoOutlined } from "@mui/icons-material";
 
-import { SwitchController, AutocompleteController } from "@/components/form";
+import {
+  DatePicker,
+  SwitchController,
+  AutocompleteController,
+} from "@/components/form";
 import { useBranches } from "@/modules/branch/hooks/useBranches";
 import { useFetchItemsByMaestro } from "@/modules/items/hooks/useFetchItemsByMaestro";
 import { ACCESORIES, MAESTROS } from "../constants/product.constants";
@@ -39,6 +45,8 @@ const ProductForm = ({
   onSubmit,
   onCancel,
 }) => {
+  const toISODate = (d) => (d ? dayjs(d).format("YYYY-MM-DD") : null);
+
   const methods = useForm({
     defaultValues: productDefaults(initialProduct),
     resolver: yupResolver(productSchema),
@@ -125,6 +133,18 @@ const ProductForm = ({
     error: brandError,
   } = useFetchItemsByMaestro(MAESTROS.BRAND);
 
+  const {
+    itemsByMaestro: contractOptions,
+    isLoading: isContractLoading,
+    error: contractError,
+  } = useFetchItemsByMaestro(MAESTROS.CONTRACT);
+
+  const {
+    itemsByMaestro: currencyOptions,
+    isLoading: isCurrencyLoading,
+    error: currencyError,
+  } = useFetchItemsByMaestro(MAESTROS.CURRENCY);
+
   // Seleccionar tipo y subtipo
   const selectedType = useWatch({ control, name: "tipo" });
   const prevTypeId = useRef();
@@ -177,8 +197,6 @@ const ProductForm = ({
   }, [productTypeWithSerie, setValue, clearErrors]);
 
   const onSubmitInternal = handleSubmit(async (values) => {
-    // const nroSerie = (values.nro_serie ?? "").trim();
-
     const payload = {
       empresa: values.empresa ? values.empresa.id : null,
       sucursal: values.sucursal ? values.sucursal.id : null,
@@ -189,10 +207,16 @@ const ProductForm = ({
       tipo_producto: values.tipo_producto ? values.tipo_producto.id : null,
       nro_serie: values.nro_serie ? values.nro_serie : null,
       descripcion: values.descripcion ? values.descripcion : null,
+      codigo_sistema: values.codigo_sistema ? values.codigo_sistema : null,
       tipo: values.tipo ? values.tipo.id : null,
       subtipo: values.subtipo ? values.subtipo.id : null,
       marca: values.marca ? values.marca.id : null,
       modelo: values.modelo ? values.modelo.id : null,
+      contrato: values.contrato ? values.contrato.id : null,
+      moneda: values.moneda ? values.moneda.id : null,
+      precio: values.precio ? values.precio : null,
+      orden_compra: values.orden_compra ? values.orden_compra : null,
+      fecha_ingreso: toISODate(values.fecha_ingreso),
 
       es_accesorio: !!values.es_accesorio,
       es_nuevo: !!values.es_nuevo,
@@ -306,6 +330,21 @@ const ProductForm = ({
             <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
+                  name="codigo_sistema"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      label="Código del sistema"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
                   name="nro_serie"
                   control={control}
                   render={({ field, fieldState }) => (
@@ -320,6 +359,9 @@ const ProductForm = ({
                   )}
                 />
               </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <AutocompleteController
                   name="tipo"
@@ -330,9 +372,6 @@ const ProductForm = ({
                   fetchError={typeError}
                 />
               </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <AutocompleteController
                   name="subtipo"
@@ -344,6 +383,9 @@ const ProductForm = ({
                   disabled={!selectedType || isSubTypeLoading}
                 />
               </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <AutocompleteController
                   name="marca"
@@ -354,9 +396,6 @@ const ProductForm = ({
                   fetchError={brandError}
                 />
               </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <AutocompleteController
                   name="modelo"
@@ -368,12 +407,103 @@ const ProductForm = ({
                   disabled={!selectedBrand || isModelLoading}
                 />
               </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="contrato"
+                  control={control}
+                  label="Contrato"
+                  options={contractOptions}
+                  isLoading={isContractLoading}
+                  fetchError={contractError}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="moneda"
+                  control={control}
+                  label="Moneda"
+                  options={currencyOptions}
+                  isLoading={isCurrencyLoading}
+                  fetchError={currencyError}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="precio"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      label={`Precio`}
+                      type="number"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Stack direction="row" alignItems="center" gap={1}>
+                  <DatePicker name="fecha_ingreso" label="Fecha de ingreso" />
+                  <Tooltip title="Quitar fecha de ingreso">
+                    <span>
+                      <IconButton
+                        aria-label="Quitar fecha de ingreso"
+                        onClick={() =>
+                          setValue("fecha_ingreso", null, {
+                            shouldDirty: true,
+                          })
+                        }
+                        size="small"
+                      >
+                        <Clear fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </Stack>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="orden_compra"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      label={`Orden de compra`}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <SwitchController
                   name="es_accesorio"
                   control={control}
                   label="Accesorio"
                   helperText="Actívalo si este producto es un accesorio (ej. mouse, cargador)."
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <SwitchController
+                  name="es_nuevo"
+                  control={control}
+                  label="Nuevo"
+                  helperText="Actívalo si el producto no ha sido usado."
                 />
               </Grid>
             </Grid>
@@ -401,14 +531,6 @@ const ProductForm = ({
             )}
 
             <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchController
-                  name="es_nuevo"
-                  control={control}
-                  label="Nuevo"
-                  helperText="Actívalo si el producto no ha sido usado."
-                />
-              </Grid>
               {initialProduct && (
                 <Grid size={{ xs: 12, md: 6 }}>
                   <SwitchController

@@ -6,7 +6,6 @@ import {
   Alert,
   Avatar,
   Badge,
-  Box,
   Button,
   Chip,
   Dialog,
@@ -35,13 +34,64 @@ import {
   Layers,
   Sell,
   DevicesOther,
+  MonetizationOn,
+  CalendarMonth,
+  ReceiptLong,
+  IntegrationInstructions,
+  Assignment,
+  Payments,
 } from "@mui/icons-material";
 
 import { useFetchProductByCode } from "../hooks/useFetchProductByCode";
 
-function formatDate(dateStr) {
+// =============================
+// Helpers
+// =============================
+function formatDateTime(dateStr) {
   const d = dayjs(dateStr);
   return d.isValid() ? d.format("DD/MM/YYYY HH:mm") : "—";
+}
+
+function formatDateOnly(dateStr) {
+  const d = dayjs(dateStr);
+  return d.isValid() ? d.format("DD/MM/YYYY") : "—";
+}
+
+function normalizeCurrency(monedaDescripcion) {
+  if (!monedaDescripcion) return { style: "currency", currency: "USD" };
+  const m = (monedaDescripcion || "").toString().toLowerCase().trim();
+
+  // Heurística simple para los casos más comunes
+  if (
+    ["pen", "sol", "soles", "nuevo sol", "sol peruano"].some((t) =>
+      m.includes(t)
+    )
+  )
+    return { style: "currency", currency: "PEN" };
+  if (
+    ["usd", "dolar", "dólar", "dolares", "dólares", "us$"].some((t) =>
+      m.includes(t)
+    )
+  )
+    return { style: "currency", currency: "USD" };
+  if (["eur", "euro", "euros"].some((t) => m.includes(t)))
+    return { style: "currency", currency: "EUR" };
+
+  // Si viene algo como "PEN (Soles)" y quieres extraer código, podrías mejorar esto
+  return { style: "currency", currency: "USD" };
+}
+
+function formatMoney(value, monedaDescripcion) {
+  if (value === null || value === undefined || value === "") return "—";
+  // Acepta string o number; limpia comas/espacios
+  const n = Number(String(value).replace(/[,\s]/g, ""));
+  if (Number.isNaN(n)) return String(value);
+
+  const nf = new Intl.NumberFormat(
+    "es-PE",
+    normalizeCurrency(monedaDescripcion)
+  );
+  return nf.format(n);
 }
 
 async function copy(text) {
@@ -64,7 +114,7 @@ const FieldRow = ({ label, value, icon, action }) => (
           variant="body2"
           fontWeight={500}
           noWrap
-          title={value ?? "—"}
+          title={(value ?? "—")?.toString()}
           sx={{ minWidth: 0, flex: 1 }}
         >
           {value ?? "—"}
@@ -111,9 +161,24 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
           color={p.es_nuevo ? "primary" : "default"}
           variant="outlined"
         />
+        {p?.moneda?.descripcion ? (
+          <Chip
+            size="small"
+            label={p.moneda.descripcion}
+            color="default"
+            variant="outlined"
+            icon={<Payments sx={{ fontSize: 16 }} />}
+          />
+        ) : null}
       </Stack>
     );
   }, [p]);
+
+  // Precio formateado
+  const precioFmt = useMemo(
+    () => (p ? formatMoney(p.precio, p.moneda?.descripcion) : "—"),
+    [p]
+  );
 
   return (
     <Dialog
@@ -165,6 +230,7 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
 
         {!isLoading && !error && p && (
           <Stack gap={2}>
+            {/* Header */}
             <Stack
               direction={{ xs: "column", sm: "row" }}
               alignItems={{ xs: "flex-start", sm: "end" }}
@@ -228,9 +294,26 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
 
             <Divider />
 
+            {/* Cuerpo */}
             <Grid container spacing={2}>
+              {/* Columna izquierda */}
               <Grid size={{ xs: 12, md: 7 }}>
                 <Stack gap={1.25}>
+                  <FieldRow
+                    label="Empresa"
+                    value={p.empresa?.nombre}
+                    icon={<Business fontSize="small" />}
+                  />
+                  <FieldRow
+                    label="Sucursal"
+                    value={p.sucursal?.nombre}
+                    icon={<Store fontSize="small" />}
+                  />
+                  <FieldRow
+                    label="Categoría"
+                    value={p.categoria?.nombre}
+                    icon={<Category fontSize="small" />}
+                  />
                   <FieldRow
                     label="Código"
                     value={p.codigo}
@@ -268,28 +351,55 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
                     }
                   />
                   <FieldRow
+                    label="Código del sistema"
+                    value={p.codigo_sistema}
+                    icon={<IntegrationInstructions fontSize="small" />}
+                    action={
+                      p.codigo_sistema ? (
+                        <Tooltip title="Copiar código del sistema">
+                          <IconButton
+                            size="small"
+                            onClick={() => copy(p.codigo_sistema)}
+                            sx={{ padding: "0 0 0 10px", margin: 0 }}
+                          >
+                            <ContentCopy fontSize="inherit" />
+                          </IconButton>
+                        </Tooltip>
+                      ) : null
+                    }
+                  />
+                  <FieldRow
                     label="Descripción"
                     value={p.descripcion}
                     icon={<Description fontSize="small" />}
                   />
                   <FieldRow
-                    label="Empresa"
-                    value={p.empresa?.nombre}
-                    icon={<Business fontSize="small" />}
+                    label="Fecha de ingreso"
+                    value={formatDateOnly(p.fecha_ingreso)}
+                    icon={<CalendarMonth fontSize="small" />}
                   />
                   <FieldRow
-                    label="Sucursal"
-                    value={p.sucursal?.nombre}
-                    icon={<Store fontSize="small" />}
-                  />
-                  <FieldRow
-                    label="Categoría"
-                    value={p.categoria?.nombre}
-                    icon={<Category fontSize="small" />}
+                    label="Orden de compra"
+                    value={p.orden_compra}
+                    icon={<ReceiptLong fontSize="small" />}
+                    action={
+                      p.orden_compra ? (
+                        <Tooltip title="Copiar orden de compra">
+                          <IconButton
+                            size="small"
+                            onClick={() => copy(p.orden_compra)}
+                            sx={{ padding: "0 0 0 10px", margin: 0 }}
+                          >
+                            <ContentCopy fontSize="inherit" />
+                          </IconButton>
+                        </Tooltip>
+                      ) : null
+                    }
                   />
                 </Stack>
               </Grid>
 
+              {/* Columna derecha */}
               <Grid size={{ xs: 12, md: 5 }}>
                 <Stack gap={1.25}>
                   <FieldRow
@@ -322,6 +432,22 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
                     value={p.modelo?.descripcion}
                     icon={<DevicesOther fontSize="small" />}
                   />
+
+                  <FieldRow
+                    label="Contrato"
+                    value={p.contrato?.descripcion}
+                    icon={<Assignment fontSize="small" />}
+                  />
+                  <FieldRow
+                    label="Moneda"
+                    value={p.moneda?.descripcion}
+                    icon={<Payments fontSize="small" />}
+                  />
+                  <FieldRow
+                    label="Precio"
+                    value={precioFmt}
+                    icon={<MonetizationOn fontSize="small" />}
+                  />
                 </Stack>
               </Grid>
             </Grid>
@@ -337,7 +463,7 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
               <Grid container spacing={1.25}>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2">
-                    Creación: <b>{formatDate(p.fecha_creacion)}</b>
+                    Creación: <b>{formatDateTime(p.fecha_creacion)}</b>
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Por: <b>{p.usuario_creacion || "—"}</b>
@@ -346,7 +472,7 @@ export default function ProductQuickViewDialog({ open, id, onClose }) {
 
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2">
-                    Modificación: <b>{formatDate(p.fecha_modificacion)}</b>
+                    Modificación: <b>{formatDateTime(p.fecha_modificacion)}</b>
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Por: <b>{p.usuario_modificacion || "—"}</b>

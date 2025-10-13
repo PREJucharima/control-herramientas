@@ -1,8 +1,10 @@
 export const MAESTROS = {
+  CONTRACT: 1,
+  BRAND: 2,
+  CURRENCY: 4,
+  TYPE: 5,
   PRODUCT_STATUS: 9,
   PRODUCT_TYPE: 10,
-  TYPE: 5,
-  BRAND: 2,
 };
 
 export const ACCESORIES = [
