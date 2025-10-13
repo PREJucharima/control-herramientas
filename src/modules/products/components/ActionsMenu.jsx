@@ -29,8 +29,8 @@ const Text = styled("p")(() => ({
 export default function ActionsMenu({
   onAdd,
   onBulk,
-  addLabel = "Agregar producto",
-  bulkLabel = "Carga masiva",
+  addLabel = "Agregar producto individual",
+  bulkLabel = "Carga masiva por sheet",
   size = "medium",
   variant = "contained",
 }) {
@@ -55,7 +55,7 @@ export default function ActionsMenu({
         endIcon={<KeyboardArrowDown />}
         onClick={(e) => setAnchorEl(e.currentTarget)}
       >
-        Acciones
+        Agregar productos
       </Button>
 
       <Menu

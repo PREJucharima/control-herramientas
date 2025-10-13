@@ -43,7 +43,7 @@ const ProductsPage = () => {
   };
 
   const viewCode = searchParams.get("view");
-  // const openView = (codigo) => setParam("view", String(codigo));
+  const openView = (codigo) => setParam("view", String(codigo));
   const closeView = () => setParam("view", "");
 
   // 1) Estado inicial desde URL (sin syncStatus)
@@ -208,14 +208,14 @@ const ProductsPage = () => {
                               )}/editar`
                             )
                           }
-                          onViewDetails={() =>
-                            navigate(
-                              `/catalogos/productos/${encodeURIComponent(
-                                prod.codigo
-                              )}`
-                            )
-                          }
-                          // onViewDetails={() => openView(prod.codigo)}
+                          // onViewDetails={() =>
+                          //   navigate(
+                          //     `/catalogos/productos/${encodeURIComponent(
+                          //       prod.codigo
+                          //     )}`
+                          //   )
+                          // }
+                          onViewDetails={() => openView(prod.codigo)}
                         />
                       ))
                     )}

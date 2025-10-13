@@ -113,6 +113,7 @@ const FieldRow = ({ label, value, icon, action }) => (
 export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { codigo } = useParams();
+  console.log("Código del producto:", codigo);
   const { productDetail, isLoading, error } = useFetchProductByCode(codigo);
   const p = productDetail ?? null;
 
