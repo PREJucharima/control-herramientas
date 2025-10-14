@@ -83,6 +83,25 @@ export const API_PATHS = {
   },
 
   /**
+   * @_section Observaciones de Productos - CRUD de observaciones
+   */
+  productsObservations: {
+    list: "api/productos/observaciones/",
+    create: "api/productos/observaciones/",
+    detail: (id) => `api/productos/observaciones/${encodeURIComponent(id)}/`,
+    update: (id) => `api/productos/observaciones/${encodeURIComponent(id)}/`,
+    partialUpdate: (id) =>
+      `api/productos/observaciones/${encodeURIComponent(id)}/`,
+    delete: (id) => `api/productos/observaciones/${encodeURIComponent(id)}/`,
+
+    // helper útil para la página: listar por producto (si tu API filtra por ?producto=)
+    byProduct: (productCode) =>
+      `api/productos/observaciones/?producto=${encodeURIComponent(
+        productCode
+      )}`,
+  },
+
+  /**
    * @_section Seguridad - Endpoints para autenticación
    */
   security: {
