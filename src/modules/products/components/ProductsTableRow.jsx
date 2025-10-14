@@ -6,7 +6,12 @@ import { TableRow, TableCell, Chip, IconButton } from "@mui/material";
 
 import RowActionsMenu from "./RowActionsMenu";
 
-export default function ProductsTableRow({ product, onEdit, onViewDetails }) {
+export default function ProductsTableRow({
+  product,
+  onEdit,
+  onViewDetails,
+  onViewObservations,
+}) {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
 
@@ -80,6 +85,7 @@ export default function ProductsTableRow({ product, onEdit, onViewDetails }) {
           onClose={closeMenu}
           onViewDetails={() => onViewDetails?.(product.id)}
           onEdit={() => onEdit?.(product.id)}
+          onViewObservations={() => onViewObservations?.(product.id)}
         />
       </TableCell>
     </TableRow>

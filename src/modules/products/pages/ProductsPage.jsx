@@ -23,6 +23,7 @@ import {
   ProductsTableRow,
   ProductsHeadingArea,
   ProductQuickViewDialog,
+  ProductObservationsDialog,
 } from "../components";
 import { useFetchProducts } from "../hooks/useFetchProducts";
 
@@ -45,6 +46,10 @@ const ProductsPage = () => {
   const viewCode = searchParams.get("view");
   const openView = (codigo) => setParam("view", String(codigo));
   const closeView = () => setParam("view", "");
+
+  const observationCode = searchParams.get("observaciones");
+  const openObservation = (codigo) => setParam("observaciones", String(codigo));
+  const closeObservation = () => setParam("observaciones", "");
 
   // 1) Estado inicial desde URL (sin syncStatus)
   const initialFilters = {
@@ -208,14 +213,10 @@ const ProductsPage = () => {
                               )}/editar`
                             )
                           }
-                          // onViewDetails={() =>
-                          //   navigate(
-                          //     `/catalogos/productos/${encodeURIComponent(
-                          //       prod.codigo
-                          //     )}`
-                          //   )
-                          // }
                           onViewDetails={() => openView(prod.codigo)}
+                          onViewObservations={() =>
+                            openObservation(prod.codigo)
+                          }
                         />
                       ))
                     )}
@@ -259,7 +260,7 @@ const ProductsPage = () => {
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          Error al cargar productos: {error.message || "Intenta nuevamente."}
+          Error al cargar productos: {error?.message || "Intenta nuevamente."}
         </Alert>
       )}
 
@@ -268,6 +269,14 @@ const ProductsPage = () => {
           open={Boolean(viewCode)}
           id={viewCode}
           onClose={closeView}
+        />
+      )}
+
+      {observationCode && (
+        <ProductObservationsDialog
+          open={Boolean(observationCode)}
+          productCode={observationCode}
+          onClose={closeObservation}
         />
       )}
     </Box>

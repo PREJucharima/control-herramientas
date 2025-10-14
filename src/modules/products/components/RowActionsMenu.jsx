@@ -34,6 +34,7 @@ export default function RowActionsMenu({
   onClose,
   onViewDetails,
   onEdit,
+  onViewObservations,
 }) {
   const navigate = useNavigate();
 
@@ -83,7 +84,7 @@ export default function RowActionsMenu({
 
         {/* <Divider /> */}
 
-        <PrettyItem onClick={() => alert("Ver observaciones")}>
+        <PrettyItem onClick={onViewObservations}>
           <ListItemIcon>
             <Feed fontSize="small" />
           </ListItemIcon>
