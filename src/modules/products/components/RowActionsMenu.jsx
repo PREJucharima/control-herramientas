@@ -18,8 +18,8 @@ import {
 
 const PrettyItem = styled(MenuItem)(({ theme }) => ({
   borderRadius: 10,
-  margin: "0px 4px",
-  padding: "8px 12px",
+  margin: "4px 6px",
+  padding: "10px 12px",
   "&:hover": { backgroundColor: theme.palette.action.hover },
 }));
 
@@ -55,7 +55,7 @@ export default function RowActionsMenu({
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
     >
-      <MenuList sx={{ m: 0, p: 0, minWidth: 200 }}>
+      <MenuList sx={{ m: 0, p: 0, minWidth: 220 }}>
         <PrettyItem onClick={handleView}>
           <ListItemIcon>
             <Visibility fontSize="small" />
@@ -63,7 +63,7 @@ export default function RowActionsMenu({
           <Text>Ver detalle</Text>
         </PrettyItem>
 
-        <Divider />
+        {/* <Divider /> */}
 
         <PrettyItem onClick={handleEdit}>
           <ListItemIcon>
@@ -72,7 +72,7 @@ export default function RowActionsMenu({
           <Text>Editar producto</Text>
         </PrettyItem>
 
-        <Divider />
+        {/* <Divider /> */}
 
         <PrettyItem onClick={() => alert("Ver accesorios")}>
           <ListItemIcon>
@@ -81,7 +81,7 @@ export default function RowActionsMenu({
           <Text>Ver accesorios</Text>
         </PrettyItem>
 
-        <Divider />
+        {/* <Divider /> */}
 
         <PrettyItem onClick={() => alert("Ver observaciones")}>
           <ListItemIcon>
@@ -90,7 +90,7 @@ export default function RowActionsMenu({
           <Text>Ver observaciones</Text>
         </PrettyItem>
 
-        <Divider />
+        {/* <Divider /> */}
 
         <PrettyItem onClick={() => navigate("/catalogos/historial")}>
           <ListItemIcon>

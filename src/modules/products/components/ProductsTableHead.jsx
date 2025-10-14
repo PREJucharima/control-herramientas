@@ -49,13 +49,16 @@ export default function ProductsTableHead({ order, orderBy, onRequestSort }) {
             key={h.id}
             sortDirection={orderBy === h.id ? order : false}
             sx={(theme) => ({
-              ...(h.id === "codigo" && { pl: 2 }),
+              ...(h.id === "codigo" && { pl: 4 }),
               ...(h.id === "actions" && {
                 position: "sticky",
                 right: -1,
-                backgroundColor: theme.palette.background.paper,
+                backgroundColor: theme.palette.grey[100],
+                ...theme.applyStyles?.("dark", {
+                  backgroundColor: theme.palette.grey[700],
+                }),
                 zIndex: 1,
-                boxShadow: `-2px 0 4px -2px ${theme.palette.divider}`,
+                // boxShadow: `-2px 0 4px -2px ${theme.palette.divider}`,
               }),
             })}
           >

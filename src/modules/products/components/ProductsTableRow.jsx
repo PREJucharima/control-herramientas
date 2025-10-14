@@ -25,7 +25,7 @@ export default function ProductsTableRow({ product, onEdit, onViewDetails }) {
 
   return (
     <TableRow hover>
-      <TableCell sx={{ paddingLeft: 2 }}>{product?.codigo ?? "—"}</TableCell>
+      <TableCell sx={{ paddingLeft: 4 }}>{product?.codigo ?? "—"}</TableCell>
       <TableCell>{product?.estado_producto.descripcion ?? "—"}</TableCell>
       <TableCell>{product?.descripcion ?? "—"}</TableCell>
       <TableCell>{product?.nro_serie ?? "-"}</TableCell>

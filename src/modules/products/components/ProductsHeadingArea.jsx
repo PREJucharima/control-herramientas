@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import {
   Box,
@@ -20,9 +20,6 @@ import {
 import { Add, ArrowBack, Clear, Search } from "@mui/icons-material";
 
 import { FilterPill } from "@/components/filters";
-import FormatBullets from "@/icons/FormatBullets";
-import Apps from "@/icons/Apps";
-import ActionsMenu from "./ActionsMenu";
 
 export const SearchTextField = styled(TextField)(() => ({
   maxWidth: 320,
@@ -42,23 +39,15 @@ export default function ProductsHeadingArea({
   count,
   isLoading,
   error,
-  // navegación
-  gridRoute,
-  listRoute,
   sticky = true,
 }) {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-
   const estadoText =
     statusValue === "active"
       ? "Activos"
       : statusValue === "inactive"
       ? "Inactivos"
       : "Todos";
-
-  const activeColor = (path) =>
-    pathname === path ? "primary.main" : "text.secondary";
 
   const activeFilterChips = (
     <Stack direction="row" gap={1} flexWrap="wrap">
@@ -127,19 +116,6 @@ export default function ProductsHeadingArea({
               sx={{ ml: 0.5, "& .MuiChip-label": { fontWeight: 700 } }}
             />
           )}
-        </Stack>
-
-        <Stack direction="row" alignItems="center" gap={1.25} flexShrink={0}>
-          <Tooltip title="Vista lista">
-            <IconButton onClick={() => navigate(listRoute)}>
-              <FormatBullets sx={{ color: activeColor(listRoute) }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Vista tarjetas">
-            <IconButton onClick={() => navigate(gridRoute)}>
-              <Apps sx={{ color: activeColor(gridRoute) }} />
-            </IconButton>
-          </Tooltip>
         </Stack>
       </Stack>
       <Stack
@@ -210,10 +186,14 @@ export default function ProductsHeadingArea({
           </Stack>
         </Stack>
         <Box sx={{ ml: { md: 2 } }}>
-          <ActionsMenu
-            onAdd={() => navigate("/catalogos/productos/nuevo")}
-            onBulk={() => navigate("/catalogos/productos/carga-masiva")}
-          />
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => navigate("/catalogos/productos/nuevo")}
+            fullWidth={false}
+          >
+            Agregar producto
+          </Button>
         </Box>
       </Stack>
 
