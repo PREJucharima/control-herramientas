@@ -32,6 +32,7 @@ export default function AutocompleteController({
           getOptionLabel={(o) =>
             o?.descripcion ? o.descripcion : o?.nombre ?? ""
           }
+          // size="small"
           renderInput={(params) => (
             <TextField
               {...params}

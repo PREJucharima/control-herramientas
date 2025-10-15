@@ -1,5 +1,4 @@
-// components/ProductObservationsDialog.jsx
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   Avatar,
   Box,
@@ -9,13 +8,11 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  InputAdornment,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Stack,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -25,28 +22,26 @@ import {
   FilterList as FilterListIcon,
   PushPin as PushPinIcon,
   Send as SendIcon,
+  CommentSharp,
 } from "@mui/icons-material";
-import { useFetchProductByCode } from "../hooks/useFetchProductByCode";
 
-// Tipos de item para referencia
-// { id, user:"jucharima", text:"...", date:"2025-10-13 12:35", pinned:true }
+import { useAuthStore } from "@/auth/states/authStore";
+import { ObservationForm } from "../observations/components";
+import { createObservation } from "../observations/services/createObservation";
+import { useObservations } from "../observations/hooks/useObservations";
 
 export default function ProductObservationsDialog({
   open,
   onClose,
   productCode,
-  data = [], // array de observaciones (orden DESC por fecha)
-  isLoading = false,
 }) {
-  const [value, setValue] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const user = useAuthStore((state) => state.user);
+  const userCompany = user?.profile?.sucursal_principal?.empresa;
   const {
-    productDetail,
-    isLoading: isLoadingProduct,
-    error,
-  } = useFetchProductByCode(productCode);
-  const p = productDetail ?? null;
-  console.log({ p, isLoadingProduct, error });
+    observations,
+    isLoading: isObservationsLoading,
+    // error: errorObservations,
+  } = useObservations(productCode);
 
   const initials = (name = "") =>
     name
@@ -56,23 +51,21 @@ export default function ProductObservationsDialog({
       .slice(0, 2)
       .toUpperCase();
 
-  const canSend = value.trim().length > 0 && !submitting;
-
-  const onCreate = () => {};
   const onRefresh = () => {};
 
-  const handleSend = async () => {
-    if (!canSend) return;
+  const items = useMemo(() => observations ?? [], [observations]);
+
+  console.log("Observations in dialog:", observations);
+
+  const handleSubmit = async (payload) => {
     try {
-      setSubmitting(true);
-      await onCreate?.(value.trim());
-      setValue("");
-    } finally {
-      setSubmitting(false);
+      await createObservation(productCode, payload);
+      // addProduct(created);
+      // navigate(`/catalogos/productos`);
+    } catch (e) {
+      console.error("Error creando un nuevo producto:", e);
     }
   };
-
-  const items = useMemo(() => data ?? [], [data]);
 
   return (
     <Dialog
@@ -95,7 +88,8 @@ export default function ProductObservationsDialog({
           borderColor: "divider",
         }}
       >
-        <Typography variant="subtitle1" fontWeight={700}>
+        <CommentSharp />
+        <Typography variant="subtitle1" component={"h1"} fontWeight={700}>
           Observaciones
           {items?.length ? ` (${items.length})` : ""}
         </Typography>
@@ -109,7 +103,7 @@ export default function ProductObservationsDialog({
               variant="text"
               startIcon={<RefreshIcon />}
               onClick={onRefresh}
-              disabled={isLoading}
+              disabled={isObservationsLoading}
             >
               Actualizar
             </Button>
@@ -128,49 +122,15 @@ export default function ProductObservationsDialog({
         }}
       >
         {/* Caja de entrada */}
-        <Box
-          sx={{
-            p: 2,
-            borderBottom: "1px solid",
-            borderColor: "divider",
-            position: "sticky",
-            top: 0,
-            bgcolor: "background.paper",
-            zIndex: 1,
-          }}
-        >
-          <TextField
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="Escribe una observación..."
-            fullWidth
-            size="small"
-            multiline
-            minRows={1}
-            maxRows={5}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Tooltip title="Enviar">
-                    <span>
-                      <IconButton
-                        onClick={handleSend}
-                        disabled={!canSend}
-                        edge="end"
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
+        <ObservationForm
+          productCode={productCode}
+          defaultCompany={userCompany}
+          onSubmit={handleSubmit}
+        />
 
         {/* Lista de observaciones */}
         <Box sx={{ maxHeight: "60vh", overflow: "auto" }}>
-          {isLoading && (
+          {isObservationsLoading && (
             <Typography
               variant="body2"
               color="text.secondary"
@@ -180,7 +140,7 @@ export default function ProductObservationsDialog({
             </Typography>
           )}
 
-          {!isLoading && items.length === 0 && (
+          {!isObservationsLoading && items.length === 0 && (
             <Typography
               variant="body2"
               color="text.secondary"
@@ -190,7 +150,7 @@ export default function ProductObservationsDialog({
             </Typography>
           )}
 
-          {!isLoading && items.length > 0 && (
+          {!isObservationsLoading && items.length > 0 && (
             <List disablePadding>
               {items.map((it) => (
                 <ListItem
@@ -205,7 +165,7 @@ export default function ProductObservationsDialog({
                 >
                   <ListItemAvatar>
                     <Avatar sx={{ width: 36, height: 36 }}>
-                      {initials(it.user)}
+                      {initials(it.usuario_creacion)}
                     </Avatar>
                   </ListItemAvatar>
 
@@ -218,7 +178,7 @@ export default function ProductObservationsDialog({
                         flexWrap="wrap"
                       >
                         <Typography variant="body2" fontWeight={700}>
-                          {it.user}
+                          {it.usuario_creacion}
                         </Typography>
                         {it.pinned && (
                           <Chip
@@ -233,7 +193,7 @@ export default function ProductObservationsDialog({
                           color="text.secondary"
                           sx={{ ml: "auto" }}
                         >
-                          {it.date}
+                          {it.fecha_creacion}
                         </Typography>
                       </Stack>
                     }
@@ -242,7 +202,7 @@ export default function ProductObservationsDialog({
                         variant="body2"
                         sx={{ whiteSpace: "pre-wrap", mt: 0.25 }}
                       >
-                        {it.text}
+                        {it.observacion}
                       </Typography>
                     }
                   />

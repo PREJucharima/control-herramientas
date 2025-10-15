@@ -86,13 +86,26 @@ export const API_PATHS = {
    * @_section Observaciones de Productos - CRUD de observaciones
    */
   productsObservations: {
-    list: "api/productos/observaciones/",
-    create: "api/productos/observaciones/",
-    detail: (id) => `api/productos/observaciones/${encodeURIComponent(id)}/`,
-    update: (id) => `api/productos/observaciones/${encodeURIComponent(id)}/`,
-    partialUpdate: (id) =>
-      `api/productos/observaciones/${encodeURIComponent(id)}/`,
-    delete: (id) => `api/productos/observaciones/${encodeURIComponent(id)}/`,
+    list: (productCode) =>
+      `api/productos/${encodeURIComponent(productCode)}/observaciones/`,
+    create: (productCode) =>
+      `api/productos/${encodeURIComponent(productCode)}/observaciones/`,
+    detail: (productCode, id) =>
+      `api/productos/${encodeURIComponent(
+        productCode
+      )}/observaciones/${encodeURIComponent(id)}/`,
+    update: (productCode, id) =>
+      `api/productos/${encodeURIComponent(
+        productCode
+      )}/observaciones/${encodeURIComponent(id)}/`,
+    partialUpdate: (productCode, id) =>
+      `api/productos/${encodeURIComponent(
+        productCode
+      )}/observaciones/${encodeURIComponent(id)}/`,
+    delete: (productCode, id) =>
+      `api/productos/${encodeURIComponent(
+        productCode
+      )}/observaciones/${encodeURIComponent(id)}/`,
 
     // helper útil para la página: listar por producto (si tu API filtra por ?producto=)
     byProduct: (productCode) =>
