@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { useAuthStore } from "@/auth/states/authStore";
-import { useNavigationStore } from "@/states/navigationStore";
-import { getNavigation } from "@/services/getNavigation";
+import { useNavigationStore } from "@/modules/navigations/states/navigationStore";
+import { getNavigation } from "@/modules/navigations/services/getNavigation";
 
 export const useFetchNavigation = () => {
   const user = useAuthStore((state) => state.user);
