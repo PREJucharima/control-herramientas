@@ -102,16 +102,6 @@ export const API_PATHS = {
       `api/productos/${encodeURIComponent(
         productCode
       )}/observaciones/${encodeURIComponent(id)}/`,
-    delete: (productCode, id) =>
-      `api/productos/${encodeURIComponent(
-        productCode
-      )}/observaciones/${encodeURIComponent(id)}/`,
-
-    // helper útil para la página: listar por producto (si tu API filtra por ?producto=)
-    byProduct: (productCode) =>
-      `api/productos/observaciones/?producto=${encodeURIComponent(
-        productCode
-      )}`,
   },
 
   /**

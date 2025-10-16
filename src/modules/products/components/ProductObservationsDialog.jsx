@@ -1,6 +1,5 @@
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
-  Avatar,
   Box,
   Button,
   Chip,
@@ -8,27 +7,25 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Stack,
   Tooltip,
   Typography,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import {
   Close as CloseIcon,
   Refresh as RefreshIcon,
-  FilterList as FilterListIcon,
-  PushPin as PushPinIcon,
-  Send as SendIcon,
   CommentSharp,
 } from "@mui/icons-material";
 
 import { useAuthStore } from "@/auth/states/authStore";
-import { ObservationForm } from "../observations/components";
+import { ObservationForm, ObservationList } from "../observations/components";
 import { createObservation } from "../observations/services/createObservation";
+import { updateObservationById } from "../observations/services/updateObservationById";
+import { partialUpdateObservation } from "../observations/services/partialUpdateObservation";
 import { useObservations } from "../observations/hooks/useObservations";
+import { useObservationById } from "../observations/hooks/useObservationById";
 
 export default function ProductObservationsDialog({
   open,
@@ -37,33 +34,60 @@ export default function ProductObservationsDialog({
 }) {
   const user = useAuthStore((state) => state.user);
   const userCompany = user?.profile?.sucursal_principal?.empresa;
+
+  const { observations, isLoading, error, refetch } =
+    useObservations(productCode);
+
+  const [showHidden, setShowHidden] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  // Carga solo cuando hay edición
   const {
-    observations,
-    isLoading: isObservationsLoading,
-    // error: errorObservations,
-  } = useObservations(productCode);
-
-  const initials = (name = "") =>
-    name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
-  const onRefresh = () => {};
+    observation: editingObs,
+    loading: loadingEdit,
+    // error: errorEdit,
+  } = useObservationById(productCode, editingId, {
+    enabled: editingId != null,
+  });
 
   const items = useMemo(() => observations ?? [], [observations]);
 
-  console.log("Observations in dialog:", observations);
+  const counts = useMemo(() => {
+    const active = items.filter((i) => i.esta_activo).length;
+    return { active, hidden: items.length - active };
+  }, [items]);
+
+  const visibleItems = useMemo(
+    () => (showHidden ? items : items.filter((i) => i.esta_activo)),
+    [items, showHidden]
+  );
+
+  const onRefresh = useCallback(() => {
+    refetch?.();
+  }, [refetch]);
 
   const handleSubmit = async (payload) => {
     try {
-      await createObservation(productCode, payload);
-      // addProduct(created);
-      // navigate(`/catalogos/productos`);
+      if (editingId) {
+        // EDITAR
+        await updateObservationById(productCode, editingId, payload);
+        setEditingId(null);
+      } else {
+        // CREAR
+        await createObservation(productCode, payload);
+      }
+      onRefresh();
     } catch (e) {
-      console.error("Error creando un nuevo producto:", e);
+      console.error("Error guardando observación:", e);
+    }
+  };
+
+  const handleToggleActive = async (id, next) => {
+    try {
+      await partialUpdateObservation(productCode, id, { esta_activo: next });
+      onRefresh();
+    } catch (e) {
+      console.error("Error al cambiar visibilidad:", e);
     }
   };
 
@@ -72,10 +96,8 @@ export default function ProductObservationsDialog({
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth="md"
-      PaperProps={{
-        sx: { borderRadius: 2, overflow: "hidden" },
-      }}
+      maxWidth="lg"
+      PaperProps={{ sx: { borderRadius: 2, overflow: "hidden" } }}
     >
       <DialogTitle
         sx={{
@@ -89,10 +111,20 @@ export default function ProductObservationsDialog({
         }}
       >
         <CommentSharp />
-        <Typography variant="subtitle1" component={"h1"} fontWeight={700}>
-          Observaciones
-          {items?.length ? ` (${items.length})` : ""}
+        <Typography variant="subtitle1" component="h1" fontWeight={700}>
+          Observaciones{items?.length ? ` (${items.length})` : ""}
         </Typography>
+
+        {editingId && (
+          <Chip
+            size="small"
+            color="primary"
+            variant="outlined"
+            label={`Editando #${editingId}`}
+            onDelete={() => setEditingId(null)}
+            sx={{ ml: 1 }}
+          />
+        )}
 
         <Box flex={1} />
 
@@ -103,7 +135,7 @@ export default function ProductObservationsDialog({
               variant="text"
               startIcon={<RefreshIcon />}
               onClick={onRefresh}
-              disabled={isObservationsLoading}
+              disabled={isLoading}
             >
               Actualizar
             </Button>
@@ -115,101 +147,88 @@ export default function ProductObservationsDialog({
         </IconButton>
       </DialogTitle>
 
-      <DialogContent
-        sx={{
-          p: 0,
-          bgcolor: "background.default",
-        }}
-      >
-        {/* Caja de entrada */}
-        <ObservationForm
-          productCode={productCode}
-          defaultCompany={userCompany}
-          onSubmit={handleSubmit}
-        />
+      <DialogContent sx={{ p: 0, bgcolor: "background.default" }}>
+        {/* GRID: izquierda form (sticky por dentro), derecha lista (scroll) */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "minmax(320px, 36%) minmax(0,1fr)",
+            },
+            columnGap: { xs: 0, md: 2 },
+            height: { xs: "auto", md: "72vh" },
+            alignItems: "stretch",
+          }}
+        >
+          {/* Columna izquierda: FORM */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+              borderRight: { md: "1px solid" },
+              borderColor: { md: "divider" },
+              bgcolor: "background.paper",
+              overflow: "hidden",
+            }}
+          >
+            <ObservationForm
+              productCode={productCode}
+              defaultCompany={userCompany}
+              onSubmit={handleSubmit}
+              // Props de edición
+              isEditing={!!editingId}
+              editingData={editingObs}
+              loadingEditing={loadingEdit}
+              onCancelEdit={() => setEditingId(null)}
+            />
+          </Box>
 
-        {/* Lista de observaciones */}
-        <Box sx={{ maxHeight: "60vh", overflow: "auto" }}>
-          {isObservationsLoading && (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ p: 3, textAlign: "center" }}
+          {/* Columna derecha: LISTA */}
+          <Box sx={{ p: 2, pt: 1, overflow: "auto" }}>
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              spacing={1}
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              justifyContent="space-between"
+              sx={{ mb: 1 }}
             >
-              Cargando observaciones…
-            </Typography>
-          )}
+              <Stack direction="row" spacing={1} alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showHidden}
+                      onChange={(e) => setShowHidden(e.target.checked)}
+                      size="small"
+                    />
+                  }
+                  label="Mostrar ocultos"
+                />
+                <Chip
+                  label={`Activas: ${counts.active}`}
+                  size="small"
+                  variant="outlined"
+                />
+                <Chip
+                  label={`Ocultas: ${counts.hidden}`}
+                  size="small"
+                  variant="outlined"
+                />
+              </Stack>
+            </Stack>
 
-          {!isObservationsLoading && items.length === 0 && (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ p: 3, textAlign: "center" }}
-            >
-              No hay observaciones aún.
-            </Typography>
-          )}
-
-          {!isObservationsLoading && items.length > 0 && (
-            <List disablePadding>
-              {items.map((it) => (
-                <ListItem
-                  key={it.id}
-                  alignItems="flex-start"
-                  sx={{
-                    px: 2.5,
-                    py: 1.5,
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  <ListItemAvatar>
-                    <Avatar sx={{ width: 36, height: 36 }}>
-                      {initials(it.usuario_creacion)}
-                    </Avatar>
-                  </ListItemAvatar>
-
-                  <ListItemText
-                    primary={
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        gap={1}
-                        flexWrap="wrap"
-                      >
-                        <Typography variant="body2" fontWeight={700}>
-                          {it.usuario_creacion}
-                        </Typography>
-                        {it.pinned && (
-                          <Chip
-                            size="small"
-                            icon={<PushPinIcon sx={{ fontSize: 16 }} />}
-                            label="Fijada"
-                            variant="outlined"
-                          />
-                        )}
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          sx={{ ml: "auto" }}
-                        >
-                          {it.fecha_creacion}
-                        </Typography>
-                      </Stack>
-                    }
-                    secondary={
-                      <Typography
-                        variant="body2"
-                        sx={{ whiteSpace: "pre-wrap", mt: 0.25 }}
-                      >
-                        {it.observacion}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              ))}
-            </List>
-          )}
+            <ObservationList
+              productCode={productCode}
+              items={visibleItems}
+              isLoading={isLoading}
+              error={error}
+              onEdit={(id) => setEditingId(id)}
+              onToggleActive={handleToggleActive}
+              // onTogglePin={(id, next) => ...}
+              // onCopyLink={(id) => ...}
+            />
+          </Box>
         </Box>
       </DialogContent>
     </Dialog>

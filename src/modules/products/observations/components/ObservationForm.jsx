@@ -6,16 +6,14 @@ import * as yup from "yup";
 import {
   Box,
   Stack,
-  Tooltip,
-  IconButton,
-  InputAdornment,
-  TextField,
   Button,
   Collapse,
   Grid,
   Divider,
+  useMediaQuery,
+  useTheme,
+  TextField,
 } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 
@@ -48,7 +46,15 @@ export function ObservationForm({
   onSubmit,
   defaultCompany,
   defaultCostCenter = null,
+  // === NUEVO ===
+  isEditing = false,
+  editingData = null,
+  loadingEditing = false,
+  onCancelEdit,
 }) {
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+
   const methods = useForm({
     defaultValues: {
       observacion: "",
@@ -57,31 +63,42 @@ export function ObservationForm({
       subtipo: null,
       moneda: null,
       centrocosto: defaultCostCenter,
-      _showAdvanced: false, // toggle UI
+      _showAdvanced: false,
     },
     resolver: yupResolver(schema),
     mode: "onBlur",
     criteriaMode: "all",
+    shouldUnregister: false, // mantiene campos registrados aunque se colapsen
   });
 
   const {
     control,
     handleSubmit,
     setValue,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
     reset,
+    watch,
   } = methods;
 
   const showAdvanced = useWatch({ control, name: "_showAdvanced" });
+  const showAdvancedResponsive = isDesktop || showAdvanced;
 
-  // Cargar opciones para moneda
+  useEffect(() => {
+    if (isDesktop) {
+      setValue("_showAdvanced", true, {
+        shouldDirty: false,
+        shouldValidate: false,
+      });
+    }
+  }, [isDesktop, setValue]);
+
+  // Lookups
   const {
     itemsByMaestro: currencyOptions,
     isLoading: isCurrencyLoading,
     error: currencyError,
   } = useFetchItemsByMaestro(MAESTROS.CURRENCY);
 
-  // Cargar opciones para tipo y subtipo
   const {
     itemsByMaestro: typeOptions,
     isLoading: isTypeLoading,
@@ -104,70 +121,117 @@ export function ObservationForm({
     prevTypeId.current = selectedType?.id ?? null;
   }, [selectedType?.id, setValue]);
 
-  // Cargar opciones para centro de costo
   const {
     centroCostosLookup,
     isLoading: isLoadingCentrosCosto,
     error: centrosCostoError,
   } = useCentroCostos(defaultCompany?.id);
 
-  // Habilitar enviar si hay algo válido
-  const observacion = useWatch({ control, name: "observacion" });
-  const canSend = useMemo(() => {
-    return isValid && (observacion ?? "").trim().length >= 3 && !isSubmitting;
-  }, [isValid, observacion, isSubmitting]);
+  // ====== HIDRATACIÓN EN MODO EDICIÓN ======
+  const byId = (arr, id) => (arr || []).find((o) => o?.id === id) ?? null;
+
+  // 1) Setear base cuando llegan datos + lookups base
+  useEffect(() => {
+    if (!isEditing || !editingData) return;
+
+    const baseValues = {
+      observacion: editingData.observacion ?? "",
+      costo: editingData.costo != null ? Number(editingData.costo) : null,
+      moneda: byId(currencyOptions, editingData.moneda),
+      centrocosto: byId(centroCostosLookup, editingData.centrocosto),
+      tipo: byId(typeOptions, editingData.tipo),
+      subtipo: null, // se define luego cuando cargue el catálogo de subtipos
+      _showAdvanced: true,
+    };
+
+    reset(baseValues, { keepDefaultValues: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isEditing,
+    editingData,
+    currencyOptions,
+    centroCostosLookup,
+    typeOptions,
+  ]);
+
+  // 2) Cuando ya hay tipo y cargaron los subtipos, setear subtipo
+  useEffect(() => {
+    if (!isEditing || !editingData) return;
+    if (!selectedType?.id) return;
+    if (!(subTypeOptions?.length > 0)) return;
+
+    const match = byId(subTypeOptions, editingData.subtipo);
+    setValue("subtipo", match, { shouldDirty: false, shouldValidate: true });
+  }, [isEditing, editingData, selectedType?.id, subTypeOptions, setValue]);
+
+  // Envío
+  const observacion = watch("observacion");
+  const canAttemptSend = useMemo(
+    () =>
+      (observacion ?? "").trim().length >= 3 &&
+      !isSubmitting &&
+      !loadingEditing,
+    [observacion, isSubmitting, loadingEditing]
+  );
 
   const buildPayload = useCallback(
-    (values) => {
-      return {
-        producto_codigo: productCode,
-        observacion: (values.observacion ?? "").trim(),
-        costo: values.costo != null ? String(values.costo) : null,
-
-        tipo: values.tipo?.id ?? 0,
-        subtipo: values.subtipo?.id ?? 0,
-        moneda: values.moneda?.id ?? 0,
-        centrocosto: values.centrocosto?.id ?? 0,
-      };
-    },
+    (values) => ({
+      producto_codigo: productCode,
+      observacion: (values.observacion ?? "").trim(),
+      costo: values.costo != null ? String(values.costo) : null,
+      tipo: values.tipo?.id ?? 0,
+      subtipo: values.subtipo?.id ?? 0,
+      moneda: values.moneda?.id ?? 0,
+      centrocosto: values.centrocosto?.id ?? 0,
+    }),
     [productCode]
   );
 
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = buildPayload(values);
-    console.log("Payload a enviar:", payload);
     await onSubmit?.(payload);
+
+    // Si estabas editando, deja los valores (el padre cerrará el modo edición).
+    if (!isEditing) {
+      reset(
+        {
+          ...values,
+          observacion: "",
+          costo: null,
+          subtipo: null,
+          _showAdvanced: isDesktop ? true : showAdvanced,
+        },
+        { keepDefaultValues: false }
+      );
+    }
+  });
+
+  // Reset a estado inicial (modo crear)
+  const handleClear = () => {
     reset(
       {
-        ...values,
         observacion: "",
         costo: null,
+        tipo: null,
         subtipo: null,
+        moneda: null,
+        centrocosto: defaultCostCenter ?? null,
+        _showAdvanced: isDesktop ? true : showAdvanced,
       },
       { keepDefaultValues: false }
     );
-  });
-
-  const onKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      if (canSend) onSubmitInternal();
-    }
   };
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={onSubmitInternal} noValidate>
-        {/* Barra pegajosa con textarea + enviar */}
+        {/* Composer */}
         <Box
           sx={{
             p: 2,
             borderBottom: "1px solid",
             borderColor: "divider",
-            position: "sticky",
-            top: 0,
             bgcolor: "background.paper",
-            zIndex: 1,
           }}
         >
           <Controller
@@ -176,7 +240,6 @@ export function ObservationForm({
             render={({ field, fieldState }) => (
               <TextField
                 {...field}
-                onKeyDown={onKeyDown}
                 placeholder="Escribe una observación..."
                 fullWidth
                 size="small"
@@ -185,23 +248,7 @@ export function ObservationForm({
                 maxRows={5}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Tooltip title="Enviar (Enter)">
-                        <span>
-                          <IconButton
-                            type="submit"
-                            disabled={!canSend}
-                            edge="end"
-                          >
-                            <SendIcon />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
+                disabled={loadingEditing}
               />
             )}
           />
@@ -212,54 +259,33 @@ export function ObservationForm({
             mt={1}
             justifyContent="space-between"
           >
-            <Button
-              size="small"
-              variant="text"
-              onClick={() =>
-                setValue("_showAdvanced", !showAdvanced, { shouldDirty: false })
-              }
-              startIcon={showAdvanced ? <ExpandLess /> : <ExpandMore />}
-            >
-              {showAdvanced ? "Ocultar opciones" : "Más opciones"}
-            </Button>
-
-            <Stack direction="row" spacing={1}>
+            {/* Toggle SOLO en móvil */}
+            {!isDesktop && (
               <Button
                 size="small"
-                variant="outlined"
+                variant="text"
                 onClick={() =>
-                  reset(
-                    {
-                      observacion: "",
-                      costo: null,
-                      tipo: null,
-                      subtipo: null,
-                      moneda: null,
-                      centrocosto: defaultCostCenter ?? null,
-                      _showAdvanced: showAdvanced,
-                    },
-                    { keepDefaultValues: false }
-                  )
+                  setValue("_showAdvanced", !showAdvanced, {
+                    shouldDirty: false,
+                  })
                 }
+                startIcon={showAdvanced ? <ExpandLess /> : <ExpandMore />}
               >
-                Limpiar
+                {showAdvanced ? "Ocultar opciones" : "Más opciones"}
               </Button>
-              {/* <Button
-                size="small"
-                type="submit"
-                variant="contained"
-                disabled={!canSend}
-              >
-                Enviar
-              </Button> */}
-            </Stack>
+            )}
           </Stack>
         </Box>
 
-        <Collapse in={showAdvanced} timeout="auto" unmountOnExit>
-          <Box sx={{ p: 2 }}>
+        {/* Panel avanzado */}
+        <Collapse
+          in={showAdvancedResponsive}
+          timeout="auto"
+          unmountOnExit={!isDesktop}
+        >
+          <Box sx={{ p: 2, bgcolor: "background.paper" }}>
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <Controller
                   name="costo"
                   control={control}
@@ -272,12 +298,13 @@ export function ObservationForm({
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}
                       fullWidth
+                      disabled={loadingEditing}
                     />
                   )}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <AutocompleteController
                   name="centrocosto"
                   control={control}
@@ -285,10 +312,11 @@ export function ObservationForm({
                   options={centroCostosLookup}
                   isLoading={isLoadingCentrosCosto}
                   fetchError={centrosCostoError}
+                  disabled={loadingEditing}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <AutocompleteController
                   name="moneda"
                   control={control}
@@ -296,10 +324,11 @@ export function ObservationForm({
                   options={currencyOptions}
                   isLoading={isCurrencyLoading}
                   fetchError={currencyError}
+                  disabled={loadingEditing}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <AutocompleteController
                   name="tipo"
                   control={control}
@@ -307,10 +336,11 @@ export function ObservationForm({
                   options={typeOptions}
                   isLoading={isTypeLoading}
                   fetchError={typeError}
+                  disabled={loadingEditing}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <AutocompleteController
                   name="subtipo"
                   control={control}
@@ -318,14 +348,63 @@ export function ObservationForm({
                   options={subTypeOptions}
                   isLoading={isSubTypeLoading}
                   fetchError={subTypeError}
-                  disabled={!selectedType || isSubTypeLoading}
+                  disabled={!selectedType || isSubTypeLoading || loadingEditing}
                 />
               </Grid>
             </Grid>
 
-            <Divider sx={{ mt: 3 }} />
+            <Divider sx={{ mt: 3, mb: 3 }} />
           </Box>
         </Collapse>
+
+        {/* Footer acciones */}
+        <Stack
+          direction={"row"}
+          alignItems={"center"}
+          justifyContent={"flex-end"}
+          spacing={1}
+          sx={{ mx: 2, mb: 2 }}
+        >
+          {isEditing ? (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={onCancelEdit}
+                disabled={isSubmitting || loadingEditing}
+              >
+                Cancelar
+              </Button>
+              <Button
+                size="small"
+                type="submit"
+                variant="contained"
+                disabled={!canAttemptSend || isSubmitting || loadingEditing}
+              >
+                Guardar cambios
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleClear}
+                disabled={isSubmitting}
+              >
+                Limpiar
+              </Button>
+              <Button
+                size="small"
+                type="submit"
+                variant="contained"
+                disabled={!canAttemptSend || isSubmitting}
+              >
+                Guardar observación
+              </Button>
+            </>
+          )}
+        </Stack>
       </form>
     </FormProvider>
   );
