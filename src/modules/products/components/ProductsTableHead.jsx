@@ -20,7 +20,6 @@ const HeaderCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const headCells = [
-  { id: "codigo", label: "Código" },
   { id: "estado_producto", label: "Estado del producto" },
   { id: "descripcion", label: "Descripción" },
   { id: "nro_serie", label: "Nro de Serie" },
@@ -49,7 +48,7 @@ export default function ProductsTableHead({ order, orderBy, onRequestSort }) {
             key={h.id}
             sortDirection={orderBy === h.id ? order : false}
             sx={(theme) => ({
-              ...(h.id === "codigo" && { pl: 4 }),
+              ...(h.id === "estado_producto" && { pl: 4 }),
               ...(h.id === "actions" && {
                 position: "sticky",
                 right: -1,

@@ -28,6 +28,7 @@ import {
   ExpandLess,
   MoreVert,
 } from "@mui/icons-material";
+import ObservationMeta from "./ObservationMeta";
 
 const initials = (name = "") =>
   name
@@ -50,7 +51,7 @@ function relativeTime(dateLike) {
 }
 
 export function ObservationCard({
-  item,
+  observation,
   onEdit, // (id) => void
   onDelete, // (id) => Promise<void> | void
   maxCollapsedLines = 4,
@@ -64,9 +65,11 @@ export function ObservationCard({
   const [menuEl, setMenuEl] = useState(null);
 
   const dateISO = useMemo(
-    () => item?.fecha_modificacion || item?.fecha_creacion,
-    [item?.fecha_modificacion, item?.fecha_creacion]
+    () => observation?.fecha_modificacion || observation?.fecha_creacion,
+    [observation?.fecha_modificacion, observation?.fecha_creacion]
   );
+
+  console.log("Datos de la observación", observation);
 
   const dateTooltip = useMemo(() => {
     const d = new Date(dateISO);
@@ -75,11 +78,11 @@ export function ObservationCard({
 
   const dateLabel = useMemo(() => relativeTime(dateISO), [dateISO]);
 
-  const showExpand = (item?.observacion?.length ?? 0) > 240;
+  const showExpand = (observation?.observacion?.length ?? 0) > 240;
 
   const handleDelete = async () => {
     try {
-      await onDelete?.(item.id);
+      await onDelete?.(observation.id);
       setSnack("Observación eliminada");
     } catch {
       setSnack("No se pudo eliminar");
@@ -95,7 +98,7 @@ export function ObservationCard({
           <IconButton
             size="small"
             aria-label="editar observación"
-            onClick={() => onEdit?.(item.id)}
+            onClick={() => onEdit?.(observation.id)}
             // disabled={!onEdit}
           >
             <EditNote fontSize="small" />
@@ -121,7 +124,9 @@ export function ObservationCard({
     <Paper
       role="article"
       aria-label={`Observación de ${
-        item?.usuario_modificacion ?? item?.usuario_creacion ?? "usuario"
+        observation?.usuario_modificacion ??
+        observation?.usuario_creacion ??
+        "usuario"
       }`}
       variant="outlined"
       sx={{
@@ -135,7 +140,7 @@ export function ObservationCard({
       }}
     >
       {/* Badge de fijado */}
-      {item?.pinned && (
+      {observation?.pinned && (
         <Chip
           size="small"
           variant="outlined"
@@ -149,7 +154,9 @@ export function ObservationCard({
       {/* Header */}
       <Stack direction="row" alignItems="center" spacing={1.25}>
         <Avatar sx={{ width: 36, height: 36 }}>
-          {initials(item?.usuario_modificacion || item?.usuario_creacion)}
+          {initials(
+            observation?.usuario_modificacion || observation?.usuario_creacion
+          )}
         </Avatar>
 
         <Stack sx={{ minWidth: 0, flex: 1 }}>
@@ -157,9 +164,13 @@ export function ObservationCard({
             variant="body2"
             fontWeight={700}
             noWrap
-            title={item?.usuario_modificacion || item?.usuario_creacion}
+            title={
+              observation?.usuario_modificacion || observation?.usuario_creacion
+            }
           >
-            {item?.usuario_modificacion || item?.usuario_creacion || "—"}
+            {observation?.usuario_modificacion ||
+              observation?.usuario_creacion ||
+              "—"}
           </Typography>
 
           <Tooltip title={dateTooltip}>
@@ -192,7 +203,7 @@ export function ObservationCard({
             >
               <MenuItem
                 onClick={() => {
-                  onEdit?.(item.id);
+                  onEdit?.(observation.id);
                   setMenuEl(null);
                 }}
                 disabled={!onEdit}
@@ -244,9 +255,13 @@ export function ObservationCard({
               : {},
         }}
       >
+        <Box sx={{ mb: 2, mt: 2 }}>
+          <ObservationMeta observation={observation} />
+        </Box>
+
         <Typography
           variant="body2"
-          id={`obs-body-${item.id}`}
+          id={`obs-body-${observation.id}`}
           sx={{
             whiteSpace: "pre-wrap",
             display: "-webkit-box",
@@ -256,7 +271,7 @@ export function ObservationCard({
             wordBreak: "break-word",
           }}
         >
-          {item?.observacion || "—"}
+          {observation?.observacion || "—"}
         </Typography>
       </Box>
 
@@ -268,7 +283,7 @@ export function ObservationCard({
             variant="text"
             onClick={() => setExpanded((v) => !v)}
             aria-expanded={expanded}
-            aria-controls={`obs-body-${item.id}`}
+            aria-controls={`obs-body-${observation.id}`}
             startIcon={expanded ? <ExpandLess /> : <ExpandMore />}
             sx={{ textTransform: "none", px: 0.5 }}
           >

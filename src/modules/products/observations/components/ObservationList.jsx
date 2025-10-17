@@ -72,11 +72,11 @@ function ObservationListBase({
 
   return (
     <Box sx={{ p: 1 }}>
-      {data.map((it) => (
+      {data.map((observation) => (
         <ObservationCard
-          key={it.id}
-          item={it}
-          onEdit={() => onEdit?.(it.id)} // ← reenvía id
+          key={observation.id}
+          observation={observation}
+          onEdit={() => onEdit?.(observation.id)}
           onToggleActive={async (id, next) => {
             await partialUpdateObservation(productCode, id, {
               esta_activo: next,

@@ -55,6 +55,8 @@ export function ObservationForm({
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
+  console.log("Observación para editar", editingData);
+
   const methods = useForm({
     defaultValues: {
       observacion: "",
@@ -137,21 +139,25 @@ export function ObservationForm({
     const baseValues = {
       observacion: editingData.observacion ?? "",
       costo: editingData.costo != null ? Number(editingData.costo) : null,
-      moneda: byId(currencyOptions, editingData.moneda),
-      centrocosto: byId(centroCostosLookup, editingData.centrocosto),
-      tipo: byId(typeOptions, editingData.tipo),
+      moneda: byId(currencyOptions, editingData.moneda.id),
+      centrocosto: byId(centroCostosLookup, editingData.centrocosto.id),
+      tipo: byId(typeOptions, editingData.tipo.id),
       subtipo: null, // se define luego cuando cargue el catálogo de subtipos
+      // subtipo: byId(subTypeOptions, editingData.subtipo.id),
       _showAdvanced: true,
     };
 
+    console.log("Hidratando formulario de edición con:", baseValues);
+
     reset(baseValues, { keepDefaultValues: false });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEditing,
     editingData,
     currencyOptions,
     centroCostosLookup,
     typeOptions,
+    reset,
+    subTypeOptions,
   ]);
 
   // 2) Cuando ya hay tipo y cargaron los subtipos, setear subtipo
@@ -160,9 +166,18 @@ export function ObservationForm({
     if (!selectedType?.id) return;
     if (!(subTypeOptions?.length > 0)) return;
 
-    const match = byId(subTypeOptions, editingData.subtipo);
-    setValue("subtipo", match, { shouldDirty: false, shouldValidate: true });
-  }, [isEditing, editingData, selectedType?.id, subTypeOptions, setValue]);
+    const match = byId(subTypeOptions, Number(editingData.subtipo?.id)); // <-- usar .id
+    if (match) {
+      setValue("subtipo", match, { shouldDirty: false, shouldValidate: true });
+    }
+  }, [
+    editingData,
+    isEditing,
+    editingData?.subtipo?.id,
+    selectedType?.id,
+    subTypeOptions,
+    setValue,
+  ]);
 
   // Envío
   const observacion = watch("observacion");
@@ -225,7 +240,6 @@ export function ObservationForm({
   return (
     <FormProvider {...methods}>
       <form onSubmit={onSubmitInternal} noValidate>
-        {/* Composer */}
         <Box
           sx={{
             p: 2,
@@ -242,7 +256,6 @@ export function ObservationForm({
                 {...field}
                 placeholder="Escribe una observación..."
                 fullWidth
-                size="small"
                 multiline
                 minRows={1}
                 maxRows={5}
@@ -353,7 +366,7 @@ export function ObservationForm({
               </Grid>
             </Grid>
 
-            <Divider sx={{ mt: 3, mb: 3 }} />
+            <Divider sx={{ mt: 1, mb: 1 }} />
           </Box>
         </Collapse>
 
