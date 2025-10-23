@@ -225,8 +225,6 @@ export default function ProductObservationsDialog({
               error={error}
               onEdit={(id) => setEditingId(id)}
               onToggleActive={handleToggleActive}
-              // onTogglePin={(id, next) => ...}
-              // onCopyLink={(id) => ...}
             />
           </Box>
         </Box>

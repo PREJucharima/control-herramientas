@@ -1,17 +1,67 @@
 import { memo, useMemo } from "react";
-import { Alert, Box, Button, Skeleton, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router";
+
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  IconButton,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
+
 import { ObservationCard } from "./ObservationCard";
-import { partialUpdateObservation } from "../services/partialUpdateObservation";
+
+function ObservationCardSkeleton() {
+  return (
+    <Card variant="outlined" sx={{ mb: 1.5, borderRadius: 2, px: 2, py: 1.5 }}>
+      <Stack direction="row" alignItems="flex-start" spacing={1.5}>
+        <Skeleton variant="circular" width={36} height={36} animation="wave" />
+        <Box sx={{ flex: 1 }}>
+          <Skeleton variant="text" width="30%" height={18} animation="wave" />
+          <Skeleton variant="text" width="18%" height={14} animation="wave" />
+        </Box>
+
+        <Stack direction="row" spacing={1}>
+          {[...Array(2)].map((_, i) => (
+            <IconButton key={i} size="small" disabled>
+              <Skeleton variant="circular" width={22} height={22} />
+            </IconButton>
+          ))}
+        </Stack>
+      </Stack>
+
+      <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap" }}>
+        {[80, 160, 140, 110].map((w, i) => (
+          <Skeleton
+            key={i}
+            variant="rounded"
+            width={w}
+            height={26}
+            animation="wave"
+            sx={{ borderRadius: 5 }}
+          />
+        ))}
+      </Stack>
+
+      <Box sx={{ mt: 1 }}>
+        <Skeleton variant="text" height={16} animation="wave" />
+        <Skeleton variant="text" width="80%" height={16} animation="wave" />
+      </Box>
+    </Card>
+  );
+}
 
 function ObservationListBase({
   items,
-  productCode,
   isLoading,
   error,
   emptyText = "No hay observaciones aún.",
-  showHidden = true, // ← NUEVO: viene del diálogo
-  onEdit, // ← NUEVO: reenvía al card
+  showHidden = true,
+  onEdit,
+  onToggleActive,
 }) {
   const navigate = useNavigate();
 
@@ -22,19 +72,7 @@ function ObservationListBase({
   );
 
   if (isLoading) {
-    return (
-      <Box sx={{ p: 2 }}>
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Stack key={i} direction="row" spacing={1.5} sx={{ mb: 2 }}>
-            <Skeleton variant="circular" width={36} height={36} />
-            <Box sx={{ flex: 1 }}>
-              <Skeleton variant="text" width="30%" />
-              <Skeleton variant="text" />
-            </Box>
-          </Stack>
-        ))}
-      </Box>
-    );
+    return <ObservationCardSkeleton />;
   }
 
   if (error && !isLoading) {
@@ -77,12 +115,7 @@ function ObservationListBase({
           key={observation.id}
           observation={observation}
           onEdit={() => onEdit?.(observation.id)}
-          onToggleActive={async (id, next) => {
-            await partialUpdateObservation(productCode, id, {
-              esta_activo: next,
-            });
-            // ideal: invalidar cache / refetch aquí (o subir estado al padre)
-          }}
+          onToggleActive={onToggleActive}
         />
       ))}
     </Box>

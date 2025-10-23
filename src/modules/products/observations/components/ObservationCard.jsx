@@ -1,18 +1,14 @@
 import { useMemo, useState } from "react";
+
 import {
   Avatar,
   Box,
   Button,
   Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Menu,
   MenuItem,
   Paper,
-  Snackbar,
   Stack,
   Tooltip,
   Typography,
@@ -20,14 +16,14 @@ import {
   useTheme,
 } from "@mui/material";
 import {
-  DeleteOutline,
   EditNote,
-  Link as LinkIcon,
-  PushPin as PushPinIcon,
   ExpandMore,
   ExpandLess,
   MoreVert,
+  VisibilityOffOutlined,
+  VisibilityOutlined,
 } from "@mui/icons-material";
+
 import ObservationMeta from "./ObservationMeta";
 
 const initials = (name = "") =>
@@ -52,44 +48,40 @@ function relativeTime(dateLike) {
 
 export function ObservationCard({
   observation,
-  onEdit, // (id) => void
-  onDelete, // (id) => Promise<void> | void
+  onEdit,
+  onToggleActive,
   maxCollapsedLines = 4,
 }) {
   const theme = useTheme();
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [expanded, setExpanded] = useState(false);
-  const [snack, setSnack] = useState("");
-  const [confirmOpen, setConfirmOpen] = useState(false);
   const [menuEl, setMenuEl] = useState(null);
 
-  const dateISO = useMemo(
-    () => observation?.fecha_modificacion || observation?.fecha_creacion,
-    [observation?.fecha_modificacion, observation?.fecha_creacion]
-  );
-
-  console.log("Datos de la observación", observation);
-
-  const dateTooltip = useMemo(() => {
-    const d = new Date(dateISO);
-    return isNaN(d) ? "" : d.toLocaleString();
-  }, [dateISO]);
-
-  const dateLabel = useMemo(() => relativeTime(dateISO), [dateISO]);
-
+  // const dateLabel = useMemo(() => relativeTime(dateISO), [dateISO]);
   const showExpand = (observation?.observacion?.length ?? 0) > 240;
+  const inactive = !observation.esta_activo;
 
-  const handleDelete = async () => {
-    try {
-      await onDelete?.(observation.id);
-      setSnack("Observación eliminada");
-    } catch {
-      setSnack("No se pudo eliminar");
-    } finally {
-      setConfirmOpen(false);
-    }
-  };
+  // utils locales
+  const toDate = (v) => (v ? new Date(v) : null);
+  const fmtExact = (d) => (d ? d.toLocaleString() : "—");
+
+  const createdAt = toDate(observation?.fecha_creacion);
+  const updatedAt = toDate(observation?.fecha_modificacion);
+  const isEdited =
+    updatedAt && createdAt && updatedAt.getTime() > createdAt.getTime();
+
+  // Para mostrar relativo usa updatedAt si fue editado; si no, createdAt
+  const shownDate = isEdited ? updatedAt : createdAt;
+  const dateLabel = useMemo(() => relativeTime(shownDate), [shownDate]);
+
+  // Tooltip con ambas fechas
+  const dateTooltip = useMemo(() => {
+    if (!createdAt && !updatedAt) return "";
+    const c = `Creado: ${fmtExact(createdAt)}`;
+    const u = `Editado: ${fmtExact(updatedAt)}`;
+    return isEdited ? `${u}\n${c}` : c;
+  }, [createdAt, updatedAt, isEdited]);
 
   const actionsInline = (
     <Stack direction="row" spacing={0.25} alignItems="center">
@@ -99,21 +91,32 @@ export function ObservationCard({
             size="small"
             aria-label="editar observación"
             onClick={() => onEdit?.(observation.id)}
-            // disabled={!onEdit}
           >
-            <EditNote fontSize="small" />
+            <EditNote />
           </IconButton>
         </span>
       </Tooltip>
-      <Tooltip title="Eliminar">
+      <Tooltip
+        title={`${observation.esta_activo ? "Ocultar" : "Mostrar"} observación`}
+      >
         <span>
           <IconButton
             size="small"
-            aria-label="eliminar observación"
-            onClick={() => setConfirmOpen(true)}
-            // disabled={!onDelete}
+            aria-label={`${
+              observation.esta_activo ? "Ocultar" : "Mostrar"
+            } observación`}
+            onClick={() =>
+              onToggleActive?.(observation.id, !observation.esta_activo)
+            }
+            sx={(t) => ({
+              color: inactive ? t.palette.grey[400] : t.palette.text.secondary,
+            })}
           >
-            <DeleteOutline fontSize="small" />
+            {observation.esta_activo ? (
+              <VisibilityOutlined />
+            ) : (
+              <VisibilityOffOutlined />
+            )}
           </IconButton>
         </span>
       </Tooltip>
@@ -133,24 +136,12 @@ export function ObservationCard({
         p: 2,
         mb: 1.5,
         borderRadius: 2,
-        // position: "relative",
-        // borderLeftWidth: 4,
-        // borderLeftStyle: "solid",
-        // borderLeftColor: item?.pinned ? "warning.main" : "divider",
+        position: "relative",
+        borderLeftWidth: 2,
+        borderLeftStyle: "solid",
+        borderLeftColor: observation?.esta_activo ? "primary.main" : "divider",
       }}
     >
-      {/* Badge de fijado */}
-      {observation?.pinned && (
-        <Chip
-          size="small"
-          variant="outlined"
-          color="warning"
-          icon={<PushPinIcon sx={{ fontSize: 16 }} />}
-          label="Fijada"
-          sx={{ position: "absolute", top: 8, right: 8 }}
-        />
-      )}
-
       {/* Header */}
       <Stack direction="row" alignItems="center" spacing={1.25}>
         <Avatar sx={{ width: 36, height: 36 }}>
@@ -178,11 +169,30 @@ export function ObservationCard({
               variant="caption"
               color="text.secondary"
               sx={{ whiteSpace: "nowrap" }}
+              aria-label={
+                isEdited
+                  ? `Editado ${dateLabel} (creado ${fmtExact(createdAt)})`
+                  : `Creado ${dateLabel}`
+              }
             >
-              {dateLabel || "—"}
+              {dateLabel} {isEdited && "· editado"}
             </Typography>
           </Tooltip>
         </Stack>
+
+        {inactive && (
+          <Chip
+            label="Inactiva"
+            size="small"
+            variant="outlined"
+            sx={(t) => ({
+              ml: 1,
+              color: t.palette.text.secondary,
+              borderColor: t.palette.grey[300],
+              bgcolor: t.palette.grey[100],
+            })}
+          />
+        )}
 
         {/* acciones (menu en XS) */}
         {isXs ? (
@@ -209,16 +219,6 @@ export function ObservationCard({
                 disabled={!onEdit}
               >
                 <EditNote sx={{ mr: 1 }} /> Editar
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setConfirmOpen(true);
-                  setMenuEl(null);
-                }}
-                disabled={!onDelete}
-                sx={{ color: "error.main" }}
-              >
-                <DeleteOutline sx={{ mr: 1 }} /> Eliminar
               </MenuItem>
             </Menu>
           </>
@@ -291,30 +291,6 @@ export function ObservationCard({
           </Button>
         </Box>
       )}
-
-      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-        <DialogTitle>Eliminar observación</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="text.secondary">
-            ¿Seguro que deseas eliminar esta observación? Esta acción no se
-            puede deshacer.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmOpen(false)}>Cancelar</Button>
-          <Button color="error" onClick={handleDelete} variant="contained">
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Snackbar
-        open={Boolean(snack)}
-        autoHideDuration={2200}
-        onClose={() => setSnack("")}
-        message={snack}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      />
     </Paper>
   );
 }

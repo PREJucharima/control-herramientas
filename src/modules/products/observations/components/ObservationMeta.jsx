@@ -1,15 +1,29 @@
 import { Stack, Chip, Tooltip } from "@mui/material";
-import ApartmentOutlined from "@mui/icons-material/ApartmentOutlined";
-import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
-import DevicesOtherOutlined from "@mui/icons-material/DevicesOtherOutlined";
-import PaidOutlined from "@mui/icons-material/PaidOutlined";
+import {
+  ApartmentOutlined,
+  CategoryOutlined,
+  DevicesOtherOutlined,
+  PaidOutlined,
+} from "@mui/icons-material";
 
 import { currencyFromDescripcion, formatMoney } from "@/utils/currency";
 
 export default function ObservationMeta({ observation }) {
   const { centrocosto, tipo, subtipo, moneda, costo } = observation ?? {};
-  const { code } = currencyFromDescripcion(moneda?.descripcion || "");
-  const amount = formatMoney(costo, code);
+
+  const hasCentro = !!(centrocosto?.codigo || centrocosto?.nombre);
+  const hasTipo = !!tipo?.descripcion;
+  const hasSubtipo = !!subtipo?.descripcion;
+  const hasMonto =
+    costo != null &&
+    costo !== "" &&
+    !Number.isNaN(Number(costo)) &&
+    !!moneda?.descripcion;
+
+  const { code } = hasMonto
+    ? currencyFromDescripcion(moneda.descripcion)
+    : { code: undefined };
+  const amount = hasMonto ? formatMoney(costo, code) : null;
 
   return (
     <Stack
@@ -19,32 +33,34 @@ export default function ObservationMeta({ observation }) {
       flexWrap="wrap"
       sx={{ mt: 0.5 }}
     >
-      <Tooltip
-        title={`${centrocosto?.codigo ?? ""} · ${centrocosto?.nombre ?? ""}`}
-        placement="top"
-      >
+      {hasCentro && (
+        <Tooltip
+          title={`${centrocosto?.codigo ?? ""} · ${centrocosto?.nombre ?? ""}`}
+          placement="top"
+        >
+          <Chip
+            size="small"
+            icon={<ApartmentOutlined />}
+            variant="outlined"
+            label={`${centrocosto?.codigo ?? ""} · ${
+              centrocosto?.nombre ?? "—"
+            }`}
+            sx={{ maxWidth: 280, fontSize: 10 }}
+          />
+        </Tooltip>
+      )}
+
+      {hasTipo && (
         <Chip
           size="small"
-          icon={<ApartmentOutlined />}
+          icon={<CategoryOutlined />}
           variant="outlined"
-          label={
-            centrocosto
-              ? `${centrocosto.codigo ?? ""} · ${centrocosto.nombre ?? "—"}`
-              : "—"
-          }
+          label={tipo.descripcion}
           sx={{ maxWidth: 280, fontSize: 10 }}
         />
-      </Tooltip>
+      )}
 
-      <Chip
-        size="small"
-        icon={<CategoryOutlined />}
-        variant="outlined"
-        label={tipo?.descripcion ?? "—"}
-        sx={{ maxWidth: 280, fontSize: 10 }}
-      />
-
-      {!!subtipo?.descripcion && (
+      {hasSubtipo && (
         <Chip
           size="small"
           icon={<DevicesOtherOutlined />}
@@ -54,14 +70,16 @@ export default function ObservationMeta({ observation }) {
         />
       )}
 
-      <Chip
-        size="small"
-        icon={<PaidOutlined />}
-        label={amount}
-        variant="outlined"
-        color="success"
-        sx={{ maxWidth: 280, fontSize: 10, fontWeight: 600 }}
-      />
+      {hasMonto && (
+        <Chip
+          size="small"
+          icon={<PaidOutlined />}
+          label={amount}
+          variant="outlined"
+          color="success"
+          sx={{ maxWidth: 280, fontSize: 10, fontWeight: 600 }}
+        />
+      )}
     </Stack>
   );
 }

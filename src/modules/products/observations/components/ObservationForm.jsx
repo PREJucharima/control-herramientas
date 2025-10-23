@@ -14,14 +14,13 @@ import {
   useTheme,
   TextField,
 } from "@mui/material";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import ExpandLess from "@mui/icons-material/ExpandLess";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
+import { useCentroCostos } from "@/modules/centros-costo/hooks/useCentroCostos";
 import { useFetchItemsByMaestro } from "@/modules/items/hooks/useFetchItemsByMaestro";
 import { AutocompleteController } from "@/components/form";
-import { useCatalogChildren } from "../../hooks/useCatalogChildren";
 import { MAESTROS } from "../../constants/product.constants";
-import { useCentroCostos } from "../../../centros-costo/hooks/useCentroCostos";
+import { useCatalogChildren } from "../../hooks/useCatalogChildren";
 
 const schema = yup.object({
   observacion: yup
@@ -131,25 +130,31 @@ export function ObservationForm({
 
   // ====== HIDRATACIÓN EN MODO EDICIÓN ======
   const byId = (arr, id) => (arr || []).find((o) => o?.id === id) ?? null;
+  const hydratedRef = useRef(null);
 
   // 1) Setear base cuando llegan datos + lookups base
   useEffect(() => {
     if (!isEditing || !editingData) return;
 
+    // evita re-hidratar si ya lo hicimos para este registro
+    if (hydratedRef.current === editingData.id) return;
+
+    if (!typeOptions?.length && editingData?.tipo?.id) return;
+
     const baseValues = {
       observacion: editingData.observacion ?? "",
       costo: editingData.costo != null ? Number(editingData.costo) : null,
-      moneda: byId(currencyOptions, editingData.moneda.id),
-      centrocosto: byId(centroCostosLookup, editingData.centrocosto.id),
-      tipo: byId(typeOptions, editingData.tipo.id),
-      subtipo: null, // se define luego cuando cargue el catálogo de subtipos
-      // subtipo: byId(subTypeOptions, editingData.subtipo.id),
+      moneda: byId(currencyOptions, editingData.moneda?.id),
+      centrocosto: byId(centroCostosLookup, editingData.centrocosto?.id),
+      tipo: byId(typeOptions, editingData.tipo?.id),
+      subtipo: null,
       _showAdvanced: true,
     };
 
     console.log("Hidratando formulario de edición con:", baseValues);
 
     reset(baseValues, { keepDefaultValues: false });
+    hydratedRef.current = editingData.id;
   }, [
     isEditing,
     editingData,
@@ -157,7 +162,6 @@ export function ObservationForm({
     centroCostosLookup,
     typeOptions,
     reset,
-    subTypeOptions,
   ]);
 
   // 2) Cuando ya hay tipo y cargaron los subtipos, setear subtipo
@@ -179,6 +183,33 @@ export function ObservationForm({
     setValue,
   ]);
 
+  useEffect(() => {
+    // Cuando sales de edición (o no hay registro seleccionado), limpia el formulario
+    if (!isEditing || !editingData) {
+      reset(
+        {
+          observacion: "",
+          costo: null,
+          tipo: null,
+          subtipo: null,
+          moneda: null,
+          centrocosto: defaultCostCenter ?? null,
+          _showAdvanced: isDesktop ? true : showAdvanced,
+        },
+        { keepDefaultValues: false }
+      );
+      // permitir re-hidratar la próxima vez, incluso si es el mismo id
+      hydratedRef.current = null;
+    }
+  }, [
+    isEditing,
+    editingData,
+    reset,
+    defaultCostCenter,
+    isDesktop,
+    showAdvanced,
+  ]);
+
   // Envío
   const observacion = watch("observacion");
   const canAttemptSend = useMemo(
@@ -194,10 +225,10 @@ export function ObservationForm({
       producto_codigo: productCode,
       observacion: (values.observacion ?? "").trim(),
       costo: values.costo != null ? String(values.costo) : null,
-      tipo: values.tipo?.id ?? 0,
-      subtipo: values.subtipo?.id ?? 0,
-      moneda: values.moneda?.id ?? 0,
-      centrocosto: values.centrocosto?.id ?? 0,
+      tipo: values.tipo?.id ?? null,
+      subtipo: values.subtipo?.id ?? null,
+      moneda: values.moneda?.id ?? null,
+      centrocosto: values.centrocosto?.id ?? null,
     }),
     [productCode]
   );
@@ -255,6 +286,7 @@ export function ObservationForm({
               <TextField
                 {...field}
                 placeholder="Escribe una observación..."
+                label="Observación"
                 fullWidth
                 multiline
                 minRows={1}
@@ -299,49 +331,6 @@ export function ObservationForm({
           <Box sx={{ p: 2, bgcolor: "background.paper" }}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, sm: 12 }}>
-                <Controller
-                  name="costo"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Costo"
-                      type="number"
-                      inputProps={{ step: "0.01", min: 0 }}
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                      disabled={loadingEditing}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 12 }}>
-                <AutocompleteController
-                  name="centrocosto"
-                  control={control}
-                  label="Centro de costo"
-                  options={centroCostosLookup}
-                  isLoading={isLoadingCentrosCosto}
-                  fetchError={centrosCostoError}
-                  disabled={loadingEditing}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 12 }}>
-                <AutocompleteController
-                  name="moneda"
-                  control={control}
-                  label="Moneda"
-                  options={currencyOptions}
-                  isLoading={isCurrencyLoading}
-                  fetchError={currencyError}
-                  disabled={loadingEditing}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 12 }}>
                 <AutocompleteController
                   name="tipo"
                   control={control}
@@ -352,7 +341,6 @@ export function ObservationForm({
                   disabled={loadingEditing}
                 />
               </Grid>
-
               <Grid size={{ xs: 12, sm: 12 }}>
                 <AutocompleteController
                   name="subtipo"
@@ -364,9 +352,49 @@ export function ObservationForm({
                   disabled={!selectedType || isSubTypeLoading || loadingEditing}
                 />
               </Grid>
+              <Grid size={{ xs: 12, sm: 12 }}>
+                <AutocompleteController
+                  name="centrocosto"
+                  control={control}
+                  label="Centro de costo"
+                  options={centroCostosLookup}
+                  isLoading={isLoadingCentrosCosto}
+                  fetchError={centrosCostoError}
+                  disabled={loadingEditing}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 12 }}>
+                <AutocompleteController
+                  name="moneda"
+                  control={control}
+                  label="Moneda"
+                  options={currencyOptions}
+                  isLoading={isCurrencyLoading}
+                  fetchError={currencyError}
+                  disabled={loadingEditing}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 12 }}>
+                <Controller
+                  name="costo"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <TextField
+                      {...field}
+                      label="Costo"
+                      type="number"
+                      inputProps={{ step: "0.01", min: 0 }}
+                      value={field.value ?? ""}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      fullWidth
+                      disabled={loadingEditing}
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
-
-            <Divider sx={{ mt: 1, mb: 1 }} />
+            <Divider sx={{ mt: 2, mb: 2 }} />
           </Box>
         </Collapse>
 
