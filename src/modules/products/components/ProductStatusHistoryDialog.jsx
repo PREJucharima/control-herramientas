@@ -30,6 +30,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/es";
 import { useProductStatusHistory } from "../history/hooks/useProductStatusHistory";
+import { useFetchProductByCode } from "../hooks/useFetchProductByCode";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
@@ -70,9 +71,15 @@ export default function ProductStatusHistoryDialog({
     handleChangePageSize,
   } = useProductStatusHistory(productCode, 1, 10);
 
+  const { productDetail } = useFetchProductByCode(productCode);
+
   const title = useMemo(
-    () => `Historial de estados ${productCode ? `· ${productCode}` : ""}`,
-    [productCode]
+    () =>
+      `Historial de estados ${
+        productCode &&
+        `· ${productDetail?.descripcion} - ${productDetail?.nro_serie}`
+      }`,
+    [productCode, productDetail]
   );
 
   // Agrupar por día (YYYY-MM-DD)

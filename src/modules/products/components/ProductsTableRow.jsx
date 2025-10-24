@@ -6,6 +6,12 @@ import { TableRow, TableCell, Chip, IconButton } from "@mui/material";
 
 import RowActionsMenu from "./RowActionsMenu";
 
+const isAccessory = (product) => Boolean(product?.es_accesorio);
+const isSerialized = (product) => {
+  const desc = (product?.tipo_producto.descripcion || "").toUpperCase().trim();
+  return ["CON SERIE"].includes(desc);
+};
+
 export default function ProductsTableRow({
   product,
   onEdit,
@@ -28,6 +34,11 @@ export default function ProductsTableRow({
 
   const fechaCreacion = dateFormat(product.fecha_creacion || "");
   const fechaModificacion = dateFormat(product.fecha_modificacion || "");
+
+  const canViewAccessories = isAccessory(product);
+  const canViewHistory = isSerialized(product);
+  console.log("Tipo del producto", product?.tipo_producto.descripcion);
+  console.log("Tiene historial", canViewHistory);
 
   return (
     <TableRow hover>
@@ -89,6 +100,8 @@ export default function ProductsTableRow({
           onEdit={() => onEdit?.(product.id)}
           onViewObservations={() => onViewObservations?.(product.id)}
           onViewHistory={() => onViewHistory?.(product.id)}
+          canViewAccessories={canViewAccessories}
+          canViewHistory={canViewHistory}
         />
       </TableCell>
     </TableRow>

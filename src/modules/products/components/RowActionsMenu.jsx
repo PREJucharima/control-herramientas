@@ -27,6 +27,8 @@ export default function RowActionsMenu({
   onEdit,
   onViewObservations,
   onViewHistory,
+  canViewAccessories = false,
+  canViewHistory = false,
 }) {
   const handleView = () => {
     onViewDetails?.();
@@ -61,12 +63,14 @@ export default function RowActionsMenu({
           <Text>Editar producto</Text>
         </PrettyItem>
 
-        <PrettyItem onClick={() => alert("Ver accesorios")}>
-          <ListItemIcon>
-            <KeyboardAltOutlined fontSize="small" />
-          </ListItemIcon>
-          <Text>Ver accesorios</Text>
-        </PrettyItem>
+        {canViewAccessories && (
+          <PrettyItem onClick={() => alert("Ver accesorios")}>
+            <ListItemIcon>
+              <KeyboardAltOutlined fontSize="small" />
+            </ListItemIcon>
+            <Text>Ver accesorios</Text>
+          </PrettyItem>
+        )}
 
         <PrettyItem onClick={onViewObservations}>
           <ListItemIcon>
@@ -75,12 +79,14 @@ export default function RowActionsMenu({
           <Text>Ver observaciones</Text>
         </PrettyItem>
 
-        <PrettyItem onClick={onViewHistory}>
-          <ListItemIcon>
-            <History fontSize="small" />
-          </ListItemIcon>
-          <Text>Ver historial</Text>
-        </PrettyItem>
+        {canViewHistory && (
+          <PrettyItem onClick={onViewHistory}>
+            <ListItemIcon>
+              <History fontSize="small" />
+            </ListItemIcon>
+            <Text>Ver historial</Text>
+          </PrettyItem>
+        )}
       </MenuList>
     </Menu>
   );
