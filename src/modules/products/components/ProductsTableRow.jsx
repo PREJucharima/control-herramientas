@@ -11,6 +11,7 @@ export default function ProductsTableRow({
   onEdit,
   onViewDetails,
   onViewObservations,
+  onViewHistory,
 }) {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
@@ -87,6 +88,7 @@ export default function ProductsTableRow({
           onViewDetails={() => onViewDetails?.(product.id)}
           onEdit={() => onEdit?.(product.id)}
           onViewObservations={() => onViewObservations?.(product.id)}
+          onViewHistory={() => onViewHistory?.(product.id)}
         />
       </TableCell>
     </TableRow>

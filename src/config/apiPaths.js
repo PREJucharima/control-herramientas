@@ -105,6 +105,14 @@ export const API_PATHS = {
   },
 
   /**
+   * @_section Historial de estados de Productos
+   */
+  productsStatusHistory: {
+    list: (productCode) =>
+      `api/productos/${encodeURIComponent(productCode)}/estados-historial/`,
+  },
+
+  /**
    * @_section Seguridad - Endpoints para autenticación
    */
   security: {

@@ -26,6 +26,7 @@ import {
   ProductObservationsDialog,
 } from "../components";
 import { useFetchProducts } from "../hooks/useFetchProducts";
+import ProductStatusHistoryDialog from "../components/ProductStatusHistoryDialog";
 
 const ProductsPage = () => {
   const navigate = useNavigate();
@@ -50,6 +51,10 @@ const ProductsPage = () => {
   const observationCode = searchParams.get("observaciones");
   const openObservation = (codigo) => setParam("observaciones", String(codigo));
   const closeObservation = () => setParam("observaciones", "");
+
+  const historyCode = searchParams.get("historial");
+  const openHistory = (codigo) => setParam("historial", String(codigo));
+  const closeHistory = () => setParam("historial", "");
 
   // 1) Estado inicial desde URL (sin syncStatus)
   const initialFilters = {
@@ -217,6 +222,7 @@ const ProductsPage = () => {
                           onViewObservations={() =>
                             openObservation(prod.codigo)
                           }
+                          onViewHistory={() => openHistory(prod.codigo)}
                         />
                       ))
                     )}
@@ -277,6 +283,14 @@ const ProductsPage = () => {
           open={Boolean(observationCode)}
           productCode={observationCode}
           onClose={closeObservation}
+        />
+      )}
+
+      {historyCode && (
+        <ProductStatusHistoryDialog
+          open={Boolean(historyCode)}
+          productCode={historyCode}
+          onClose={closeHistory}
         />
       )}
     </Box>

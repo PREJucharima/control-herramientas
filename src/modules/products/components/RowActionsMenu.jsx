@@ -1,13 +1,4 @@
-import { useNavigate } from "react-router";
-
-import {
-  Menu,
-  MenuItem,
-  MenuList,
-  ListItemIcon,
-  Divider,
-  styled,
-} from "@mui/material";
+import { Menu, MenuItem, MenuList, ListItemIcon, styled } from "@mui/material";
 import {
   Visibility,
   Edit,
@@ -35,9 +26,8 @@ export default function RowActionsMenu({
   onViewDetails,
   onEdit,
   onViewObservations,
+  onViewHistory,
 }) {
-  const navigate = useNavigate();
-
   const handleView = () => {
     onViewDetails?.();
     onClose?.();
@@ -64,16 +54,12 @@ export default function RowActionsMenu({
           <Text>Ver detalle</Text>
         </PrettyItem>
 
-        {/* <Divider /> */}
-
         <PrettyItem onClick={handleEdit}>
           <ListItemIcon>
             <Edit fontSize="small" />
           </ListItemIcon>
           <Text>Editar producto</Text>
         </PrettyItem>
-
-        {/* <Divider /> */}
 
         <PrettyItem onClick={() => alert("Ver accesorios")}>
           <ListItemIcon>
@@ -82,8 +68,6 @@ export default function RowActionsMenu({
           <Text>Ver accesorios</Text>
         </PrettyItem>
 
-        {/* <Divider /> */}
-
         <PrettyItem onClick={onViewObservations}>
           <ListItemIcon>
             <Feed fontSize="small" />
@@ -91,9 +75,7 @@ export default function RowActionsMenu({
           <Text>Ver observaciones</Text>
         </PrettyItem>
 
-        {/* <Divider /> */}
-
-        <PrettyItem onClick={() => navigate("/catalogos/historial")}>
+        <PrettyItem onClick={onViewHistory}>
           <ListItemIcon>
             <History fontSize="small" />
           </ListItemIcon>
