@@ -36,19 +36,22 @@ dayjs.locale("es");
 
 const statusColor = (desc = "") => {
   const d = desc.toUpperCase().trim();
-  if (["DISPONIBLE", "EN STOCK", "ACTIVO"].includes(d)) return "success";
-  if (["ASIGNADO", "EN USO"].includes(d)) return "info";
-  if (["REPARACIÓN", "MANTENIMIENTO"].includes(d)) return "warning";
-  if (["BAJA", "ROBADO", "PERDIDO", "INACTIVO"].includes(d)) return "error";
+  if (["DISPONIBLE"].includes(d)) return "success";
+  if (["ASIGNADO"].includes(d)) return "info";
+  if (["COMPRADO POR USUARIO"].includes(d)) return "warning";
+  if (["BAJA DEFINITIVA", "ROBADO"].includes(d)) return "error";
   return "default";
 };
 
 const DateText = ({ iso }) => {
   if (!iso) return <span>—</span>;
   const d = dayjs(iso);
+  const isToday = d.isSame(dayjs(), "day");
+  const isYesterday = d.isSame(dayjs().subtract(1, "day"), "day");
+  const full = d.format("DD/MM/YYYY HH:mm");
   return (
-    <Tooltip title={d.format("DD/MM/YYYY HH:mm")}>
-      <span>{d.fromNow()}</span>
+    <Tooltip title={full}>
+      <span>{isToday ? "hoy" : isYesterday ? "ayer" : d.fromNow()}</span>
     </Tooltip>
   );
 };
@@ -72,12 +75,34 @@ export default function ProductStatusHistoryDialog({
     [productCode]
   );
 
+  // Agrupar por día (YYYY-MM-DD)
+  const groups = useMemo(() => {
+    if (!history?.length) return [];
+    const map = history.reduce((acc, h) => {
+      const key = h?.fecha_creacion
+        ? dayjs(h.fecha_creacion).format("YYYY-MM-DD")
+        : "sin-fecha";
+      (acc[key] ||= []).push(h);
+      return acc;
+    }, {});
+    // ordenar por fecha descendente
+    return Object.entries(map).sort(([a], [b]) => (a < b ? 1 : -1));
+  }, [history]);
+
+  const humanDay = (key) => {
+    if (key === "sin-fecha") return "Sin fecha";
+    const d = dayjs(key);
+    if (d.isSame(dayjs(), "day")) return "Hoy";
+    if (d.isSame(dayjs().subtract(1, "day"), "day")) return "Ayer";
+    return d.format("DD MMM YYYY");
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
       <DialogTitle sx={{ pr: 6 }}>
         {title}
         <IconButton
-          aria-label="Cerrar"
+          aria-label="Cerrar diálogo de historial"
           onClick={onClose}
           sx={{ position: "absolute", right: 8, top: 8 }}
         >
@@ -85,8 +110,8 @@ export default function ProductStatusHistoryDialog({
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ p: 0 }}>
-        {/* Encabezado de lista con conteo */}
+      <DialogContent sx={{ p: 2 }}>
+        {/* Subheader global con conteo */}
         <ListSubheader
           disableSticky
           component="div"
@@ -108,7 +133,7 @@ export default function ProductStatusHistoryDialog({
               }`}
         </ListSubheader>
 
-        {/* Estados de carga/errores/empty */}
+        {/* Loading */}
         {isLoading && (
           <Box sx={{ p: 2 }}>
             {Array.from({ length: 6 }).map((_, i) => (
@@ -128,6 +153,7 @@ export default function ProductStatusHistoryDialog({
           </Box>
         )}
 
+        {/* Error */}
         {!isLoading && error && (
           <Box sx={{ p: 2 }}>
             <Alert severity="error">
@@ -137,112 +163,185 @@ export default function ProductStatusHistoryDialog({
           </Box>
         )}
 
+        {/* Empty */}
         {!isLoading && !error && history.length === 0 && (
           <Box sx={{ p: 3 }}>
             <Alert severity="info">Sin movimientos de estado.</Alert>
           </Box>
         )}
 
-        {/* Lista */}
+        {/* Lista agrupada por día */}
         {!isLoading && !error && history.length > 0 && (
-          <List dense disablePadding>
-            {history.map((h, idx) => {
-              const prev = h.estado_producto_anterior?.descripcion || "—";
-              const next = h.estado_producto_nuevo?.descripcion || "—";
-              const who = h.usuario_creacion || "—";
-              const motive = h.motivo || "";
-
-              return (
-                <ListItem
-                  key={h.id ?? idx}
-                  divider
+          <List disablePadding>
+            {groups.map(([dayKey, items], gi) => (
+              <Box
+                key={dayKey}
+                sx={(t) => ({
+                  // bloque por día con un leve fondo alternado
+                  bgcolor:
+                    gi % 2
+                      ? alpha(t.palette.primary.main, 0.02)
+                      : "transparent",
+                })}
+              >
+                <ListSubheader
+                  disableSticky
+                  component="div"
                   sx={(t) => ({
                     px: 2,
-                    py: 1.25,
-                    alignItems: "flex-start",
-                    "&:hover": {
-                      backgroundColor: alpha(t.palette.primary.main, 0.03),
-                    },
+                    py: 1,
+                    mt: gi === 0 ? 0 : 0.5,
+                    fontWeight: 700,
+                    fontSize: 12,
+                    color: t.palette.text.secondary,
+                    background: "transparent",
                   })}
                 >
-                  <ListItemAvatar>
-                    <Avatar
+                  {humanDay(dayKey)}
+                </ListSubheader>
+
+                {items.map((h, idx) => {
+                  const prev = h.estado_producto_anterior?.descripcion || "—";
+                  const next = h.estado_producto_nuevo?.descripcion || "—";
+                  const who = h.usuario_creacion || "—";
+                  const motive = h.motivo || "";
+
+                  const aria = `Cambio de estado: ${prev} a ${next}, ${dayjs(
+                    h.fecha_creacion
+                  ).fromNow()}, por ${who}${
+                    motive ? `, motivo ${motive}` : ""
+                  }`;
+
+                  return (
+                    <ListItem
+                      key={h.id ?? `${dayKey}-${idx}`}
+                      aria-label={aria}
                       sx={(t) => ({
-                        bgcolor: alpha(t.palette.primary.main, 0.08),
-                        color: t.palette.primary.main,
+                        mx: 1.5,
+                        mb: 1,
+                        px: 2,
+                        py: 1.25,
+                        alignItems: "flex-start",
+                        borderRadius: 2,
+                        border: `1px solid ${t.palette.divider}`,
+                        backgroundColor: t.palette.background.paper,
+                        transition:
+                          "background-color .2s ease, box-shadow .2s ease",
+                        "&:hover": {
+                          backgroundColor: alpha(t.palette.primary.main, 0.03),
+                          boxShadow: t.shadows[1],
+                        },
+                        // sutil línea vertical (timeline)
+                        position: "relative",
+                        "& .MuiListItemAvatar-root": {
+                          position: "relative",
+                          "&::after": {
+                            content: '""',
+                            position: "absolute",
+                            top: 36,
+                            bottom: -12,
+                            left: "50%",
+                            width: 2,
+                            transform: "translateX(-50%)",
+                            backgroundColor: alpha(
+                              t.palette.text.disabled,
+                              0.2
+                            ),
+                            display:
+                              idx === items.length - 1 ? "none" : "block",
+                          },
+                        },
                       })}
                     >
-                      <HistoryIcon fontSize="small" />
-                    </Avatar>
-                  </ListItemAvatar>
+                      <ListItemAvatar>
+                        <Avatar
+                          sx={(t) => ({
+                            width: 36,
+                            height: 36,
+                            bgcolor: alpha(t.palette.primary.main, 0.08),
+                            color: t.palette.primary.main,
+                          })}
+                        >
+                          <HistoryIcon fontSize="small" />
+                        </Avatar>
+                      </ListItemAvatar>
 
-                  <ListItemText
-                    primary={
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        flexWrap="wrap"
-                      >
-                        <Chip
-                          size="small"
-                          label={prev}
-                          variant="outlined"
-                          color={statusColor(prev)}
-                          sx={{ maxWidth: 200 }}
-                        />
-                        <ArrowForwardIos
-                          fontSize="inherit"
-                          style={{ opacity: 0.5 }}
-                        />
-                        <Chip
-                          size="small"
-                          label={next}
-                          color={statusColor(next)}
-                          variant="filled"
-                          sx={{ maxWidth: 200 }}
-                        />
-                      </Stack>
-                    }
-                    secondary={
-                      <Stack
-                        direction="row"
-                        spacing={1}
-                        alignItems="center"
-                        mt={0.5}
-                        flexWrap="wrap"
-                        sx={{ "& > *": { fontSize: 12 } }}
-                      >
-                        <DateText iso={h.fecha_creacion} />
-                        <span>·</span>
-                        <Tooltip title={`Usuario: ${who}`}>
-                          <span>por {who}</span>
-                        </Tooltip>
-                        {!!motive && (
-                          <>
-                            <span>·</span>
-                            <Chip
-                              size="small"
-                              variant="outlined"
-                              label={motive}
-                              sx={{
+                      <ListItemText
+                        primary={
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            flexWrap="wrap"
+                            sx={{
+                              "& .MuiChip-root": {
                                 maxWidth: 220,
                                 "& .MuiChip-label": {
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",
                                 },
-                              }}
+                              },
+                            }}
+                          >
+                            <Chip
+                              size="small"
+                              label={prev}
+                              variant="outlined"
+                              color={statusColor(prev)}
                             />
-                          </>
-                        )}
-                      </Stack>
-                    }
-                    primaryTypographyProps={{ component: "div" }}
-                    secondaryTypographyProps={{ component: "div" }}
-                  />
-                </ListItem>
-              );
-            })}
+                            <ArrowForwardIos
+                              fontSize="inherit"
+                              style={{ opacity: 0.5 }}
+                            />
+                            <Chip
+                              size="small"
+                              label={next}
+                              color={statusColor(next)}
+                              variant="filled"
+                            />
+                          </Stack>
+                        }
+                        secondary={
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            mt={0.75}
+                            flexWrap="wrap"
+                            sx={{ "& > *": { fontSize: 12 } }}
+                          >
+                            <DateText iso={h.fecha_creacion} />
+                            <span>·</span>
+                            <Tooltip title={`Usuario: ${who}`}>
+                              <span>por {who}</span>
+                            </Tooltip>
+                            {!!motive && (
+                              <>
+                                <span>·</span>
+                                <Chip
+                                  size="small"
+                                  variant="outlined"
+                                  label={motive}
+                                  sx={{
+                                    maxWidth: 260,
+                                    "& .MuiChip-label": {
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                    },
+                                  }}
+                                />
+                              </>
+                            )}
+                          </Stack>
+                        }
+                        primaryTypographyProps={{ component: "div" }}
+                        secondaryTypographyProps={{ component: "div" }}
+                      />
+                    </ListItem>
+                  );
+                })}
+              </Box>
+            ))}
           </List>
         )}
       </DialogContent>
