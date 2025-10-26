@@ -2,9 +2,9 @@ import { memo, useCallback, useMemo, useState } from "react";
 
 import { Box, IconButton, Typography } from "@mui/material";
 
-import { FlexBetween } from "@/components/flexbox";
-import { Link } from "@/components/link";
-import { Scrollbar } from "@/components/scrollbar";
+import { FlexBetween } from "@/components/ui/flexbox";
+import { Link } from "@/components/ui/link";
+import { Scrollbar } from "@/components/ui/scrollbar";
 import ArrowLeftToLine from "@/icons/duotone/ArrowLeftToLine";
 import useLayout from "@/layouts/context/useLayout";
 import MultiLevelMenu from "./MultiLevelMenu";

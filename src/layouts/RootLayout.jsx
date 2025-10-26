@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Outlet } from "react-router";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import { useAuth } from "@/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { LayoutProvider } from "./context/layoutProvider";
 import DashboardHeader from "./components/DashboardHeader";
 import DashboardSidebar from "./components/DashboardSidebar";

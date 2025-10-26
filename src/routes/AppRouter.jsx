@@ -3,8 +3,8 @@ import { Routes, Route, Navigate } from "react-router";
 
 import { Box, CircularProgress } from "@mui/material";
 
-import { AuthRoutes } from "@/auth/routes/AuthRoutes";
-import { useAuthStore } from "@/auth/states/authStore";
+import { AuthRoutes } from "@/features/auth/routes/AuthRoutes";
+import { useAuthStore } from "@/features/auth/states/authStore";
 import { protectedRoutes } from "./routes";
 
 function FullscreenLoader() {

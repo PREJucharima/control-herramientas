@@ -3,62 +3,62 @@ import { Navigate } from "react-router";
 
 const RootLayout = lazy(() => import("@/layouts/RootLayout"));
 
-const HomePage = lazy(() => import("@/modules/home/pages/HomePage"));
+const HomePage = lazy(() => import("@/features/home/pages/HomePage"));
 
-const MaestrosPage = lazy(() =>
-  import("@/modules/maestros/pages/MaestrosPage")
+const MastersListPage = lazy(() =>
+  import("@/features/masters/pages/MastersListPage")
 );
-const AddNewMaestroPage = lazy(() =>
-  import("@/modules/maestros/pages/AddNewMaestroPage")
+const AddMasterPage = lazy(() =>
+  import("@/features/masters/pages/AddMasterPage")
 );
-const EditMaestroPage = lazy(() =>
-  import("@/modules/maestros/pages/EditMaestroPage")
+const EditMasterPage = lazy(() =>
+  import("@/features/masters/pages/EditMasterPage")
 );
 
-const ItemsPage = lazy(() => import("@/modules/items/pages/ItemsPage"));
-const AddNewItemPage = lazy(() =>
-  import("@/modules/items/pages/AddNewItemPage")
+const ItemsListPage = lazy(() =>
+  import("@/features/items/pages/ItemsListPage")
 );
-const EditItemPage = lazy(() => import("@/modules/items/pages/EditItemPage"));
+const AddItemPage = lazy(() => import("@/features/items/pages/AddItemPage"));
+const EditItemPage = lazy(() => import("@/features/items/pages/EditItemPage"));
 
 const EmployeesPage = lazy(() =>
-  import("@/modules/employees/pages/EmployeesPage")
+  import("@/features/employees/pages/EmployeesPage")
 );
 const AddNewEmployeePage = lazy(() =>
-  import("@/modules/employees/pages/AddNewEmployeePage")
+  import("@/features/employees/pages/AddNewEmployeePage")
 );
 const EditEmployeePage = lazy(() =>
-  import("@/modules/employees/pages/EditEmployeePage")
+  import("@/features/employees/pages/EditEmployeePage")
 );
 const CompanyBranchPage = lazy(() =>
-  import("@/modules/company-branch/pages/CompanyBranchPage")
+  import("@/features/company-branch/pages/CompanyBranchPage")
 );
 const SettingsLayout = lazy(() =>
-  import("@/modules/settings/layouts/SettingsLayout")
+  import("@/features/settings/layouts/SettingsLayout")
 );
 const ProfileInfoPage = lazy(() =>
-  import("@/modules/settings/pages/profile-info/ProfileInfoPage")
+  import("@/features/settings/pages/profile-info/ProfileInfoPage")
 );
 const PasswordPage = lazy(() =>
-  import("@/modules/settings/pages/password/PasswordPage")
+  import("@/features/settings/pages/password/PasswordPage")
 );
 const PreferencesPage = lazy(() =>
-  import("@/modules/settings/pages/preferences/PreferencesPage")
+  import("@/features/settings/pages/preferences/PreferencesPage")
 );
 const IntegrationsPage = lazy(() =>
-  import("@/modules/settings/pages/integrations/IntegrationsPage")
+  import("@/features/settings/pages/integrations/IntegrationsPage")
 );
 const ProductsPage = lazy(() =>
-  import("@/modules/products/pages/ProductsPage")
+  import("@/features/products/pages/ProductsPage")
 );
 const ProductCreatePage = lazy(() =>
-  import("@/modules/products/pages/ProductCreatePage")
+  import("@/features/products/pages/ProductCreatePage")
 );
 const ProductEditPage = lazy(() =>
-  import("@/modules/products/pages/ProductEditPage")
+  import("@/features/products/pages/ProductEditPage")
 );
 const ProductDetailPage = lazy(() =>
-  import("@/modules/products/pages/ProductDetailPage")
+  import("@/features/products/pages/ProductDetailPage")
 );
 
 export const protectedRoutes = [
@@ -70,22 +70,22 @@ export const protectedRoutes = [
     element: createElement(RootLayout),
     children: [
       { path: "/inicio", element: createElement(HomePage) },
-      { path: "/catalogos/maestros", element: createElement(MaestrosPage) },
+      { path: "/catalogos/maestros", element: createElement(MastersListPage) },
       {
         path: "/catalogos/maestros/nuevo",
-        element: createElement(AddNewMaestroPage),
+        element: createElement(AddMasterPage),
       },
       {
         path: "/catalogos/maestros/:codigo/editar",
-        element: createElement(EditMaestroPage),
+        element: createElement(EditMasterPage),
       },
       {
         path: "/catalogos/maestros/:codigo/items",
-        element: createElement(ItemsPage),
+        element: createElement(ItemsListPage),
       },
       {
         path: "/catalogos/maestros/:codigo/nuevo",
-        element: createElement(AddNewItemPage),
+        element: createElement(AddItemPage),
       },
       {
         path: "/catalogos/maestros/:codigo/:codigo_item/editar",

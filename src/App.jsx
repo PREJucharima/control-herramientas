@@ -2,7 +2,7 @@ import { Suspense, useEffect } from "react";
 
 import { Box, CircularProgress } from "@mui/material";
 
-import { useAuthStore } from "@/auth/states/authStore";
+import { useAuthStore } from "@/features/auth/states/authStore";
 import { AppTheme } from "@/theme/AppTheme";
 import { AppRouter } from "@/routes/AppRouter";
 

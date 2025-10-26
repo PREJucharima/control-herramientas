@@ -1,15 +1,14 @@
-import { Box, Chip, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Typography } from "@mui/material";
 
-import { useAuth } from "@/auth/hooks/useAuth";
-import { AvatarLoading } from "@/components/avatar-loading";
-import { FlexRowAlign } from "@/components/flexbox";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { FlexRowAlign } from "@/components/ui/flexbox";
 
 export default function UserAccount() {
   const { user } = useAuth();
 
   return (
     <FlexRowAlign flexDirection="column" py={5}>
-      <AvatarLoading
+      <Avatar
         alt={user.name || "Avatar del usuario"}
         percentage={60}
         src={user.picture}

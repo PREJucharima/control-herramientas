@@ -12,11 +12,11 @@ import Menu from "@/icons/Menu";
 import SunIcon from "@/icons/SunIcon";
 import MoonIcon from "@/icons/MoonIcon";
 import useLayout from "@/layouts/context/useLayout";
-import { useAuth } from "@/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { SettingsContext } from "@/contexts/SettingsContext";
 import { ProfilePopover } from "@/layouts/layout-parts";
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
-import { useCompanyBranchStore } from "@/modules/company-branch/states/companyBranchStore";
+import { useCompanyBranchStore } from "@/features/company-branch/states/companyBranchStore";
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
