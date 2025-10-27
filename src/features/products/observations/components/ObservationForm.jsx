@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
-import { useCentroCostos } from "@/features/centros-costo/hooks/useCentroCostos";
+import { useCentroCostos } from "@/features/cost-centers/hooks/useCentroCostos";
 import { useFetchItemsByMaestro } from "@/features/items/hooks/useFetchItemsByMaestro";
 import { AutocompleteController } from "@/components/common/form";
 import { MAESTROS } from "../../constants/product.constants";

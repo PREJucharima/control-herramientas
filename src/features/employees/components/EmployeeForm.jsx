@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 
-import { useCentroCostos } from "@/features/centros-costo/hooks/useCentroCostos";
+import { useCentroCostos } from "@/features/cost-centers/hooks/useCentroCostos";
 
 export default function EmployeeForm({
   initialEmpleado,

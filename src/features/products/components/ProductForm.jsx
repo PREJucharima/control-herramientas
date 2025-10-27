@@ -25,7 +25,7 @@ import {
   SwitchController,
   AutocompleteController,
 } from "@/components/common/form";
-import { useBranches } from "@/features/branch/hooks/useBranches";
+import { useBranches } from "@/features/branches/hooks/useBranches";
 import { useFetchItemsByMaestro } from "@/features/items/hooks/useFetchItemsByMaestro";
 import { ACCESORIES, MAESTROS } from "../constants/product.constants";
 import { useCatalogChildren } from "../hooks/useCatalogChildren";
