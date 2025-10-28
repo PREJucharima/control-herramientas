@@ -18,6 +18,7 @@ export default function ProductsTableRow({
   onViewDetails,
   onViewObservations,
   onViewHistory,
+  onChangeStatus,
 }) {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const menuOpen = Boolean(menuAnchor);
@@ -102,6 +103,7 @@ export default function ProductsTableRow({
           onViewHistory={() => onViewHistory?.(product.id)}
           canViewAccessories={canViewAccessories}
           canViewHistory={canViewHistory}
+          onChangeStatus={() => onChangeStatus?.(product.id)}
         />
       </TableCell>
     </TableRow>

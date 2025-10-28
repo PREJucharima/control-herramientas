@@ -5,3 +5,4 @@ export { default as ProductQuickViewDialog } from "./ProductQuickViewDialog";
 export { default as ProductForm } from "./ProductForm";
 export { default as RowActionsMenu } from "./RowActionsMenu";
 export { default as ProductObservationsDialog } from "./ProductObservationsDialog";
+export { default as ProductChangeStatusDialog } from "./ProductChangeStatusDialog";

@@ -29,6 +29,7 @@ export default function RowActionsMenu({
   onViewHistory,
   canViewAccessories = false,
   canViewHistory = false,
+  onChangeStatus,
 }) {
   const handleView = () => {
     onViewDetails?.();
@@ -87,6 +88,13 @@ export default function RowActionsMenu({
             <Text>Ver historial</Text>
           </PrettyItem>
         )}
+
+        <PrettyItem onClick={onChangeStatus}>
+          <ListItemIcon>
+            <Feed fontSize="small" />
+          </ListItemIcon>
+          <Text>Cambiar estado del producto</Text>
+        </PrettyItem>
       </MenuList>
     </Menu>
   );

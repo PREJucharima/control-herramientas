@@ -26,18 +26,3 @@ export const partialUpdateObservation = async (productCode, id, payload) => {
   }
   return res.json();
 };
-
-/** Helpers semánticos (opcionales) */
-export const hideObservation = (productCode, id) =>
-  partialUpdateObservation(productCode, id, { esta_activo: false });
-
-export const showObservation = (productCode, id) =>
-  partialUpdateObservation(productCode, id, { esta_activo: true });
-
-/** Si también manejas pin/unpin desde backend */
-export const setPinned = (productCode, id, next) =>
-  partialUpdateObservation(productCode, id, { pinned: next });
-
-/** Para edición in-place del texto */
-export const updateText = (productCode, id, text) =>
-  partialUpdateObservation(productCode, id, { observacion: text });

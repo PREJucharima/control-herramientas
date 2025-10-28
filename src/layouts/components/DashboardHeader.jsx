@@ -68,7 +68,7 @@ export default function DashboardHeader() {
         </Breadcrumbs>
 
         <IconButton
-          sx={{ ml: 1 }}
+          sx={{ ml: 1, mr: 1 }}
           onClick={() =>
             handleChangeTheme(settings.theme === "light" ? "dark" : "light")
           }
