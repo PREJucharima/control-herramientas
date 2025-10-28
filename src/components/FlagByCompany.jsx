@@ -3,28 +3,44 @@ import { Tooltip } from "@mui/material";
 import ChileFlagIcon from "../icons/ChileFlag";
 import PeruFlagIcon from "../icons/PeruFlag";
 
-const normalize = (s = "") =>
-  s
+/** Quita acentos, colapsa espacios y pasa a minúsculas */
+const normalizeText = (text = "") =>
+  text
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, " ")
     .trim();
-const REG = {
-  CHILE: /\b(chile|precision chile)\b/,
-  PERU: /\b(peru|perú|precision peru)\b/,
-};
-const MAP = [
-  { test: REG.CHILE, Icon: ChileFlagIcon, title: "País: Chile" },
-  { test: REG.PERU, Icon: PeruFlagIcon, title: "País: Perú" },
+
+/** Reglas de mapeo: qué patrones activan qué icono */
+const COUNTRY_RULES = [
+  {
+    pattern: /\b(chile|precision chile)\b/,
+    Icon: ChileFlagIcon,
+    title: "País: Chile",
+  },
+  {
+    pattern: /\b(peru|perú|precision peru)\b/,
+    Icon: PeruFlagIcon,
+    title: "País: Perú",
+  },
 ];
 
 function FlagByCompany({ companyName, size = 24, sx }) {
-  const n = useMemo(() => normalize(companyName), [companyName]);
-  const m = MAP.find(({ test }) => test.test(n));
-  if (!m) return null;
+  // Normaliza el nombre recibido
+  const normalizedCompanyName = useMemo(
+    () => normalizeText(companyName),
+    [companyName]
+  );
 
-  const { Icon, title } = m;
+  // Busca la primera regla que haga match
+  const matchedRule = COUNTRY_RULES.find(({ pattern }) =>
+    pattern.test(normalizedCompanyName)
+  );
+  if (!matchedRule) return null;
+
+  // Renderiza el icono correspondiente
+  const { Icon, title } = matchedRule;
   return (
     <Tooltip title={title}>
       <span>
@@ -36,4 +52,5 @@ function FlagByCompany({ companyName, size = 24, sx }) {
     </Tooltip>
   );
 }
+
 export default memo(FlagByCompany);

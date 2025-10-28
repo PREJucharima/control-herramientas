@@ -1,4 +1,5 @@
 import { useContext } from "react";
+
 import {
   Box,
   Breadcrumbs,
@@ -6,16 +7,17 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+
 import Menu from "@/icons/Menu";
 import SunIcon from "@/icons/SunIcon";
 import MoonIcon from "@/icons/MoonIcon";
+import FlagByCompany from "@/components/FlagByCompany";
 import useLayout from "@/layouts/context/useLayout";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { SettingsContext } from "@/contexts/SettingsContext";
-import { ProfilePopover } from "@/layouts/layout-parts";
 import { DashboardHeaderRoot, StyledToolBar } from "@/layouts/styles";
+import { ProfilePopover } from "@/layouts/layout-parts";
+import { SettingsContext } from "@/contexts/SettingsContext";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useCompanyBranchStore } from "@/features/company-branch/states/companyBranchStore";
-import FlagByCompany from "../../components/FlagByCompany";
 
 export default function DashboardHeader() {
   const { handleOpenMobileSidebar } = useLayout();
