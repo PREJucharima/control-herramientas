@@ -1,22 +1,11 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { TabContext, TabList } from "@mui/lab";
 import { Chip, IconButton, styled, Tab, Typography } from "@mui/material";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
-import Apps from "@/icons/Apps";
-import FormatBullets from "@/icons/FormatBullets";
 import { FlexBetween, FlexBox } from "@/components/ui/flexbox";
 
 const TabListWrapper = styled(TabList)({ borderBottom: 0 });
-
-const ActionButtons = styled("div")(({ theme }) => ({
-  flexShrink: 0,
-  borderRadius: 8,
-  backgroundColor: theme.palette.grey[50],
-  ...theme.applyStyles("dark", {
-    backgroundColor: theme.palette.grey[700],
-  }),
-}));
 
 export default function ItemsHeadingArea({
   value,
@@ -25,14 +14,8 @@ export default function ItemsHeadingArea({
   isloading,
   error,
   count,
-  gridRoute,
-  listRoute,
 }) {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  const activeColor = (path) =>
-    pathname === path ? "primary.main" : "grey.400";
 
   return (
     <FlexBetween flexWrap="wrap" gap={1}>
@@ -64,24 +47,6 @@ export default function ItemsHeadingArea({
           <Tab disableRipple label="Inactivos" value="inactive" />
         </TabListWrapper>
       </TabContext>
-
-      <ActionButtons className="actions">
-        <IconButton disableRipple onClick={() => navigate(listRoute)}>
-          <FormatBullets
-            sx={{
-              color: activeColor(listRoute),
-            }}
-          />
-        </IconButton>
-
-        <IconButton disableRipple onClick={() => navigate(gridRoute)}>
-          <Apps
-            sx={{
-              color: activeColor(gridRoute),
-            }}
-          />
-        </IconButton>
-      </ActionButtons>
     </FlexBetween>
   );
 }

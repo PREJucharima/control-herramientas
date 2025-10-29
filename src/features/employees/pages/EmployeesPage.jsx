@@ -165,8 +165,6 @@ const EmployeesPage = () => {
             counts={undefined}
             isLoading={isLoading}
             error={error}
-            gridRoute="/catalogos/empleados-grid"
-            listRoute="/catalogos/empleados"
           />
         </Box>
 

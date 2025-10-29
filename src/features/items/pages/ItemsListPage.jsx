@@ -118,8 +118,6 @@ const ItemsListPage = () => {
             isLoading={isLoading}
             error={error}
             count={count}
-            gridRoute="/items/grid"
-            listRoute={`/catalogos/maestros/${codigo}/items`}
           />
 
           <SearchArea value={filters.search} onChange={handleSearchChange} />
