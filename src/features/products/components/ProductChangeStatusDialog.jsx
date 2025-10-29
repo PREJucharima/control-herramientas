@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import { useFetchProductByCode } from "../hooks/useFetchProductByCode";
 import { changeProductStatus } from "../services/partialUpdateProduct";
+import { MAESTROS } from "../constants/product.constants";
+import { useFetchItemsByMaestro } from "../../items/hooks/useFetchItemsByMaestro";
 
 /**
  * Si ya tienes un servicio para traer los estados, úsalo.
@@ -25,7 +27,6 @@ import { changeProductStatus } from "../services/partialUpdateProduct";
 export default function ProductChangeStatusDialog({
   open,
   productCode,
-  statusOptions = [], // pásalo desde arriba si quieres
   onClose,
   onSuccess, // opcional: callback para refrescar la tabla
 }) {
@@ -35,6 +36,12 @@ export default function ProductChangeStatusDialog({
   const currentState = productDetail?.estado_producto || null; // { id, descripcion }
   const currentId = currentState?.id;
 
+  const {
+    itemsByMaestro: productStatusOptions,
+    // isLoading: isProductStatusLoading,
+    // error: productStatusError,
+  } = useFetchItemsByMaestro(MAESTROS.PRODUCT_STATUS);
+
   // Filtra: sin estado actual ni "ASIGNADO"
   const options = useMemo(() => {
     const ban = new Set([
@@ -42,10 +49,10 @@ export default function ProductChangeStatusDialog({
       // excluye ASIGNADO por descripción
       // (ajusta la comparación a tu backend si usas un código)
     ]);
-    return (statusOptions || [])
+    return (productStatusOptions || [])
       .filter((s) => !ban.has(String(s.id)))
       .filter((s) => (s.descripcion || "").toUpperCase() !== "ASIGNADO");
-  }, [statusOptions, currentId]);
+  }, [productStatusOptions, currentId]);
 
   // Estado del formulario
   const [selected, setSelected] = useState(null);
@@ -159,7 +166,7 @@ export default function ProductChangeStatusDialog({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} disabled={submitting}>
+        <Button onClick={onClose} variant="outlined" disabled={submitting}>
           Cancelar
         </Button>
         <Button
