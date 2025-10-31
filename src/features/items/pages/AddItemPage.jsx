@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
 
 import { ItemForm } from "../components";
-import { useFetchMaestros } from "../hooks/useFetchMaestros";
+import { useFetchMaestros } from "@/features/masters/hooks/useFetchMaestros";
 import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 import { createItem } from "../services/createItem";
 import { useItemsStore } from "../states/itemsStore";

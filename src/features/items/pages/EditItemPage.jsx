@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { Box, CircularProgress } from "@mui/material";
 
 import { ItemForm } from "../components";
-import { useFetchMaestros } from "../../features/maestros/hooks/useFetchMaestros";
+import { useFetchMaestros } from "@/features/masters/hooks/useFetchMaestros";
 import { useFetchItemBySlug } from "../hooks/useFetchItemBySlug";
 import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 import { updateItemBySlug } from "../services/updateItemBySlug";
