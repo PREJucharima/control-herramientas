@@ -27,7 +27,7 @@ const EditItemPage = () => {
     [maestros, codigo]
   );
 
-  const dependeDeCatalogo = maestroActual?.depende_de_maestro ?? null;
+  const dependeDeCatalogo = maestroActual?.depende_de_maestro?.id ?? null;
 
   // Lookup para "item_padre" (id/descripcion) si hay dependencia
   const {

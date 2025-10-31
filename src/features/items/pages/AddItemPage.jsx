@@ -13,7 +13,7 @@ const AddItemPage = () => {
   const navigate = useNavigate();
 
   const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
-  const dependeDeCatalogo = maestroActual?.depende_de_maestro;
+  const dependeDeCatalogo = maestroActual?.depende_de_maestro?.id;
 
   const { itemsByMaestro, isLoading, error } =
     useFetchItemsByMaestro(dependeDeCatalogo);
