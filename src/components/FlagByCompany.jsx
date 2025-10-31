@@ -1,7 +1,9 @@
 import { memo, useMemo } from "react";
-import { Tooltip } from "@mui/material";
+import { Stack, Tooltip } from "@mui/material";
 import ChileFlagIcon from "../icons/ChileFlag";
 import PeruFlagIcon from "../icons/PeruFlag";
+import BoliviaFlag from "../icons/BoliviaFlag";
+import EcuadorFlag from "../icons/EcuadorFlag";
 
 /** Quita acentos, colapsa espacios y pasa a minúsculas */
 const normalizeText = (text = "") =>
@@ -24,9 +26,19 @@ const COUNTRY_RULES = [
     Icon: PeruFlagIcon,
     title: "País: Perú",
   },
+  {
+    pattern: /\b(peru|perú|precision bolivia)\b/,
+    Icon: BoliviaFlag,
+    title: "País: Bolivia",
+  },
+  {
+    pattern: /\b(peru|perú|precision ecuador)\b/,
+    Icon: EcuadorFlag,
+    title: "País: Ecuador",
+  },
 ];
 
-function FlagByCompany({ companyName, size = 24, sx }) {
+function FlagByCompany({ companyName, size = 26, sx }) {
   // Normaliza el nombre recibido
   const normalizedCompanyName = useMemo(
     () => normalizeText(companyName),
@@ -42,14 +54,11 @@ function FlagByCompany({ companyName, size = 24, sx }) {
   // Renderiza el icono correspondiente
   const { Icon, title } = matchedRule;
   return (
-    <Tooltip title={title}>
-      <span>
-        <Icon
-          sx={{ fontSize: size, mr: 1, mt: 0.5, ...sx }}
-          aria-label={title}
-        />
-      </span>
-    </Tooltip>
+    <Stack direction="row" alignItems="center">
+      <Tooltip title={title}>
+        <Icon sx={{ fontSize: size, mr: 1, ...sx }} aria-label={title} />
+      </Tooltip>
+    </Stack>
   );
 }
 

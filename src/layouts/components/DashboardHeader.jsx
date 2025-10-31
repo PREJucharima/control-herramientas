@@ -47,18 +47,17 @@ export default function DashboardHeader() {
 
         <Box flexGrow={1} ml={1} />
 
+        <FlagByCompany companyName={companyName} />
+
         <Breadcrumbs aria-label="breadcrumb" sx={{ mr: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <FlagByCompany companyName={companyName} />
-            <Typography
-              variant="body2"
-              fontSize={13}
-              fontWeight={500}
-              color="text.secondary"
-            >
-              {companyName}
-            </Typography>
-          </Stack>
+          <Typography
+            variant="body2"
+            fontSize={13}
+            fontWeight={500}
+            color="text.secondary"
+          >
+            {companyName}
+          </Typography>
           <Typography
             variant="body2"
             fontSize={13}
