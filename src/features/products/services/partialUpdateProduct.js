@@ -25,8 +25,14 @@ export async function partialUpdateProduct(productCode, payload) {
   return res.json();
 }
 
-export function changeProductStatus(productCode, estadoId, motivo) {
+export function changeProductStatus(
+  productCode,
+  estadoId,
+  motivo_estado_producto
+) {
   const payload = { estado_producto: estadoId };
-  if (motivo?.trim()) payload.motivo = motivo.trim();
+  if (motivo_estado_producto?.trim())
+    payload.motivo_estado_producto = motivo_estado_producto.trim();
+  console.log("Payload for changeProductStatus:", payload);
   return partialUpdateProduct(productCode, payload);
 }

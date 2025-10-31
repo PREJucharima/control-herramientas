@@ -21,6 +21,7 @@ import {
   Tooltip,
   Divider,
   ListSubheader,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import HistoryIcon from "@mui/icons-material/History";
@@ -42,6 +43,23 @@ const statusColor = (desc = "") => {
   if (["COMPRADO POR USUARIO"].includes(d)) return "warning";
   if (["BAJA DEFINITIVA", "ROBADO"].includes(d)) return "error";
   return "default";
+};
+
+const isAssigned = (desc = "") =>
+  (desc || "").toString().trim().toUpperCase() === "ASIGNADO";
+
+/**
+ * EN DURO mientras backend no esté listo.
+ * Cuando tengas los campos reales (p.ej. h.asignacion.usuario, h.asignacion.fecha, h.asignacion.codigo),
+ * solo reescribe esta función para leerlos del objeto h.
+ */
+const getAssignedMeta = (h) => {
+  // Ejemplos en duro: puedes personalizar según el producto, serie, o estado:
+  return {
+    usuario: "Juan Pérez", // <- reemplaza cuando haya backend
+    fecha: h?.fecha_creacion || new Date().toISOString(), // por ahora usa fecha del cambio
+    codigo: "ASG-2025-000123", // <- reemplaza cuando haya backend
+  };
 };
 
 const DateText = ({ iso }) => {
@@ -92,7 +110,6 @@ export default function ProductStatusHistoryDialog({
       (acc[key] ||= []).push(h);
       return acc;
     }, {});
-    // ordenar por fecha descendente
     return Object.entries(map).sort(([a], [b]) => (a < b ? 1 : -1));
   }, [history]);
 
@@ -118,7 +135,6 @@ export default function ProductStatusHistoryDialog({
       </DialogTitle>
 
       <DialogContent sx={{ p: 2 }}>
-        {/* Subheader global con conteo */}
         <ListSubheader
           disableSticky
           component="div"
@@ -140,7 +156,6 @@ export default function ProductStatusHistoryDialog({
               }`}
         </ListSubheader>
 
-        {/* Loading */}
         {isLoading && (
           <Box sx={{ p: 2 }}>
             {Array.from({ length: 6 }).map((_, i) => (
@@ -160,7 +175,6 @@ export default function ProductStatusHistoryDialog({
           </Box>
         )}
 
-        {/* Error */}
         {!isLoading && error && (
           <Box sx={{ p: 2 }}>
             <Alert severity="error">
@@ -170,7 +184,6 @@ export default function ProductStatusHistoryDialog({
           </Box>
         )}
 
-        {/* Empty */}
         {!isLoading && !error && history.length === 0 && (
           <Box sx={{ p: 3 }}>
             <Alert severity="info">Sin movimientos de estado.</Alert>
@@ -184,7 +197,6 @@ export default function ProductStatusHistoryDialog({
               <Box
                 key={dayKey}
                 sx={(t) => ({
-                  // bloque por día con un leve fondo alternado
                   bgcolor:
                     gi % 2
                       ? alpha(t.palette.primary.main, 0.02)
@@ -212,6 +224,8 @@ export default function ProductStatusHistoryDialog({
                   const next = h.estado_producto_nuevo?.descripcion || "—";
                   const who = h.usuario_creacion || "—";
                   const motive = h.motivo || "";
+                  const assigned = isAssigned(next);
+                  const assignedMeta = assigned ? getAssignedMeta(h) : null;
 
                   const aria = `Cambio de estado: ${prev} a ${next}, ${dayjs(
                     h.fecha_creacion
@@ -224,10 +238,10 @@ export default function ProductStatusHistoryDialog({
                       key={h.id ?? `${dayKey}-${idx}`}
                       aria-label={aria}
                       sx={(t) => ({
-                        mx: 1.5,
-                        mb: 1,
-                        px: 2,
-                        py: 1.25,
+                        mx: 1,
+                        my: 1,
+                        px: 1.5,
+                        py: 2,
                         alignItems: "flex-start",
                         borderRadius: 2,
                         border: `1px solid ${t.palette.divider}`,
@@ -238,7 +252,6 @@ export default function ProductStatusHistoryDialog({
                           backgroundColor: alpha(t.palette.primary.main, 0.03),
                           boxShadow: t.shadows[1],
                         },
-                        // sutil línea vertical (timeline)
                         position: "relative",
                         "& .MuiListItemAvatar-root": {
                           position: "relative",
@@ -275,20 +288,12 @@ export default function ProductStatusHistoryDialog({
 
                       <ListItemText
                         primary={
+                          // 1) Estados (igual que hoy)
                           <Stack
                             direction="row"
                             spacing={1}
                             alignItems="center"
                             flexWrap="wrap"
-                            sx={{
-                              "& .MuiChip-root": {
-                                maxWidth: 220,
-                                "& .MuiChip-label": {
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                },
-                              },
-                            }}
                           >
                             <Chip
                               size="small"
@@ -309,36 +314,77 @@ export default function ProductStatusHistoryDialog({
                           </Stack>
                         }
                         secondary={
-                          <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            mt={0.75}
-                            flexWrap="wrap"
-                            sx={{ "& > *": { fontSize: 12 } }}
-                          >
-                            <DateText iso={h.fecha_creacion} />
-                            <span>·</span>
-                            <Tooltip title={`Usuario: ${who}`}>
-                              <span>por {who}</span>
-                            </Tooltip>
+                          <Stack spacing={0.75} mt={1} ml={0.5}>
                             {!!motive && (
-                              <>
-                                <span>·</span>
-                                <Chip
-                                  size="small"
-                                  variant="outlined"
-                                  label={motive}
-                                  sx={{
-                                    maxWidth: 260,
-                                    "& .MuiChip-label": {
+                              <Typography
+                                variant="body2"
+                                sx={{ lineHeight: 1.4 }}
+                              >
+                                <strong>Motivo:</strong> {motive}
+                              </Typography>
+                            )}
+                            {assigned && assignedMeta && (
+                              <Stack spacing={0.5} mt={0.5}>
+                                {/* 1) Motivo */}
+
+                                {/* 2) Detalles: Asignado a + Fecha (cada fragmento puede wrapear) */}
+                                <Typography
+                                  variant="body2"
+                                  sx={(t) => ({
+                                    lineHeight: 1.4,
+                                    "& .frag": { marginRight: t.spacing(1) },
+                                  })}
+                                >
+                                  <span className="frag">
+                                    <strong>Asignado a:</strong>{" "}
+                                    {assignedMeta.usuario}
+                                  </span>
+                                  <span className="frag">·</span>
+                                  <span className="frag">
+                                    <strong>Fecha de asignación:</strong>{" "}
+                                    {dayjs(assignedMeta.fecha).format(
+                                      "DD/MM/YYYY HH:mm"
+                                    )}
+                                  </span>
+                                </Typography>
+
+                                {/* 3) Código (su propia línea, monoespaciado y truncable) */}
+                                {assignedMeta.codigo && (
+                                  <Typography
+                                    variant="body2"
+                                    title={assignedMeta.codigo}
+                                    sx={(t) => ({
+                                      color: t.palette.text.primary,
+                                      fontFamily:
+                                        t.typography.fontFamilyMonospace,
                                       overflow: "hidden",
                                       textOverflow: "ellipsis",
-                                    },
-                                  }}
-                                />
-                              </>
+                                      whiteSpace: "nowrap",
+                                    })}
+                                  >
+                                    <strong>Código de asignación:</strong>{" "}
+                                    {assignedMeta.codigo}
+                                  </Typography>
+                                )}
+                              </Stack>
                             )}
+
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                              flexWrap="wrap"
+                              sx={{
+                                "& > *": { fontSize: 12 },
+                                color: "text.secondary",
+                              }}
+                            >
+                              <DateText iso={h.fecha_creacion} />
+                              <span>·</span>
+                              <Tooltip title={`Usuario: ${who}`}>
+                                <span>por {who}</span>
+                              </Tooltip>
+                            </Stack>
                           </Stack>
                         }
                         primaryTypographyProps={{ component: "div" }}

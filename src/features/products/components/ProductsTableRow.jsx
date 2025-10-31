@@ -38,8 +38,6 @@ export default function ProductsTableRow({
 
   const canViewAccessories = isAccessory(product);
   const canViewHistory = isSerialized(product);
-  console.log("Tipo del producto", product?.tipo_producto.descripcion);
-  console.log("Tiene historial", canViewHistory);
 
   return (
     <TableRow hover>
