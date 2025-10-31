@@ -107,7 +107,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
               Depende de catálogo:{" "}
               <b>
                 {nombreCatalogoDependiente ??
-                  maestroBySlug?.depende_de_maestro ??
+                  maestroBySlug?.depende_de_maestro?.nombre ??
                   "—"}
               </b>
             </Typography>
