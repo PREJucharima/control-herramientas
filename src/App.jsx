@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Suspense, useEffect } from "react";
+
+import { Box, CircularProgress } from "@mui/material";
+
+import { useAuthStore } from "@/features/auth/states/authStore";
+import { AppTheme } from "@/theme/AppTheme";
+import { AppRouter } from "@/routes/AppRouter";
+
+function FullscreenLoader() {
+  return (
+    <Box
+      sx={{
+        minHeight: "100dvh",
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const restoreSession = useAuthStore((state) => state.restoreSession);
+
+  useEffect(() => {
+    restoreSession();
+  }, [restoreSession]);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AppTheme>
+        <Suspense fallback={<FullscreenLoader />}>
+          <AppRouter />
+        </Suspense>
+      </AppTheme>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
