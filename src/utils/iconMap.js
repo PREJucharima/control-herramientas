@@ -1,6 +1,6 @@
 import duotone from "@/icons/duotone";
-import LockOutlined from "@/icons/LockOutlined";
 import SyncIcon from "@mui/icons-material/Sync";
+import HttpsRoundedIcon from "@mui/icons-material/HttpsRounded";
 
 export const iconMap = {
   "bi-speedometer2": duotone.Dashboard,
@@ -9,7 +9,7 @@ export const iconMap = {
   "bi-boxes": duotone.PersonChalkboard,
   "bi-arrows-move": duotone.DiagramProject,
   "bi-file-earmark-bar-graph-fill": duotone.RectangleCirclePlus,
-  "bi-shield-lock-fill": LockOutlined,
+  "bi-shield-lock-fill": HttpsRoundedIcon,
   "bi-person-badge-fill": duotone.UserRole,
   "bi-people-fill": duotone.UserList,
   "bi-map": duotone.Map,
@@ -35,7 +35,7 @@ export const iconByNameMap = {
   [normalizeKey("Transacciones")]: duotone.DiagramProject,
   [normalizeKey("Reportes")]: duotone.RectangleCirclePlus,
 
-  [normalizeKey("Seguridad")]: LockOutlined,
+  [normalizeKey("Seguridad")]: HttpsRoundedIcon,
   [normalizeKey("Usuarios")]: duotone.UserList,
   [normalizeKey("Roles y Permisos")]: duotone.UserRole,
   [normalizeKey("Empresa y Sucursal")]: duotone.Map,

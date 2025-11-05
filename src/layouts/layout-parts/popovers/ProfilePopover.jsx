@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 
-import { useAuth } from "@/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import useCopyToClipboard from "@/hooks/useCopyToClipboard";
 import PopoverLayout from "./_PopoverLayout";
 

@@ -1,7 +1,7 @@
 import { forwardRef, memo } from "react";
 import SvgIcon from "@mui/material/SvgIcon";
 
-const MoonCrescentIcon = forwardRef(function MoonCrescentIcon(props, ref) {
+const MoonIcon = forwardRef(function MoonCrescentIcon(props, ref) {
   return (
     <SvgIcon ref={ref} viewBox="0 0 511.999 511.999" {...props}>
       <path
@@ -47,4 +47,4 @@ const MoonCrescentIcon = forwardRef(function MoonCrescentIcon(props, ref) {
   );
 });
 
-export default memo(MoonCrescentIcon);
+export default memo(MoonIcon);

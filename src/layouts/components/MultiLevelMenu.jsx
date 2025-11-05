@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router";
 import { CircularProgress } from "@mui/material";
 
 import useLayout from "@/layouts/context/useLayout";
-import { useFetchNavigation } from "@/modules/navigations/hooks/useNavigation";
+import { useFetchNavigation } from "@/features/navigations/hooks/useNavigation";
 import {
   BulletIcon,
   ExternalLink,

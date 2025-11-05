@@ -1,6 +1,6 @@
 import { Box, styled } from "@mui/material";
 
-import { Scrollbar } from "@/components/scrollbar";
+import { Scrollbar } from "@/components/ui/scrollbar";
 import { LayoutDrawer } from "@/layouts/layout-parts";
 import useLayout from "@/layouts/context/useLayout";
 import MultiLevelMenu from "./MultiLevelMenu";
