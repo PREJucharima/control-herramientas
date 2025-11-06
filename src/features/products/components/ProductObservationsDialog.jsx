@@ -111,7 +111,7 @@ export default function ProductObservationsDialog({
         }}
       >
         <CommentSharp />
-        <Typography variant="subtitle1" component="h1" fontWeight={700}>
+        <Typography variant="subtitle1" component="span" fontWeight={700}>
           Observaciones{items?.length ? ` (${items.length})` : ""}
         </Typography>
 
