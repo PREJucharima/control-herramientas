@@ -54,6 +54,9 @@ const ProductForm = ({
     criteriaMode: "all",
   });
 
+  console.log(initialProduct);
+  console.log(productDefaults(initialProduct));
+
   const { control, handleSubmit, setValue, formState, clearErrors } = methods;
   const { isSubmitting, isDirty, isValid } = formState;
 
