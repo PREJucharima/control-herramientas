@@ -22,9 +22,9 @@ import {
 } from "@mui/material";
 
 import {
+  AutocompleteController,
   DatePicker,
   FormProvider,
-  SelectField,
   TextField,
 } from "@/components/common/form";
 
@@ -34,6 +34,7 @@ export default function ItemForm({
   initialItem,
   itemsByMaestro,
   isLoadingItemsByMaestro,
+  errorItemsByMaestro,
   typeCatalog,
   onCancel,
   onSubmit,
@@ -56,16 +57,9 @@ export default function ItemForm({
     orig === "" || orig === "null" || orig == null ? null : curr;
 
   const validationSchema = Yup.object({
-    item_padre_id: Yup.number()
-      .nullable()
-      .transform((v, orig) => (orig === "" ? null : v))
-      .typeError("Debe ser numérico"),
-    item_padre: Yup.number()
-      .nullable()
-      .transform((v, orig) => (orig === "" ? null : v))
-      .typeError("Debe ser numérico"),
     descripcion: Yup.string().trim().required("La descripción es requerida"),
     descripcion_corta: Yup.string().trim().nullable(),
+    item_padre: Yup.object({ id: Yup.number().required() }).nullable(),
     esta_activo: Yup.boolean().required(),
     fecha_inicio_vigencia: Yup.date()
       .transform(normalizeDate)
@@ -101,10 +95,8 @@ export default function ItemForm({
 
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = {
-      item_padre_id:
-        values.item_padre_id === "" ? null : Number(values.item_padre_id),
-      item_padre: values.item_padre === "" ? null : Number(values.item_padre),
       descripcion: values.descripcion.trim(),
+      item_padre: values.item_padre ? values.item_padre.id : null,
       descripcion_corta: values.descripcion_corta?.trim() || null,
       esta_activo: !!values.esta_activo,
       fecha_inicio_vigencia: toISODate(values.fecha_inicio_vigencia),
@@ -161,13 +153,14 @@ export default function ItemForm({
 
             {hasShowInputsDads && (
               <Grid size={{ xs: 12, sm: 6 }}>
-                <SelectField
+                <AutocompleteController
                   name="item_padre"
+                  control={control}
                   label="Ítem Padre"
                   options={itemsByMaestro}
-                  loading={isLoadingItemsByMaestro}
-                  allowEmpty
-                  emptyLabel="— Ninguno —"
+                  isLoading={isLoadingItemsByMaestro}
+                  fetchError={errorItemsByMaestro}
+                  // required={false}
                 />
               </Grid>
             )}
