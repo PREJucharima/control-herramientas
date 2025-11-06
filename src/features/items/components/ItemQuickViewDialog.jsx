@@ -24,7 +24,7 @@ export default function ItemQuickViewDialog({
   itemSlug,
   onClose,
 }) {
-  const { itemBySlug, loading, error } = useFetchItemBySlug(
+  const { itemBySlug, isLoading, error } = useFetchItemBySlug(
     maestroSlug,
     itemSlug
   );
@@ -59,7 +59,7 @@ export default function ItemQuickViewDialog({
       </DialogTitle>
 
       <DialogContent>
-        {loading && (
+        {isLoading && (
           <Stack gap={1.5}>
             <Skeleton variant="text" width="60%" />
             <Skeleton variant="text" width="40%" />
@@ -69,7 +69,7 @@ export default function ItemQuickViewDialog({
 
         {error && <Alert severity="error">Error al cargar el ítem.</Alert>}
 
-        {!loading && !error && itemBySlug && (
+        {!isLoading && !error && itemBySlug && (
           <Stack gap={1}>
             <Typography
               variant="subtitle1"
