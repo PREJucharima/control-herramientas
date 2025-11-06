@@ -75,18 +75,18 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
           </Alert>
         )}
 
-        {!loading && !error && Object.keys(maestroBySlug).length > 0 && (
+        {!loading && !error && (
           <Stack gap={1}>
             <Typography variant="subtitle1" fontWeight={700}>
-              {maestroBySlug.nombre}
+              {maestroBySlug?.nombre}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Código único: <b>{maestroBySlug.codigo_unico}</b>
+              Código único: <b>{maestroBySlug?.codigo_unico}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Usuario creador: <b>{maestroBySlug.usuario_creacion}</b>
+              Usuario creador: <b>{maestroBySlug?.usuario_creacion}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
@@ -96,9 +96,9 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
 
             <Typography variant="body2" color="text.secondary">
               Fechas: creación{" "}
-              <b>{dateFormat(maestroBySlug.fecha_creacion) ?? "—"}</b> -
+              <b>{dateFormat(maestroBySlug?.fecha_creacion) ?? "—"}</b> -
               modificación{" "}
-              <b>{dateFormat(maestroBySlug.fecha_modificacion) ?? "—"}</b>
+              <b>{dateFormat(maestroBySlug?.fecha_modificacion) ?? "—"}</b>
             </Typography>
           </Stack>
         )}
