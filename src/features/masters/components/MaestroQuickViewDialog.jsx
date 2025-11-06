@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useNavigate } from "react-router";
 
 import dayjs from "dayjs";
@@ -23,20 +22,7 @@ import { useMaestrosStore } from "../states/maestrosStore";
 const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
   const { loading, error } = useFetchMaestroBySlug(slug);
   const { maestroBySlug } = useMaestrosStore();
-  const maestros = useMaestrosStore((state) => state.maestros);
   const navigate = useNavigate();
-
-  const nombreCatalogoDependiente = useMemo(() => {
-    if (!maestroBySlug?.depende_de_maestro) return null;
-
-    const maestroDependiente = maestros.find(
-      (m) => m.id === maestroBySlug.depende_de_maestro
-    );
-
-    return maestroDependiente?.nombre;
-  }, [maestros, maestroBySlug]);
-
-  console.log(nombreCatalogoDependiente);
 
   const dateFormat = (dateStr) => {
     return dayjs(dateStr).format("DD/MM/YYYY HH:mm");
@@ -105,11 +91,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
 
             <Typography variant="body2" color="text.secondary">
               Depende de catálogo:{" "}
-              <b>
-                {nombreCatalogoDependiente ??
-                  maestroBySlug?.depende_de_maestro?.nombre ??
-                  "—"}
-              </b>
+              <b>{maestroBySlug?.depende_de_maestro?.nombre ?? "—"}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
@@ -126,7 +108,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
         <Button
           variant="outlined"
           onClick={() => {
-            navigate(`/catalogos/${encodeURIComponent(slug)}/lista-items`);
+            navigate(`/catalogos/maestros/${encodeURIComponent(slug)}/items`);
           }}
         >
           Ver ítems

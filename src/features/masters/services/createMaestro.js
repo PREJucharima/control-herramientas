@@ -6,5 +6,6 @@ export const createMaestro = async (payload) => {
     method: "POST",
     body: JSON.stringify(payload),
   });
+  console.log("Payload enviado desde createMaestro:", payload);
   return res.json();
 };

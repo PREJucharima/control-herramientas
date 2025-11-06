@@ -2,30 +2,32 @@ import * as Yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormHelperText from "@mui/material/FormHelperText";
-import Tooltip from "@mui/material/Tooltip";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Divider,
+  Grid,
+  Stack,
+  Button,
+  Typography,
+  Switch,
+  FormControlLabel,
+  FormHelperText,
+  Tooltip,
+} from "@mui/material";
 
-import { FormProvider, TextField, SelectField } from "@/components/common/form";
+import { InfoOutlined } from "@mui/icons-material";
 
-export default function MaestroForm({
-  initialMaestro,
-  maestros,
-  isLoadingMaestros,
-  onCancel,
-  onSubmit,
-}) {
+import {
+  FormProvider,
+  TextField,
+  AutocompleteController,
+} from "@/components/common/form";
+import { useFetchMaestrosLookup } from "../hooks/useFetchMaestrosLookup";
+
+export default function MaestroForm({ initialMaestro, onCancel, onSubmit }) {
   const initialValues = {
     nombre: initialMaestro?.nombre ?? "",
     usa_descripcion_corta: initialMaestro?.usa_descripcion_corta ?? false,
@@ -34,12 +36,15 @@ export default function MaestroForm({
     depende_de_maestro: initialMaestro?.depende_de_maestro ?? null,
   };
 
+  console.log(initialMaestro);
+  console.log(initialValues);
+
   const validationSchema = Yup.object({
     nombre: Yup.string().trim().required("El nombre es requerido"),
     usa_descripcion_corta: Yup.boolean().required(),
     usa_fechas_vigencia: Yup.boolean().required(),
     esta_activo: Yup.boolean().required(),
-    depende_de_maestro: Yup.number().nullable().typeError("Debe ser numérico"),
+    depende_de_maestro: Yup.object({ id: Yup.number().required() }).nullable(),
   });
 
   const methods = useForm({
@@ -55,6 +60,12 @@ export default function MaestroForm({
     control,
   } = methods;
 
+  const {
+    maestrosLookup: maestros,
+    loading: isLoadingMaestros,
+    error: errorMaestros,
+  } = useFetchMaestrosLookup();
+
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = {
       nombre: values.nombre.trim(),
@@ -62,7 +73,7 @@ export default function MaestroForm({
       usa_fechas_vigencia: !!values.usa_fechas_vigencia,
       esta_activo: !!values.esta_activo,
       depende_de_maestro: values.depende_de_maestro
-        ? Number(values.depende_de_maestro)
+        ? values.depende_de_maestro.id
         : null,
     };
 
@@ -84,7 +95,7 @@ export default function MaestroForm({
               {title}
             </Typography>
             <Tooltip title="Los campos con * son obligatorios">
-              <InfoOutlinedIcon fontSize="small" color="action" />
+              <InfoOutlined fontSize="small" color="action" />
             </Tooltip>
           </Stack>
         }
@@ -188,15 +199,14 @@ export default function MaestroForm({
             </Grid>
 
             <Grid size={{ xs: 12, sm: 6 }}>
-              <SelectField
+              <AutocompleteController
                 name="depende_de_maestro"
+                control={control}
                 label="Depende de catálogo"
-                loading={isLoadingMaestros}
-                options={maestros || []}
-                valueKey="id"
-                labelKey="nombre"
-                allowEmpty
-                emptyLabel="— Ninguno —"
+                options={maestros}
+                isLoading={isLoadingMaestros}
+                fetchError={errorMaestros}
+                required={false}
               />
             </Grid>
           </Grid>
