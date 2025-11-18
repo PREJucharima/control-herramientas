@@ -39,7 +39,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
       <DialogTitle id="ver-maestro">
         <Stack direction="row" alignItems="center" gap={1.25}>
           <Inventory2 />
-          <Typography fontWeight={700}>Maestro</Typography>
+          <Typography fontWeight={700}>Catálogo</Typography>
           <Chip
             size="small"
             label={maestroBySlug?.esta_activo ? "Activo" : "Inactivo"}
@@ -71,7 +71,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
               </Button>
             }
           >
-            Error al cargar el maestro.
+            Error al cargar el catálogo.
           </Alert>
         )}
 
@@ -108,7 +108,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
         <Button
           variant="outlined"
           onClick={() => {
-            navigate(`/catalogos/maestros/${encodeURIComponent(slug)}/items`);
+            navigate(`/maestros/catalogos/${encodeURIComponent(slug)}/items`);
           }}
         >
           Ver ítems
@@ -117,7 +117,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
         <Button
           variant="contained"
           onClick={() => {
-            navigate(`/catalogos/maestros/${encodeURIComponent(slug)}/editar`);
+            navigate(`/maestros/catalogos/${encodeURIComponent(slug)}/editar`);
           }}
         >
           Editar

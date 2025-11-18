@@ -17,7 +17,7 @@ const AddNewMaestroPage = () => {
     try {
       const created = await createEmployee(payload);
       addEmployee(created);
-      navigate(`/catalogos/empleados`);
+      navigate(`/maestros/empleados`);
     } catch (e) {
       console.error("Error creando un nuevo maestro:", e);
     }

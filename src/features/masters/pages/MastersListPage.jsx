@@ -73,7 +73,7 @@ const MastersListPage = () => {
       >
         <ListAlt aria-hidden />
         <Typography variant="h5" component="h1" fontWeight={700}>
-          Maestros
+          Catálogos
         </Typography>
         {!isLoading && !error && (
           <Chip
@@ -93,14 +93,14 @@ const MastersListPage = () => {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => navigate("/catalogos/maestros/nuevo")}
+          onClick={() => navigate("/maestros/catalogos/nuevo")}
         >
-          Agregar maestro
+          Agregar catálogo
         </Button>
       </FlexBox>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Explora el listado de maestros. Usa el buscador para filtrar por nombre.
+        Explora el listado de catálogo. Usa el buscador para filtrar por nombre.
       </Typography>
 
       <TextField
@@ -255,7 +255,7 @@ const MastersListPage = () => {
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(
-                              `/catalogos/maestros/${encodeURIComponent(
+                              `/maestros/catalogos/${encodeURIComponent(
                                 maestro.codigo_unico
                               )}/editar`
                             );
@@ -269,7 +269,7 @@ const MastersListPage = () => {
                     <CardActionArea
                       onClick={() =>
                         navigate(
-                          `/catalogos/maestros/${encodeURIComponent(
+                          `/maestros/catalogos/${encodeURIComponent(
                             maestro.codigo_unico
                           )}/items`
                         )

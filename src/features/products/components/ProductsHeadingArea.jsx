@@ -189,7 +189,7 @@ export default function ProductsHeadingArea({
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => navigate("/catalogos/productos/nuevo")}
+            onClick={() => navigate("/maestros/productos/nuevo")}
             fullWidth={false}
           >
             Agregar producto

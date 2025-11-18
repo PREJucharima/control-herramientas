@@ -12,7 +12,7 @@ const AddMasterPage = () => {
     try {
       const created = await createMaestro(payload);
       addMaestro(created);
-      navigate(`/catalogos/maestros`);
+      navigate(`/maestros/catalogos`);
     } catch (e) {
       console.error("Error creando un nuevo maestro:", e);
     }

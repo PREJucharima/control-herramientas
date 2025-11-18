@@ -25,7 +25,7 @@ const EditItemPage = () => {
       const updated = await updateItemBySlug(codigo, codigo_item, payload);
       updateItem(codigo_item, updated);
 
-      navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/items`);
+      navigate(`/maestros/catalogos/${encodeURIComponent(codigo)}/items`);
     } catch (e) {
       console.error("Error actualizando ítem:", e);
     }

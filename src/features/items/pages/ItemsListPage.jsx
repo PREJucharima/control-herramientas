@@ -157,7 +157,7 @@ const ItemsListPage = () => {
                           handleSelectRow={handleSelectRow}
                           onEdit={() => {
                             navigate(
-                              `/catalogos/maestros/${encodeURIComponent(
+                              `/maestros/catalogos/${encodeURIComponent(
                                 codigo
                               )}/${encodeURIComponent(item.codigo)}/editar`
                             );

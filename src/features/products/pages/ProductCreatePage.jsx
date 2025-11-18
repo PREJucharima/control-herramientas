@@ -30,7 +30,7 @@ const ProductCreatePage = () => {
     try {
       const created = await createProduct(payload);
       addProduct(created);
-      navigate(`/catalogos/productos`);
+      navigate(`/maestros/productos`);
     } catch (e) {
       console.error("Error creando un nuevo producto:", e);
     }

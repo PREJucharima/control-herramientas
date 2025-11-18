@@ -20,9 +20,9 @@ const EditMasterPage = () => {
       const updated = await updateMaestroBySlug(codigo, payload);
       updateMaestro(codigo, updated);
 
-      navigate("/catalogos/maestros");
+      navigate("/maestros/catalogos");
     } catch (e) {
-      console.error("Error actualizando maestro:", e);
+      console.error("Error actualizando catálogo:", e);
     }
   };
 
@@ -37,7 +37,7 @@ const EditMasterPage = () => {
   if (error) {
     return (
       <Alert severity="error">
-        Error al cargar el maestro. Intenta nuevamente.
+        Error al cargar el catálogo. Intenta nuevamente.
       </Alert>
     );
   }

@@ -70,50 +70,50 @@ export const protectedRoutes = [
     element: createElement(RootLayout),
     children: [
       { path: "/inicio", element: createElement(HomePage) },
-      { path: "/catalogos/maestros", element: createElement(MastersListPage) },
+      { path: "/maestros/catalogos", element: createElement(MastersListPage) },
       {
-        path: "/catalogos/maestros/nuevo",
+        path: "/maestros/catalogos/nuevo",
         element: createElement(AddMasterPage),
       },
       {
-        path: "/catalogos/maestros/:codigo/editar",
+        path: "/maestros/catalogos/:codigo/editar",
         element: createElement(EditMasterPage),
       },
       {
-        path: "/catalogos/maestros/:codigo/items",
+        path: "/maestros/catalogos/:codigo/items",
         element: createElement(ItemsListPage),
       },
       {
-        path: "/catalogos/maestros/:codigo/nuevo",
+        path: "/maestros/catalogos/:codigo/nuevo",
         element: createElement(AddItemPage),
       },
       {
-        path: "/catalogos/maestros/:codigo/:codigo_item/editar",
+        path: "/maestros/catalogos/:codigo/:codigo_item/editar",
         element: createElement(EditItemPage),
       },
-      { path: "/catalogos/empleados", element: createElement(EmployeesPage) },
+      { path: "/maestros/empleados", element: createElement(EmployeesPage) },
       {
-        path: "/catalogos/empleados/nuevo",
+        path: "/maestros/empleados/nuevo",
         element: createElement(AddNewEmployeePage),
       },
       {
-        path: "/catalogos/empleados/:rut/editar",
+        path: "/maestros/empleados/:rut/editar",
         element: createElement(EditEmployeePage),
       },
       {
-        path: "/catalogos/productos",
+        path: "/maestros/productos",
         element: createElement(ProductsPage),
       },
       {
-        path: "/catalogos/productos/nuevo",
+        path: "/maestros/productos/nuevo",
         element: createElement(ProductCreatePage),
       },
       {
-        path: "/catalogos/productos/:codigo/editar",
+        path: "/maestros/productos/:codigo/editar",
         element: createElement(ProductEditPage),
       },
       {
-        path: "/catalogos/productos/:codigo",
+        path: "/maestros/productos/:codigo",
         element: createElement(ProductDetailPage),
       },
       {

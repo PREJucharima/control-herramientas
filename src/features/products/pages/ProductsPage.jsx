@@ -172,8 +172,8 @@ const ProductsPage = () => {
             count={pagination.count}
             isLoading={isLoading}
             error={error}
-            gridRoute="/catalogos/productos-grid"
-            listRoute="/catalogos/productos"
+            gridRoute="/maestros/productos-grid"
+            listRoute="/maestros/productos"
           />
         </Box>
 
@@ -219,7 +219,7 @@ const ProductsPage = () => {
                           handleSelectRow={handleSelectRow}
                           onEdit={() =>
                             navigate(
-                              `/catalogos/productos/${encodeURIComponent(
+                              `/maestros/productos/${encodeURIComponent(
                                 prod.codigo
                               )}/editar`
                             )

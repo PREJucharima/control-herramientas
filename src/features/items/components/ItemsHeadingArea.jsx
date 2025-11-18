@@ -21,7 +21,7 @@ export default function ItemsHeadingArea({
     <FlexBetween flexWrap="wrap" gap={1}>
       <FlexBox alignItems="center" gap={1.5}>
         <IconButton
-          onClick={() => navigate("/catalogos/maestros")}
+          onClick={() => navigate("/maestros/catalogos")}
           aria-label="Volver"
         >
           <ArrowBackIcon />

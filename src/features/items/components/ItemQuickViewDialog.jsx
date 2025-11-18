@@ -117,7 +117,7 @@ export default function ItemQuickViewDialog({
           variant="contained"
           onClick={() =>
             navigate(
-              `/catalogos/maestros/${encodeURIComponent(
+              `/maestros/catalogos/${encodeURIComponent(
                 maestroSlug
               )}/${encodeURIComponent(itemSlug)}/editar`
             )

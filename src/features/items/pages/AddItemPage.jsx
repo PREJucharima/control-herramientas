@@ -14,7 +14,7 @@ const AddItemPage = () => {
     try {
       const created = await createItem(codigo, payload);
       addItem(created);
-      navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/items`);
+      navigate(`/maestros/catalogos/${encodeURIComponent(codigo)}/items`);
     } catch (e) {
       console.error("Error creando ítem:", e);
     }
