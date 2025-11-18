@@ -77,7 +77,16 @@ const CollapseButton = memo(({ onClick }) => (
 const Logo = memo(({ isCompact }) => (
   <Link href="/">
     <Box component={"div"} display="flex" alignItems="center">
-      <Box component="img" src={LOGO_PATH} alt="logo" width={30} />
+      <Box
+        component="img"
+        src={LOGO_PATH}
+        alt="logo"
+        width={30}
+        sx={(theme) => ({
+          filter:
+            theme.palette.mode === "dark" ? "brightness(0) invert(1)" : "",
+        })}
+      />
 
       {!isCompact && (
         <Typography
