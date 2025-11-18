@@ -154,9 +154,11 @@ export default function MaestroForm({ initialMaestro, onCancel, onSubmit }) {
                           <Switch
                             checked={!!field.value}
                             onChange={(_, v) => field.onChange(v)}
-                            inputProps={{
-                              "aria-label":
-                                "Marcar maestro si uso descripción corta",
+                            slotProps={{
+                              input: {
+                                "aria-label":
+                                  "Marcar maestro si uso descripción corta",
+                              },
                             }}
                           />
                         }
@@ -182,9 +184,11 @@ export default function MaestroForm({ initialMaestro, onCancel, onSubmit }) {
                           <Switch
                             checked={!!field.value}
                             onChange={(_, v) => field.onChange(v)}
-                            inputProps={{
-                              "aria-label":
-                                "Marcar maestro si usa fechas de vigencia",
+                            slotProps={{
+                              input: {
+                                "aria-label":
+                                  "Marcar maestro si usa fechas de vigencia",
+                              },
                             }}
                           />
                         }
@@ -210,7 +214,11 @@ export default function MaestroForm({ initialMaestro, onCancel, onSubmit }) {
                           <Switch
                             checked={!!field.value}
                             onChange={(_, v) => field.onChange(v)}
-                            inputProps={{ "aria-label": "Marcar ítem activo" }}
+                            slotProps={{
+                              input: {
+                                "aria-label": "Marcar ítem activo",
+                              },
+                            }}
                           />
                         }
                         label="Activo"

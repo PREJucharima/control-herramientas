@@ -252,7 +252,11 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
                           <Switch
                             checked={!!field.value}
                             onChange={(_, v) => field.onChange(v)}
-                            inputProps={{ "aria-label": "Marcar ítem activo" }}
+                            slotProps={{
+                              input: {
+                                "aria-label": "Marcar ítem activo",
+                              },
+                            }}
                           />
                         }
                         label="Activo"

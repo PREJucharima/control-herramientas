@@ -106,29 +106,32 @@ const MastersListPage = () => {
       <TextField
         fullWidth
         size="small"
-        placeholder="Buscar por nombre de maestros..."
+        placeholder="Buscar por nombre de catálogos..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        inputProps={{ "aria-label": "Buscar maestros" }}
         sx={{ mb: 2 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="Limpiar búsqueda"
-                onClick={() => setQuery("")}
-                edge="end"
-                disabled={!query}
-              >
-                <Refresh />
-              </IconButton>
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            "aria-label": "Buscar catálogos",
+
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Limpiar búsqueda"
+                  onClick={() => setQuery("")}
+                  edge="end"
+                  disabled={!query}
+                >
+                  <Refresh />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
         }}
       />
 
@@ -161,7 +164,7 @@ const MastersListPage = () => {
               mt: 1,
             }}
           >
-            <CircularProgress aria-label="Cargando maestros" />
+            <CircularProgress aria-label="Cargando catálogos" />
           </Box>
         </Box>
       )}
@@ -175,13 +178,14 @@ const MastersListPage = () => {
               color="inherit"
               size="small"
               onClick={handleRetry}
+              variant="text"
               startIcon={<Refresh />}
             >
               Reintentar
             </Button>
           }
         >
-          Error al cargar catálogos: {error.message || "Intenta nuevamente."}
+          Error al cargar catálogos: {error?.message || "Intenta nuevamente."}
         </Alert>
       )}
 
@@ -191,7 +195,7 @@ const MastersListPage = () => {
             <Card sx={{ borderRadius: 3, p: 2 }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600}>
-                  No encontramos maestros
+                  No encontramos catálogos que coincidan con tu búsqueda.
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Prueba cambiando el término de búsqueda o limpia el filtro.
@@ -235,10 +239,10 @@ const MastersListPage = () => {
                         },
                       }}
                     >
-                      <Tooltip title="Ver maestro">
+                      <Tooltip title="Ver catálogo">
                         <IconButton
                           size="small"
-                          aria-label={`Ver maestro ${maestro.nombre}`}
+                          aria-label={`Ver catálogo ${maestro.nombre}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             openView(maestro.codigo_unico);
@@ -248,10 +252,10 @@ const MastersListPage = () => {
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title="Editar maestro">
+                      <Tooltip title="Editar catálogo">
                         <IconButton
                           size="small"
-                          aria-label={`Editar maestro ${maestro.nombre}`}
+                          aria-label={`Editar catálogo ${maestro.nombre}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(
