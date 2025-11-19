@@ -60,6 +60,10 @@ const ProductEditPage = lazy(() =>
 const ProductDetailPage = lazy(() =>
   import("@/features/products/pages/ProductDetailPage")
 );
+const SyncPage = lazy(() => import("@/features/integrations/pages/SyncPage"));
+const BulkLoadingPage = lazy(() =>
+  import("@/features/integrations/pages/BulkLoadingPage")
+);
 
 export const protectedRoutes = [
   {
@@ -134,7 +138,14 @@ export const protectedRoutes = [
           { path: "integraciones", element: createElement(IntegrationsPage) },
         ],
       },
-
+      {
+        path: "/integraciones/sincronizaciones",
+        element: createElement(SyncPage),
+      },
+      {
+        path: "/integraciones/cargas-masivas",
+        element: createElement(BulkLoadingPage),
+      },
       {
         path: "*",
         element: createElement(Navigate, { to: "/inicio", replace: true }),
