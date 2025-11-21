@@ -28,7 +28,7 @@ import {
 } from "@mui/icons-material";
 
 import { FlexBox } from "@/components/ui/flexbox";
-import { MaestroQuickViewDialog } from "../components";
+import { CatalogCard, MaestroQuickViewDialog } from "../components";
 import { useFetchMaestros } from "../hooks/useFetchMaestros";
 
 const MastersListPage = () => {
@@ -214,102 +214,25 @@ const MastersListPage = () => {
             <Grid container spacing={2}>
               {filtered.map((maestro) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={maestro.id}>
-                  <Card
-                    sx={{
-                      position: "relative",
-                      borderRadius: 3,
-                      height: "100%",
-                      transition: "transform .12s ease, box-shadow .12s ease",
-                      "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: 6,
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        display: "flex",
-                        gap: 0.5,
-                        zIndex: 1,
-                        "& .MuiIconButton-root": {
-                          bgcolor: "background.paper",
-                        },
-                      }}
-                    >
-                      <Tooltip title="Ver catálogo">
-                        <IconButton
-                          size="small"
-                          aria-label={`Ver catálogo ${maestro.nombre}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openView(maestro.codigo_unico);
-                          }}
-                        >
-                          <Visibility fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Editar catálogo">
-                        <IconButton
-                          size="small"
-                          aria-label={`Editar catálogo ${maestro.nombre}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(
-                              `/maestros/catalogos/${encodeURIComponent(
-                                maestro.codigo_unico
-                              )}/editar`
-                            );
-                          }}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-
-                    <CardActionArea
-                      onClick={() =>
-                        navigate(
-                          `/maestros/catalogos/${encodeURIComponent(
-                            maestro.codigo_unico
-                          )}/items`
-                        )
-                      }
-                      aria-label={`Abrir ítems del catálogo ${maestro?.nombre}`}
-                    >
-                      <CardContent
-                        sx={{
-                          position: "relative",
-                          pb: 4,
-                          pt: 2,
-                          px: 3,
-                          mb: 1,
-                        }}
-                      >
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight={700}
-                          noWrap
-                          title={maestro?.nombre}
-                        >
-                          {maestro?.nombre || "Catálogo sin nombre"}
-                        </Typography>
-
-                        <Chip
-                          size="small"
-                          sx={{ position: "absolute", bottom: 0, right: 16 }}
-                          label={maestro?.esta_activo ? "Activo" : "Inactivo"}
-                          color={maestro?.esta_activo ? "success" : "default"}
-                          variant={
-                            maestro?.esta_activo ? "outlined" : "outlined"
-                          }
-                        />
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
+                  <CatalogCard
+                    maestro={maestro}
+                    secondary={
+                      maestro?.items_count
+                        ? `${maestro.items_count} ítems`
+                        : undefined
+                    }
+                    onOpenItems={(slug) =>
+                      navigate(
+                        `/maestros/catalogos/${encodeURIComponent(slug)}/items`
+                      )
+                    }
+                    onView={(slug) => openView(slug)}
+                    onEdit={(slug) =>
+                      navigate(
+                        `/maestros/catalogos/${encodeURIComponent(slug)}/editar`
+                      )
+                    }
+                  />
                 </Grid>
               ))}
             </Grid>
