@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getProductsPaginated } from "../services/getProducts";
 
 export const useFetchProducts = (
@@ -24,8 +24,17 @@ export const useFetchProducts = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const prevFiltersRef = useRef(filters);
+
   useEffect(() => {
-    setPagination((prev) => (prev.page !== 1 ? { ...prev, page: 1 } : prev));
+    const hasSearchChanged = filters.search !== prevFiltersRef.current.search;
+    const hasStatusChanged = filters.status !== prevFiltersRef.current.status;
+
+    if (hasSearchChanged || hasStatusChanged) {
+      setPagination((prev) => ({ ...prev, page: 1 }));
+
+      prevFiltersRef.current = filters;
+    }
   }, [filters.search, filters.status]);
 
   const fetchProducts = useCallback(async () => {
