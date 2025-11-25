@@ -48,17 +48,11 @@ const statusColor = (desc = "") => {
 const isAssigned = (desc = "") =>
   (desc || "").toString().trim().toUpperCase() === "ASIGNADO";
 
-/**
- * EN DURO mientras backend no esté listo.
- * Cuando tengas los campos reales (p.ej. h.asignacion.usuario, h.asignacion.fecha, h.asignacion.codigo),
- * solo reescribe esta función para leerlos del objeto h.
- */
 const getAssignedMeta = (h) => {
-  // Ejemplos en duro: puedes personalizar según el producto, serie, o estado:
   return {
-    usuario: "Juan Pérez", // <- reemplaza cuando haya backend
-    fecha: h?.fecha_creacion || new Date().toISOString(), // por ahora usa fecha del cambio
-    codigo: "ASG-2025-000123", // <- reemplaza cuando haya backend
+    usuario: "Juan Pérez",
+    fecha: h?.fecha_creacion || new Date().toISOString(),
+    codigo: "ASG-2025-000123",
   };
 };
 
@@ -100,7 +94,6 @@ export default function ProductStatusHistoryDialog({
     [productCode, productDetail]
   );
 
-  // Agrupar por día (YYYY-MM-DD)
   const groups = useMemo(() => {
     if (!history?.length) return [];
     const map = history.reduce((acc, h) => {
@@ -190,7 +183,6 @@ export default function ProductStatusHistoryDialog({
           </Box>
         )}
 
-        {/* Lista agrupada por día */}
         {!isLoading && !error && history.length > 0 && (
           <List disablePadding>
             {groups.map(([dayKey, items], gi) => (
@@ -288,7 +280,6 @@ export default function ProductStatusHistoryDialog({
 
                       <ListItemText
                         primary={
-                          // 1) Estados (igual que hoy)
                           <Stack
                             direction="row"
                             spacing={1}
@@ -325,9 +316,6 @@ export default function ProductStatusHistoryDialog({
                             )}
                             {assigned && assignedMeta && (
                               <Stack spacing={0.5} mt={0.5}>
-                                {/* 1) Motivo */}
-
-                                {/* 2) Detalles: Asignado a + Fecha (cada fragmento puede wrapear) */}
                                 <Typography
                                   variant="body2"
                                   sx={(t) => ({
@@ -348,7 +336,6 @@ export default function ProductStatusHistoryDialog({
                                   </span>
                                 </Typography>
 
-                                {/* 3) Código (su propia línea, monoespaciado y truncable) */}
                                 {assignedMeta.codigo && (
                                   <Typography
                                     variant="body2"

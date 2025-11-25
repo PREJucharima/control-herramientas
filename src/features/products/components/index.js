@@ -6,3 +6,4 @@ export { default as ProductForm } from "./ProductForm";
 export { default as RowActionsMenu } from "./RowActionsMenu";
 export { default as ProductObservationsDialog } from "./ProductObservationsDialog";
 export { default as ProductChangeStatusDialog } from "./ProductChangeStatusDialog";
+export { default as ProductStatusHistoryDialog } from "./ProductStatusHistoryDialog";
