@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getProductsPaginated } from "../services/getProducts";
 
 export const useFetchProducts = (
@@ -24,18 +24,24 @@ export const useFetchProducts = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const prevFiltersRef = useRef(filters);
+  const setFiltersWithReset = useCallback((updateAction) => {
+    setFilters((prevFilters) => {
+      const nextFilters =
+        typeof updateAction === "function"
+          ? updateAction(prevFilters)
+          : updateAction;
 
-  useEffect(() => {
-    const hasSearchChanged = filters.search !== prevFiltersRef.current.search;
-    const hasStatusChanged = filters.status !== prevFiltersRef.current.status;
+      const hasChanged =
+        prevFilters.search !== nextFilters.search ||
+        prevFilters.status !== nextFilters.status;
 
-    if (hasSearchChanged || hasStatusChanged) {
-      setPagination((prev) => ({ ...prev, page: 1 }));
+      if (hasChanged) {
+        setPagination((prev) => ({ ...prev, page: 1 }));
+      }
 
-      prevFiltersRef.current = filters;
-    }
-  }, [filters.search, filters.status]);
+      return nextFilters;
+    });
+  }, []);
 
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
@@ -93,7 +99,7 @@ export const useFetchProducts = (
     isLoading,
     error,
     filters,
-    setFilters,
+    setFilters: setFiltersWithReset,
     setSort,
     handleChangePage,
     handleChangePageSize,

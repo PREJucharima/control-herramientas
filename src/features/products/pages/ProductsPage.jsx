@@ -151,9 +151,9 @@ const ProductsPage = () => {
   ).length;
 
   return (
-    <Box pt={2}>
+    <Box pt={1.5}>
       <Card sx={{ mb: 3 }}>
-        <Box px={2} pt={2}>
+        <Box px={2} pt={1.5}>
           <ProductsHeadingArea
             title="Productos"
             searchValue={searchInput}
