@@ -33,6 +33,7 @@ export const API_PATHS = {
   integrations: {
     syncCostCenters: `api/integraciones/sincronizar/centrodecostos/`,
     syncEmployees: `api/integraciones/sincronizar/empleados/`,
+    bulkLoadProducts: `api/integraciones/carga-masiva/productos/`,
   },
 
   /**
