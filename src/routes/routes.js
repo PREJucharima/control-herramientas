@@ -64,6 +64,12 @@ const SyncPage = lazy(() => import("@/features/integrations/pages/SyncPage"));
 const BulkLoadingPage = lazy(() =>
   import("@/features/integrations/pages/BulkLoadingPage")
 );
+const ContractListPage = lazy(() =>
+  import("@/features/contract/pages/ContractListPage")
+);
+const ContractCreatePage = lazy(() =>
+  import("@/features/contract/pages/ContractCreatePage")
+);
 
 export const protectedRoutes = [
   {
@@ -119,6 +125,14 @@ export const protectedRoutes = [
       {
         path: "/maestros/productos/:codigo",
         element: createElement(ProductDetailPage),
+      },
+      {
+        path: "/maestros/contratos",
+        element: createElement(ContractListPage),
+      },
+      {
+        path: "/maestros/contratos/nuevo",
+        element: createElement(ContractCreatePage),
       },
       {
         path: "/seguridad/empresa-y-sucursal",
