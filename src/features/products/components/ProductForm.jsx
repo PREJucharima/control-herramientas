@@ -27,11 +27,11 @@ import {
 } from "@/components/common/form";
 import { useBranches } from "@/features/branches/hooks/useBranches";
 import { useFetchItemsByMaestro } from "@/features/items/hooks/useFetchItemsByMaestro";
+import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import { ACCESORIES, MAESTROS } from "../constants/product.constants";
 import { useCatalogChildren } from "../hooks/useCatalogChildren";
 import { productDefaults } from "../schemas/product.defaults";
 import { productSchema } from "../schemas/product.schema";
-import { ConfirmationDialog } from "../../../components/ConfirmationDialog";
 
 const ProductForm = ({
   initialProduct,
@@ -363,6 +363,7 @@ const ProductForm = ({
                     render={({ field, fieldState }) => (
                       <TextField
                         {...field}
+                        value={field.value ?? ""}
                         label="Código del sistema"
                         error={!!fieldState.error}
                         helperText={fieldState.error?.message}
@@ -378,6 +379,7 @@ const ProductForm = ({
                     render={({ field, fieldState }) => (
                       <TextField
                         {...field}
+                        value={field.value ?? ""}
                         label={`Nro de Serie ${
                           productTypeWithSerie ? "*" : ""
                         }`}
@@ -470,6 +472,7 @@ const ProductForm = ({
                     render={({ field, fieldState }) => (
                       <TextField
                         {...field}
+                        value={field.value ?? ""}
                         label={`Precio`}
                         type="number"
                         error={!!fieldState.error}
