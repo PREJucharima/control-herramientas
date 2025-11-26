@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+
 import {
   Card,
   CardContent,
@@ -26,7 +27,6 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-
   const [showDetails, setShowDetails] = useState(false);
 
   const handleProcess = async () => {
@@ -40,16 +40,47 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
       setResult(response);
     } catch (err) {
       console.error("Error en el proceso:", err);
-      setError(err.message || "Ocurrió un error inesperado.");
+      setError(err?.message || "Ocurrió un error inesperado.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getSeverity = (res) => {
-    if (res.errores && res.errores.length > 0) return "warning";
-    return "success";
-  };
+  const normalized = useMemo(() => {
+    if (!result) return null;
+
+    const creados =
+      typeof result.creados === "number"
+        ? result.creados
+        : typeof result.nuevos_creados === "number"
+        ? result.nuevos_creados
+        : 0;
+
+    const errorCount =
+      typeof result.errores === "number"
+        ? result.errores
+        : Array.isArray(result.errores)
+        ? result.errores.length
+        : 0;
+
+    const errorList = Array.isArray(result.lista_errores)
+      ? result.lista_errores
+      : Array.isArray(result.errores)
+      ? result.errores
+      : [];
+
+    const detailList = Array.isArray(result.detalle) ? result.detalle : [];
+
+    return {
+      status: result.status || "Proceso finalizado",
+      creados,
+      errorCount,
+      errorList,
+      detailList,
+    };
+  }, [result]);
+
+  const severity = normalized?.errorCount > 0 ? "warning" : "success";
 
   return (
     <Card>
@@ -70,34 +101,37 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
           </Alert>
         )}
 
-        {result && (
+        {normalized && (
           <Box>
             <Alert
-              severity={getSeverity(result)}
+              severity={severity}
               iconMapping={{
                 success: <CheckCircleIcon fontSize="inherit" />,
                 warning: <WarningIcon fontSize="inherit" />,
               }}
               sx={{ mb: 2 }}
             >
-              <AlertTitle>{result.status || "Proceso finalizado"}</AlertTitle>
-              <Box display="flex" gap={2}>
+              <AlertTitle>{normalized.status}</AlertTitle>
+
+              <Box display="flex" gap={2} flexWrap="wrap">
                 <Typography variant="body2">
-                  <strong>Nuevos creados:</strong> {result.nuevos_creados ?? 0}
+                  <strong>Nuevos creados:</strong> {normalized.creados}
                 </Typography>
-                {result.errores?.length > 0 && (
+
+                {normalized.errorCount > 0 && (
                   <Typography variant="body2">
-                    <strong>Errores:</strong> {result.errores.length}
+                    <strong>Errores:</strong> {normalized.errorCount}
                   </Typography>
                 )}
               </Box>
             </Alert>
 
-            {(result.detalle?.length > 0 || result.errores?.length > 0) && (
+            {(normalized.detailList.length > 0 ||
+              normalized.errorList.length > 0) && (
               <Button
                 size="small"
                 variant="text"
-                onClick={() => setShowDetails(!showDetails)}
+                onClick={() => setShowDetails((s) => !s)}
                 endIcon={showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 sx={{ mb: 1, textTransform: "none" }}
               >
@@ -108,7 +142,7 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
             )}
 
             <Collapse in={showDetails}>
-              {result.errores && result.errores.length > 0 && (
+              {normalized.errorList.length > 0 && (
                 <Box
                   mb={2}
                   sx={{
@@ -131,19 +165,22 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
                   >
                     Errores encontrados:
                   </Typography>
+
                   <List
                     dense
                     disablePadding
                     sx={{ maxHeight: 200, overflow: "auto" }}
                   >
-                    {result.errores.map((err, index) => (
+                    {normalized.errorList.map((msg, index) => (
                       <ListItem key={index} divider>
                         <ListItemText
-                          primary={err}
-                          primaryTypographyProps={{
-                            variant: "caption",
-                            color: "error",
-                            style: { fontFamily: "monospace" },
+                          primary={msg}
+                          slotProps={{
+                            primary: {
+                              variant: "caption",
+                              color: "text.primary",
+                              sx: { fontFamily: "monospace" },
+                            },
                           }}
                         />
                       </ListItem>
@@ -152,7 +189,7 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
                 </Box>
               )}
 
-              {result.detalle && result.detalle.length > 0 && (
+              {normalized.detailList.length > 0 && (
                 <Box
                   sx={{
                     border: "1px solid #e0e0e0",
@@ -174,19 +211,22 @@ export const BulkLoadCard = ({ title, description, onProcess }) => {
                   >
                     Log de operaciones:
                   </Typography>
+
                   <List
                     dense
                     disablePadding
                     sx={{ maxHeight: 300, overflow: "auto" }}
                   >
-                    {result.detalle.map((item, index) => (
+                    {normalized.detailList.map((item, index) => (
                       <ListItem key={index} divider>
                         <ListItemText
                           primary={item}
-                          primaryTypographyProps={{
-                            variant: "caption",
-                            color: "text.primary",
-                            style: { fontFamily: "monospace" },
+                          slotProps={{
+                            primary: {
+                              variant: "caption",
+                              color: "text.primary",
+                              sx: { fontFamily: "monospace" },
+                            },
                           }}
                         />
                       </ListItem>
