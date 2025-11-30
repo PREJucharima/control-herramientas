@@ -9,12 +9,12 @@ export const useFetchMaestroBySlug = (codigoUnico) => {
   const setMaestroBySlug = useMaestrosStore((s) => s.setMaestroBySlug);
   const { maestroBySlug } = useMaestrosStore();
 
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
 
       try {
@@ -24,13 +24,13 @@ export const useFetchMaestroBySlug = (codigoUnico) => {
         console.error("Error cargando catálogos:", err);
         setError(err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     if (user) fetch();
-    else setLoading(false);
+    else setIsLoading(false);
   }, [user, setMaestroBySlug, codigoUnico]);
 
-  return { maestroBySlug, loading, error };
+  return { maestroBySlug, isLoading, error };
 };

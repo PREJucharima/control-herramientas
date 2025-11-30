@@ -42,11 +42,11 @@ export default function ProductsTableRow({
   return (
     <TableRow hover>
       <TableCell sx={{ paddingLeft: 4 }}>
-        {product?.estado_producto.descripcion ?? "—"}
+        {product?.estado_producto?.descripcion ?? "—"}
       </TableCell>
       <TableCell>{product?.descripcion ?? "—"}</TableCell>
       <TableCell>{product?.nro_serie ?? "-"}</TableCell>
-      <TableCell>{product?.tipo.descripcion}</TableCell>
+      <TableCell>{product?.tipo?.descripcion}</TableCell>
       <TableCell>
         <Chip
           size="small"

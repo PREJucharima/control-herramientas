@@ -25,9 +25,9 @@ import {
   ProductQuickViewDialog,
   ProductObservationsDialog,
   ProductChangeStatusDialog,
+  ProductStatusHistoryDialog,
 } from "../components";
 import { useFetchProducts } from "../hooks/useFetchProducts";
-import ProductStatusHistoryDialog from "../components/ProductStatusHistoryDialog";
 
 const ProductsPage = () => {
   const navigate = useNavigate();
@@ -62,10 +62,9 @@ const ProductsPage = () => {
     setParam("estadoProducto", String(codigo));
   const closeChangeStatus = () => setParam("estadoProducto", "");
 
-  // 1) Estado inicial desde URL (sin syncStatus)
   const initialFilters = {
     search: searchParams.get("search") || "",
-    status: searchParams.get("status") || "", // "activo" | "inactivo" | ""
+    status: searchParams.get("status") || "",
   };
   const initialSort = {
     order: searchParams.get("order") || "asc",
@@ -74,7 +73,6 @@ const ProductsPage = () => {
   const initialPage = parseInt(searchParams.get("page"), 10) || 1;
   const initialPageSize = parseInt(searchParams.get("pageSize"), 10) || 10;
 
-  // 2) UI de orden y selección
   const {
     order,
     orderBy,
@@ -88,7 +86,6 @@ const ProductsPage = () => {
     defaultOrderBy: initialSort.orderBy,
   });
 
-  // 3) Datos (mock) + filtros/orden/paginación como “fuente de verdad”
   const {
     products,
     pagination,
@@ -106,17 +103,14 @@ const ProductsPage = () => {
     initialPageSize
   );
 
-  // search input -> filtros + reset page
   useEffect(() => {
     setFilters((f) => ({ ...f, search: debouncedSearch }));
   }, [debouncedSearch, setFilters]);
 
-  // ordenar (UI -> hook)
   useEffect(() => {
     setSort({ order, orderBy });
   }, [order, orderBy, setSort]);
 
-  // 4) Sincroniza a la URL (sin syncStatus)
   useEffect(() => {
     setSearchParams(
       (prev) => {
@@ -157,9 +151,9 @@ const ProductsPage = () => {
   ).length;
 
   return (
-    <Box pt={2}>
+    <Box pt={1.5}>
       <Card sx={{ mb: 3 }}>
-        <Box px={2} pt={2}>
+        <Box px={2} pt={1.5}>
           <ProductsHeadingArea
             title="Productos"
             searchValue={searchInput}
@@ -172,8 +166,8 @@ const ProductsPage = () => {
             count={pagination.count}
             isLoading={isLoading}
             error={error}
-            gridRoute="/catalogos/productos-grid"
-            listRoute="/catalogos/productos"
+            gridRoute="/maestros/productos-grid"
+            listRoute="/maestros/productos"
           />
         </Box>
 
@@ -219,7 +213,7 @@ const ProductsPage = () => {
                           handleSelectRow={handleSelectRow}
                           onEdit={() =>
                             navigate(
-                              `/catalogos/productos/${encodeURIComponent(
+                              `/maestros/productos/${encodeURIComponent(
                                 prod.codigo
                               )}/editar`
                             )

@@ -1,32 +1,20 @@
 import { useNavigate, useParams } from "react-router";
 
 import { ItemForm } from "../components";
-import { useFetchMaestros } from "@/features/masters/hooks/useFetchMaestros";
-import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 import { createItem } from "../services/createItem";
 import { useItemsStore } from "../states/itemsStore";
 
 const AddItemPage = () => {
-  const { codigo } = useParams();
-  const { maestros } = useFetchMaestros();
-  const addItem = useItemsStore((s) => s.addItem);
   const navigate = useNavigate();
+  const { codigo } = useParams();
 
-  const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
-  const dependeDeCatalogo = maestroActual?.depende_de_maestro?.id;
-
-  const { itemsByMaestro, isLoading, error } =
-    useFetchItemsByMaestro(dependeDeCatalogo);
-
-  console.log("Maestro actual:", maestroActual);
-  console.log("Depende de catálogo:", dependeDeCatalogo);
-  console.log("Items by maestro (lookup):", itemsByMaestro);
+  const addItem = useItemsStore((s) => s.addItem);
 
   const handleSubmit = async (payload) => {
     try {
       const created = await createItem(codigo, payload);
       addItem(created);
-      navigate(`/catalogos/maestros/${encodeURIComponent(codigo)}/items`);
+      navigate(`/maestros/catalogos/${encodeURIComponent(codigo)}/items`);
     } catch (e) {
       console.error("Error creando ítem:", e);
     }
@@ -35,10 +23,7 @@ const AddItemPage = () => {
   return (
     <>
       <ItemForm
-        itemsByMaestro={itemsByMaestro}
-        isLoadingItemsByMaestro={isLoading}
-        errorItemsByMaestro={error}
-        typeCatalog={maestroActual}
+        codigo={codigo}
         onSubmit={handleSubmit}
         onCancel={() => navigate(-1)}
       />

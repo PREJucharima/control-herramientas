@@ -88,7 +88,7 @@ export default function ProductsHeadingArea({
         top: 0,
         zIndex: 2,
         bgcolor: "background.paper",
-        pt: 1,
+        pt: 2,
         pb: 2,
       }}
     >
@@ -123,7 +123,7 @@ export default function ProductsHeadingArea({
         justifyContent={"space-between"}
         alignItems={{ xs: "stretch", sm: "center" }}
         gap={1.25}
-        mt={4.25}
+        mt={2.25}
         mb={2.25}
       >
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.25} flexGrow={1}>
@@ -189,7 +189,7 @@ export default function ProductsHeadingArea({
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => navigate("/catalogos/productos/nuevo")}
+            onClick={() => navigate("/maestros/productos/nuevo")}
             fullWidth={false}
           >
             Agregar producto

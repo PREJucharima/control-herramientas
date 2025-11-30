@@ -30,18 +30,18 @@ export const primary = {
 };
 
 export const success = {
-  25: "#F1FEF5",
-  50: "#E3FDEB",
-  100: "#CDFBDB",
-  200: "#9DF7C2",
-  300: "#6AE9AA",
-  400: "#43D49A",
-  500: "#11b886",
-  600: "#0C9E80",
-  700: "#088477",
-  800: "#056A6A",
-  900: "#035058",
-  main: "#11b843ff",
+  25: "#F2FCEE",
+  50: "#E5F9DC",
+  100: "#CEF5BC",
+  200: "#ADF18D",
+  300: "#8BEF5D",
+  400: "#68EF2A",
+  500: "#4AD808",
+  600: "#3DB008",
+  700: "#2F8A05",
+  800: "#256D03",
+  900: "#1B5002",
+  main: "#4AD808FF",
 };
 
 export const warning = {
@@ -60,18 +60,18 @@ export const warning = {
 };
 
 export const error = {
-  25: "#FEF6F8",
-  50: "#FEF1F4",
-  100: "#FDE8ED",
-  200: "#FBD5DE",
-  300: "#F7A6BA",
-  400: "#F37795",
-  500: "#EF4770",
-  600: "#EB194C",
-  700: "#C0113C",
-  800: "#910D2D",
-  900: "#63091F",
-  main: "#EF4770",
+  25: "#FFF3F0",
+  50: "#FEE7E1",
+  100: "#FCD1C5",
+  200: "#FAB19A",
+  300: "#F77A5E",
+  400: "#F25536",
+  500: "#EC2E0C",
+  600: "#C9260A",
+  700: "#A31F08",
+  800: "#7D1807",
+  900: "#571105",
+  main: "#EC2E0CFF",
 };
 
 export const secondary = { ...grey, main: "#F1F5F9" };

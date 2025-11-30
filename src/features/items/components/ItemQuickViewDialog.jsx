@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-
 import dayjs from "dayjs";
+import { useNavigate } from "react-router";
+
 import { Close, Inventory2 } from "@mui/icons-material";
 import {
   Alert,
@@ -15,11 +15,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router";
 
-import { useFetchMaestros } from "@/features/masters/hooks/useFetchMaestros";
 import { useFetchItemBySlug } from "../hooks/useFetchItemBySlug";
-import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
 
 export default function ItemQuickViewDialog({
   open,
@@ -27,34 +24,14 @@ export default function ItemQuickViewDialog({
   itemSlug,
   onClose,
 }) {
-  const { itemBySlug, loading, error } = useFetchItemBySlug(
+  const { itemBySlug, isLoading, error } = useFetchItemBySlug(
     maestroSlug,
     itemSlug
   );
   const navigate = useNavigate();
-  const { maestros = [] } = useFetchMaestros();
-  const maestroActual = useMemo(
-    () => maestros.find((m) => m.codigo_unico === maestroSlug),
-    [maestros, maestroSlug]
-  );
-
-  const dependeDeCatalogo = maestroActual?.depende_de_catalogo ?? null;
-  // const maestroId = maestroActual?.id ?? null;
-
-  const { itemsByMaestro } = useFetchItemsByMaestro(dependeDeCatalogo);
   const fmt = (d) => (d ? dayjs(d).format("DD/MM/YYYY") : "—");
 
-  const itemPadreNombre = useMemo(() => {
-    if (!itemBySlug?.item_padre) return null;
-    const found = itemsByMaestro?.find(
-      (m) => Number(m.id) === Number(itemBySlug.item_padre)
-    );
-    return found?.descripcion ?? null;
-  }, [itemsByMaestro, itemBySlug]);
-
   console.log("itemBySlug in ItemQuickViewDialog", itemBySlug);
-  console.log("itemsByMaestro in ItemQuickViewDialog", itemsByMaestro);
-  console.log("itemPadreNombre in ItemQuickViewDialog", itemPadreNombre);
 
   return (
     <Dialog
@@ -82,7 +59,7 @@ export default function ItemQuickViewDialog({
       </DialogTitle>
 
       <DialogContent>
-        {loading && (
+        {isLoading && (
           <Stack gap={1.5}>
             <Skeleton variant="text" width="60%" />
             <Skeleton variant="text" width="40%" />
@@ -92,44 +69,44 @@ export default function ItemQuickViewDialog({
 
         {error && <Alert severity="error">Error al cargar el ítem.</Alert>}
 
-        {!loading && !error && itemBySlug && (
+        {!isLoading && !error && itemBySlug && (
           <Stack gap={1}>
             <Typography
               variant="subtitle1"
               fontWeight={700}
               noWrap
-              title={itemBySlug.descripcion}
+              title={itemBySlug?.descripcion}
             >
-              {itemBySlug.descripcion || "Ítem sin descripción"}
+              {itemBySlug?.descripcion || "Ítem sin descripción"}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Código: <b>{itemBySlug.codigo ?? "—"}</b>
+              Código: <b>{itemBySlug?.codigo ?? "—"}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Usuario creador: <b>{itemBySlug.usuario_creacion ?? "—"}</b>
+              Usuario creador: <b>{itemBySlug?.usuario_creacion ?? "—"}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Depende de: <b> {itemPadreNombre ?? "—"}</b>
+              Depende de: <b> {itemBySlug?.item_padre?.descripcion ?? "—"}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Descripción corta: <b>{itemBySlug.descripcion_corta ?? "—"}</b>
+              Descripción corta: <b>{itemBySlug?.descripcion_corta ?? "—"}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
               Vigencia:{" "}
               <b>
-                {fmt(itemBySlug.fecha_inicio_vigencia)} →{" "}
-                {fmt(itemBySlug.fecha_fin_vigencia)}
+                {fmt(itemBySlug?.fecha_inicio_vigencia)} →{" "}
+                {fmt(itemBySlug?.fecha_fin_vigencia)}
               </b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Creación: <b>{fmt(itemBySlug.fecha_creacion)}</b> · Modificación:{" "}
-              <b>{fmt(itemBySlug.fecha_modificacion)}</b>
+              Creación: <b>{fmt(itemBySlug?.fecha_creacion)}</b> · Modificación:{" "}
+              <b>{fmt(itemBySlug?.fecha_modificacion)}</b>
             </Typography>
           </Stack>
         )}
@@ -140,7 +117,7 @@ export default function ItemQuickViewDialog({
           variant="contained"
           onClick={() =>
             navigate(
-              `/catalogos/maestros/${encodeURIComponent(
+              `/maestros/catalogos/${encodeURIComponent(
                 maestroSlug
               )}/${encodeURIComponent(itemSlug)}/editar`
             )
