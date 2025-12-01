@@ -15,20 +15,20 @@ const EditMasterPage = lazy(() =>
   import("@/features/masters/pages/EditMasterPage")
 );
 
-const ItemsListPage = lazy(() =>
-  import("@/features/items/pages/ItemsListPage")
+const ItemsPage = lazy(() => import("@/features/items/pages/ItemsPage"));
+const ItemCreatePage = lazy(() =>
+  import("@/features/items/pages/ItemCreatePage")
 );
-const AddItemPage = lazy(() => import("@/features/items/pages/AddItemPage"));
-const EditItemPage = lazy(() => import("@/features/items/pages/EditItemPage"));
+const ItemEditPage = lazy(() => import("@/features/items/pages/ItemEditPage"));
 
 const EmployeesPage = lazy(() =>
   import("@/features/employees/pages/EmployeesPage")
 );
-const AddNewEmployeePage = lazy(() =>
-  import("@/features/employees/pages/AddNewEmployeePage")
+const EmployeeCreatePage = lazy(() =>
+  import("@/features/employees/pages/EmployeeCreatePage")
 );
-const EditEmployeePage = lazy(() =>
-  import("@/features/employees/pages/EditEmployeePage")
+const EmployeeEditPage = lazy(() =>
+  import("@/features/employees/pages/EmployeeEditPage")
 );
 const CompanyBranchPage = lazy(() =>
   import("@/features/company-branch/pages/CompanyBranchPage")
@@ -64,11 +64,14 @@ const SyncPage = lazy(() => import("@/features/integrations/pages/SyncPage"));
 const BulkLoadingPage = lazy(() =>
   import("@/features/integrations/pages/BulkLoadingPage")
 );
-const ContractListPage = lazy(() =>
-  import("@/features/contract/pages/ContractListPage")
+const ContractPage = lazy(() =>
+  import("@/features/contract/pages/ContractPage")
 );
 const ContractCreatePage = lazy(() =>
   import("@/features/contract/pages/ContractCreatePage")
+);
+const ContractEditPage = lazy(() =>
+  import("@/features/contract/pages/ContractEditPage")
 );
 
 export const protectedRoutes = [
@@ -91,24 +94,24 @@ export const protectedRoutes = [
       },
       {
         path: "/maestros/catalogos/:codigo/items",
-        element: createElement(ItemsListPage),
+        element: createElement(ItemsPage),
       },
       {
         path: "/maestros/catalogos/:codigo/nuevo",
-        element: createElement(AddItemPage),
+        element: createElement(ItemCreatePage),
       },
       {
         path: "/maestros/catalogos/:codigo/:codigo_item/editar",
-        element: createElement(EditItemPage),
+        element: createElement(ItemEditPage),
       },
       { path: "/maestros/empleados", element: createElement(EmployeesPage) },
       {
         path: "/maestros/empleados/nuevo",
-        element: createElement(AddNewEmployeePage),
+        element: createElement(EmployeeCreatePage),
       },
       {
         path: "/maestros/empleados/:rut/editar",
-        element: createElement(EditEmployeePage),
+        element: createElement(EmployeeEditPage),
       },
       {
         path: "/maestros/productos",
@@ -128,11 +131,15 @@ export const protectedRoutes = [
       },
       {
         path: "/maestros/contratos",
-        element: createElement(ContractListPage),
+        element: createElement(ContractPage),
       },
       {
         path: "/maestros/contratos/nuevo",
         element: createElement(ContractCreatePage),
+      },
+      {
+        path: "/maestros/contratos/:codigo/editar",
+        element: createElement(ContractEditPage),
       },
       {
         path: "/seguridad/empresa-y-sucursal",
