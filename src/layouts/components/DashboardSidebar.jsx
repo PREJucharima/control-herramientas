@@ -51,7 +51,7 @@ const SidebarContent = memo(({ isCompact }) => (
       maxHeight: `calc(100vh - ${TOP_HEADER_AREA}px)`,
     }}
   >
-    <Box height="100%" px={2}>
+    <Box height="100%" px={2} mb={4}>
       <MultiLevelMenu sidebarCompact={isCompact} />
     </Box>
   </Scrollbar>

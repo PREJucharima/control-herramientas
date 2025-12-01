@@ -46,7 +46,7 @@ export default function ProductsTableRow({
       </TableCell>
       <TableCell>{product?.descripcion ?? "—"}</TableCell>
       <TableCell>{product?.nro_serie ?? "-"}</TableCell>
-      <TableCell>{product?.tipo?.descripcion}</TableCell>
+      <TableCell>{product?.tipo?.descripcion ?? "-"}</TableCell>
       <TableCell>
         <Chip
           size="small"
