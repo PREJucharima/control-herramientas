@@ -1,4 +1,5 @@
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import * as Yup from "yup";
 import dayjs from "dayjs";
@@ -27,44 +28,37 @@ import {
   FormProvider,
   TextField,
 } from "@/components/common/form";
-import { useFetchItemsByMaestro } from "../hooks/useFetchItemsByMaestro";
-import { useFetchMaestros } from "../../masters/hooks/useFetchMaestros";
-import { useMemo, useState } from "react";
-import { ConfirmationDialog } from "../../../components/ConfirmationDialog";
+import { ConfirmationDialog } from "@/components/ConfirmationDialog";
+import { useBranches } from "../../branches/hooks/useBranches";
 
 const toISODate = (d) => (d ? dayjs(d).format("YYYY-MM-DD") : null);
 
-export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
-  const { maestros } = useFetchMaestros();
-  const maestroActual = maestros?.find((m) => m.codigo_unico === codigo);
-  const dependeDeCatalogo = maestroActual?.depende_de_maestro?.id;
-  const {
-    itemsByMaestro,
-    isLoading: isLoadingItemsByMaestro,
-    error: errorItemsByMaestro,
-  } = useFetchItemsByMaestro(dependeDeCatalogo);
-
-  console.log("Maestro actual:", maestroActual);
-  console.log("Depende de catálogo:", dependeDeCatalogo);
-  console.log("Items by maestro (lookup):", itemsByMaestro);
-
-  const hasShowInputsDads = maestroActual?.depende_de_maestro != null;
-
-  console.log("Tiene item padre:", hasShowInputsDads);
-
+export default function ContractForm({
+  initialContract,
+  companies,
+  defaultCompany,
+  isLoadingCompanies,
+  errorCompanies,
+  categories,
+  isLoadingCategories,
+  errorCategories,
+  onSubmit,
+  onCancel,
+}) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState(null);
 
   const initialValues = {
-    descripcion: initialItem?.descripcion ?? "",
-    descripcion_corta: initialItem?.descripcion_corta ?? "",
-    item_padre: initialItem?.item_padre ?? null,
-    esta_activo: initialItem?.esta_activo ?? true,
-    fecha_inicio_vigencia: initialItem?.fecha_inicio_vigencia
-      ? dayjs(initialItem.fecha_inicio_vigencia).toDate()
+    empresa: initialContract?.empresa ?? null,
+    sucursal: initialContract?.sucursal ?? null,
+    categoria: initialContract?.categoria ?? null,
+    descripcion: initialContract?.descripcion ?? "",
+    esta_activo: initialContract?.esta_activo ?? true,
+    fecha_inicio_vigencia: initialContract?.fecha_inicio_vigencia
+      ? dayjs(initialContract.fecha_inicio_vigencia).toDate()
       : null,
-    fecha_fin_vigencia: initialItem?.fecha_fin_vigencia
-      ? dayjs(initialItem.fecha_fin_vigencia).toDate()
+    fecha_fin_vigencia: initialContract?.fecha_fin_vigencia
+      ? dayjs(initialContract.fecha_fin_vigencia).toDate()
       : null,
   };
 
@@ -72,33 +66,12 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
     orig === "" || orig === "null" || orig == null ? null : curr;
 
   const validationSchema = useMemo(() => {
-    const isDescCortaRequired = maestroActual?.usa_descripcion_corta === true;
-    const areFechasRequired = maestroActual?.usa_fechas_vigencia === true;
+    const areFechasRequired = true;
 
     return Yup.object({
       descripcion: Yup.string().trim().required("La descripción es requerida"),
-
-      // --- CAMPO CONDICIONAL: descripcion_corta ---
-      descripcion_corta: Yup.string()
-        .trim()
-        .nullable()
-        .when([], {
-          is: () => isDescCortaRequired,
-          then: (schema) =>
-            schema.required("La descripción corta es requerida"),
-          otherwise: (schema) => schema.nullable(),
-        }),
-
-      // --- CAMPO CONDICIONAL: item_padre ---
-      item_padre: Yup.object()
-        .nullable()
-        .transform((value, originalValue) =>
-          String(originalValue).trim() === "" ? null : value
-        ),
-
       esta_activo: Yup.boolean().required(),
 
-      // --- CAMPO CONDICIONAL: fecha_inicio_vigencia ---
       fecha_inicio_vigencia: Yup.date()
         .transform(normalizeDate)
         .nullable()
@@ -109,7 +82,6 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
           otherwise: (schema) => schema.nullable(),
         }),
 
-      // --- CAMPO CONDICIONAL: fecha_fin_vigencia ---
       fecha_fin_vigencia: Yup.date()
         .transform(normalizeDate)
         .nullable()
@@ -126,7 +98,7 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
           return baseSchema.nullable();
         }),
     });
-  }, [maestroActual]);
+  }, []);
 
   const methods = useForm({
     defaultValues: initialValues,
@@ -142,18 +114,44 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
     setValue,
   } = methods;
 
+  /* Selección de sucursales según la empresa seleccionada */
+  const selectedCompany = useWatch({ control, name: "empresa" });
+  const prevCompanyId = useRef();
+  const {
+    branchesLookup: branches,
+    isLoading: isLoadingBranches,
+    error: errorBranches,
+  } = useBranches(selectedCompany?.id);
+
+  useEffect(() => {
+    if (!initialContract && defaultCompany) {
+      const companyToSet = companies.find((c) => c.id === defaultCompany.id);
+      if (companyToSet) {
+        setValue("empresa", companyToSet, { shouldValidate: false });
+      }
+    }
+  }, [initialContract, defaultCompany, companies, setValue]);
+
+  useEffect(() => {
+    if (
+      prevCompanyId.current != null &&
+      selectedCompany?.id !== prevCompanyId.current
+    ) {
+      setValue("sucursal", null, { shouldValidate: true, shouldDirty: true });
+    }
+    prevCompanyId.current = selectedCompany?.id ?? null;
+  }, [selectedCompany?.id, setValue]);
+
   const onSubmitInternal = handleSubmit(async (values) => {
     const payload = {
+      empresa: values.empresa ? values.empresa.id : null,
+      sucursal: values.sucursal ? values.sucursal.id : null,
+      categoria: values.categoria ? values.categoria.id : null,
       descripcion: values.descripcion.trim(),
-      item_padre: values.item_padre ? values.item_padre.id : null,
-      descripcion_corta: values.descripcion_corta?.trim() || null,
       esta_activo: !!values.esta_activo,
       fecha_inicio_vigencia: toISODate(values.fecha_inicio_vigencia),
       fecha_fin_vigencia: toISODate(values.fecha_fin_vigencia),
     };
-
-    // if (onSubmit) await onSubmit(payload);
-    // else console.log("POST /api/catalogos/:codigo/items", payload);
 
     setFormData(payload); // Guarda el payload listo para enviar
     setConfirmOpen(true); // Abre el modal
@@ -176,10 +174,10 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
     setFormData(null);
   };
 
-  const title = initialItem ? "Editar ítem" : "Nuevo ítem";
-  const subheader = initialItem
-    ? "Modifica los datos del ítem seleccionado."
-    : "Completa los campos requeridos para crear un nuevo ítem.";
+  const title = initialContract ? "Editar contrato" : "Nuevo contrato";
+  const subheader = initialContract
+    ? "Modifica los datos del contrato seleccionado."
+    : "Completa los campos requeridos para crear un nuevo contrato.";
 
   return (
     <>
@@ -202,10 +200,45 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
 
         <FormProvider
           methods={methods}
-          // onSubmit={onSubmitInternal}
           onSubmit={handleSubmit(onSubmitInternal)}
         >
           <CardContent>
+            <Grid container spacing={4} mb={4}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="empresa"
+                  control={control}
+                  label="Empresa"
+                  options={companies}
+                  isLoading={isLoadingCompanies}
+                  fetchError={errorCompanies}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="sucursal"
+                  control={control}
+                  label="Sucursal"
+                  options={branches}
+                  isLoading={isLoadingBranches}
+                  fetchError={errorBranches}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={4} mb={4}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <AutocompleteController
+                  name="categoria"
+                  control={control}
+                  label="Categoría"
+                  options={categories}
+                  isLoading={isLoadingCategories}
+                  fetchError={errorCategories}
+                />
+              </Grid>
+            </Grid>
+
             <Grid container spacing={2.5}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
@@ -215,31 +248,6 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
                   fullWidth
                 />
               </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  name="descripcion_corta"
-                  label={`Descripción corta ${
-                    maestroActual?.usa_descripcion_corta ? "*" : ""
-                  }`}
-                  placeholder="Resumen visible en listados"
-                  fullWidth
-                />
-              </Grid>
-
-              {hasShowInputsDads && (
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <AutocompleteController
-                    name="item_padre"
-                    control={control}
-                    label="Ítem Padre"
-                    options={itemsByMaestro}
-                    isLoading={isLoadingItemsByMaestro}
-                    fetchError={errorItemsByMaestro}
-                    required={false}
-                  />
-                </Grid>
-              )}
 
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Controller
@@ -274,9 +282,7 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
                 <Stack direction="row" alignItems="center" gap={1}>
                   <DatePicker
                     name="fecha_inicio_vigencia"
-                    label={`Inicio de vigencia ${
-                      maestroActual?.usa_fechas_vigencia ? "*" : ""
-                    }`}
+                    label={`Inicio de vigencia *`}
                     control={control}
                   />
                   <Tooltip title="Quitar fecha de inicio">
@@ -301,9 +307,7 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
                 <Stack direction="row" alignItems="center" gap={1}>
                   <DatePicker
                     name="fecha_fin_vigencia"
-                    label={`Fin de vigencia ${
-                      maestroActual?.usa_fechas_vigencia ? "*" : ""
-                    }`}
+                    label={`Fin de vigencia *`}
                     control={control}
                   />
                   <Tooltip title="Quitar fecha de fin">
@@ -336,7 +340,6 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
             <Button
               type="submit"
               variant="contained"
-              // loading={isSubmitting}
               disabled={isSubmitting || !isDirty || !isValid}
             >
               Guardar
@@ -347,9 +350,11 @@ export default function ItemForm({ initialItem, codigo, onCancel, onSubmit }) {
 
       <ConfirmationDialog
         open={confirmOpen}
-        title={`${initialItem ? "Confirmar Cambios" : "Crear nuevo items"} `}
+        title={`${
+          initialContract ? "Confirmar Cambios" : "Crear nuevo items"
+        } `}
         content={`${
-          initialItem
+          initialContract
             ? "¿Estás seguro de que deseas guardar los cambios en este ítem?"
             : "¿Estás seguro de que deseas crear este nuevo ítem?"
         }`}

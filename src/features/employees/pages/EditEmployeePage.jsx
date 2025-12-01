@@ -55,7 +55,7 @@ const EditEmployeePage = () => {
       const updatedEmployee = await updateEmployeeByRut(rut, payload);
       updateEmployeeInStore(rut, updatedEmployee);
 
-      navigate("/catalogos/empleados");
+      navigate("/maestros/empleados");
     } catch (e) {
       console.error("Error actualizando el empleado:", e);
     }

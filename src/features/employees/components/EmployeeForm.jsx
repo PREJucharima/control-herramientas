@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -23,6 +23,7 @@ import {
 import { InfoOutlined } from "@mui/icons-material";
 
 import { useCentroCostos } from "@/features/cost-centers/hooks/useCentroCostos";
+import { ConfirmationDialog } from "../../../components/ConfirmationDialog";
 
 export default function EmployeeForm({
   initialEmpleado,
@@ -32,6 +33,9 @@ export default function EmployeeForm({
   onCancel,
   defaultCompany,
 }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [formData, setFormData] = useState(null);
+
   // ---------- Valores iniciales ----------
   const initialValues = {
     rut: initialEmpleado?.rut ?? "",
@@ -141,9 +145,28 @@ export default function EmployeeForm({
       ...(initialEmpleado && { esta_activo: !!values.esta_activo }),
     };
 
-    console.log("payload", payload);
-    await onSubmit?.(payload);
+    // console.log("payload", payload);
+    // await onSubmit?.(payload);
+    setFormData(payload); // Guarda el payload listo para enviar
+    setConfirmOpen(true); // Abre el modal
   });
+
+  const handleConfirmSubmit = async () => {
+    if (!formData) return;
+
+    // Llama a la función onSubmit original
+    if (onSubmit) {
+      await onSubmit(formData);
+    }
+
+    setConfirmOpen(false); // Cierra el modal
+    setFormData(null); // Limpia los datos
+  };
+
+  const handleCancelSubmit = () => {
+    setConfirmOpen(false);
+    setFormData(null);
+  };
 
   const title = initialEmpleado ? "Editar empleado" : "Nuevo empleado";
   const subheader = initialEmpleado
@@ -188,198 +211,216 @@ export default function EmployeeForm({
   );
 
   return (
-    <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
-      <CardHeader
-        title={
-          <Stack direction="row" aligns="center" gap={1}>
-            <Typography variant="h6" fontWeight={700}>
-              {title}
-            </Typography>
-            <Tooltip title="Los campos con * son obligatorios">
-              <InfoOutlined fontSize="small" color="action" />
-            </Tooltip>
-          </Stack>
-        }
-        subheader={subheader}
-      />
+    <>
+      <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
+        <CardHeader
+          title={
+            <Stack direction="row" aligns="center" gap={1}>
+              <Typography variant="h6" fontWeight={700}>
+                {title}
+              </Typography>
+              <Tooltip title="Los campos con * son obligatorios">
+                <InfoOutlined fontSize="small" color="action" />
+              </Tooltip>
+            </Stack>
+          }
+          subheader={subheader}
+        />
 
-      <Divider />
+        <Divider />
 
-      <FormProvider {...methods}>
-        <form onSubmit={onSubmitInternal} noValidate>
-          <CardContent>
-            <Grid container spacing={4} sx={{ mb: 3 }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="rut"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="RUT *"
-                      placeholder="12.345.678-9"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                      slotProps={{ inputLabel: { shrink: true } }}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="nombre"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Nombre *"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} sx={{ mb: 3 }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="apellido_paterno"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Apellido paterno *"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="apellido_materno"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Apellido materno *"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} sx={{ mb: 3 }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Email *"
-                      placeholder="correo@empresa.com"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="nombre_completo"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Nombre completo *"
-                      helperText={
-                        fieldState.error?.message ||
-                        "Se genera automáticamente a partir del nombre y apellidos."
-                      }
-                      fullWidth
-                    />
-                  )}
-                  disabled
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "empresa",
-                  "Empresa *",
-                  companies,
-                  isLoadingCompanies
-                )}
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                {renderAC(
-                  "centrocosto",
-                  "Centro de costo *",
-                  centroCostosLookup,
-                  !selectedCompany?.id || isLoadingCentrosCosto
-                )}
-              </Grid>
-
-              {initialEmpleado && (
+        <FormProvider {...methods}>
+          <form onSubmit={onSubmitInternal} noValidate>
+            <CardContent>
+              <Grid container spacing={4} sx={{ mb: 3 }}>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
-                    name="esta_activo"
+                    name="rut"
                     control={control}
-                    render={({ field }) => (
-                      <Stack>
-                        <FormControlLabel
-                          sx={{ ml: 0.5 }}
-                          control={
-                            <Switch
-                              checked={!!field.value}
-                              onChange={(_, v) => field.onChange(v)}
-                            />
-                          }
-                          label="Activo"
-                        />
-                        <FormHelperText sx={{ ml: 1.5, mt: 0 }}>
-                          Si está desactivado, el empleado no aparecerá en
-                          flujos de selección.
-                        </FormHelperText>
-                      </Stack>
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label="RUT *"
+                        placeholder="12.345.678-9"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                        slotProps={{ inputLabel: { shrink: true } }}
+                      />
                     )}
                   />
                 </Grid>
-              )}
-            </Grid>
-          </CardContent>
 
-          <Divider />
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="nombre"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label="Nombre *"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
 
-          <CardActions sx={{ p: 2, justifyContent: "flex-end", gap: 1 }}>
-            <Button variant="outlined" color="secondary" onClick={onCancel}>
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={isSubmitting || !isDirty || !isValid}
-            >
-              {initialEmpleado ? "Guardar cambios" : "Crear empleado"}
-            </Button>
-          </CardActions>
-        </form>
-      </FormProvider>
-    </Card>
+              <Grid container spacing={4} sx={{ mb: 3 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="apellido_paterno"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label="Apellido paterno *"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="apellido_materno"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label="Apellido materno *"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} sx={{ mb: 3 }}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label="Email *"
+                        placeholder="correo@empresa.com"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="nombre_completo"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label="Nombre completo *"
+                        helperText={
+                          fieldState.error?.message ||
+                          "Se genera automáticamente a partir del nombre y apellidos."
+                        }
+                        fullWidth
+                      />
+                    )}
+                    disabled
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  {renderAC(
+                    "empresa",
+                    "Empresa *",
+                    companies,
+                    isLoadingCompanies
+                  )}
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  {renderAC(
+                    "centrocosto",
+                    "Centro de costo *",
+                    centroCostosLookup,
+                    !selectedCompany?.id || isLoadingCentrosCosto
+                  )}
+                </Grid>
+
+                {initialEmpleado && (
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Controller
+                      name="esta_activo"
+                      control={control}
+                      render={({ field }) => (
+                        <Stack>
+                          <FormControlLabel
+                            sx={{ ml: 0.5 }}
+                            control={
+                              <Switch
+                                checked={!!field.value}
+                                onChange={(_, v) => field.onChange(v)}
+                              />
+                            }
+                            label="Activo"
+                          />
+                          <FormHelperText sx={{ ml: 1.5, mt: 0 }}>
+                            Si está desactivado, el empleado no aparecerá en
+                            flujos de selección.
+                          </FormHelperText>
+                        </Stack>
+                      )}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </CardContent>
+
+            <Divider />
+
+            <CardActions sx={{ p: 2, justifyContent: "flex-end", gap: 1 }}>
+              <Button variant="outlined" color="secondary" onClick={onCancel}>
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting || !isDirty || !isValid}
+              >
+                {initialEmpleado ? "Guardar cambios" : "Crear empleado"}
+              </Button>
+            </CardActions>
+          </form>
+        </FormProvider>
+      </Card>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        title={`${
+          initialEmpleado ? "Confirmar Cambios" : "Crear nuevo empleado"
+        } `}
+        content={`${
+          initialEmpleado
+            ? "¿Estás seguro de que deseas guardar los cambios en este empleado?"
+            : "¿Estás seguro de que deseas crear este nuevo empleado?"
+        }`}
+        onClose={handleCancelSubmit}
+        onConfirm={handleConfirmSubmit}
+        isLoading={isSubmitting}
+        confirmText="Confirmar"
+      />
+    </>
   );
 }

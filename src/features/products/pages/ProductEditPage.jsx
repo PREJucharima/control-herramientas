@@ -56,7 +56,7 @@ const ProductEditPage = () => {
       const updated = await updateProductByCode(codigo, payload);
       // actualiza el store si lo tienes
       updateProductInStore?.(codigo, updated);
-      navigate("/catalogos/productos");
+      navigate("/maestros/productos");
     } catch (e) {
       console.error("Error actualizando producto:", e);
     }

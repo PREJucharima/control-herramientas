@@ -383,7 +383,13 @@ export function ObservationForm({
                       {...field}
                       label="Costo"
                       type="number"
-                      inputProps={{ step: "0.01", min: 0 }}
+                      slotProps={{
+                        input: {
+                          step: 0.01,
+                          min: 0,
+                          inputMode: "decimal",
+                        },
+                      }}
                       value={field.value ?? ""}
                       error={!!fieldState.error}
                       helperText={fieldState.error?.message}

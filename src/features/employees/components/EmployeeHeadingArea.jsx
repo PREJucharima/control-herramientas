@@ -269,7 +269,7 @@ export default function EmployeesHeadingArea({
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => navigate("/catalogos/empleados/nuevo")}
+            onClick={() => navigate("/maestros/empleados/nuevo")}
             fullWidth={false}
           >
             Nuevo empleado

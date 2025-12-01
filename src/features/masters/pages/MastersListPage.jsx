@@ -28,7 +28,7 @@ import {
 } from "@mui/icons-material";
 
 import { FlexBox } from "@/components/ui/flexbox";
-import { MaestroQuickViewDialog } from "../components";
+import { CatalogCard, MaestroQuickViewDialog } from "../components";
 import { useFetchMaestros } from "../hooks/useFetchMaestros";
 
 const MastersListPage = () => {
@@ -73,7 +73,7 @@ const MastersListPage = () => {
       >
         <ListAlt aria-hidden />
         <Typography variant="h5" component="h1" fontWeight={700}>
-          Maestros
+          Catálogos
         </Typography>
         {!isLoading && !error && (
           <Chip
@@ -93,42 +93,45 @@ const MastersListPage = () => {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => navigate("/catalogos/maestros/nuevo")}
+          onClick={() => navigate("/maestros/catalogos/nuevo")}
         >
-          Agregar maestro
+          Agregar catálogo
         </Button>
       </FlexBox>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Explora el listado de maestros. Usa el buscador para filtrar por nombre.
+        Explora el listado de catálogo. Usa el buscador para filtrar por nombre.
       </Typography>
 
       <TextField
         fullWidth
         size="small"
-        placeholder="Buscar por nombre de maestros..."
+        placeholder="Buscar por nombre de catálogos..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        inputProps={{ "aria-label": "Buscar maestros" }}
         sx={{ mb: 2 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="Limpiar búsqueda"
-                onClick={() => setQuery("")}
-                edge="end"
-                disabled={!query}
-              >
-                <Refresh />
-              </IconButton>
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            "aria-label": "Buscar catálogos",
+
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="Limpiar búsqueda"
+                  onClick={() => setQuery("")}
+                  edge="end"
+                  disabled={!query}
+                >
+                  <Refresh />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
         }}
       />
 
@@ -161,7 +164,7 @@ const MastersListPage = () => {
               mt: 1,
             }}
           >
-            <CircularProgress aria-label="Cargando maestros" />
+            <CircularProgress aria-label="Cargando catálogos" />
           </Box>
         </Box>
       )}
@@ -175,13 +178,14 @@ const MastersListPage = () => {
               color="inherit"
               size="small"
               onClick={handleRetry}
+              variant="text"
               startIcon={<Refresh />}
             >
               Reintentar
             </Button>
           }
         >
-          Error al cargar catálogos: {error.message || "Intenta nuevamente."}
+          Error al cargar catálogos: {error?.message || "Intenta nuevamente."}
         </Alert>
       )}
 
@@ -191,7 +195,7 @@ const MastersListPage = () => {
             <Card sx={{ borderRadius: 3, p: 2 }}>
               <CardContent>
                 <Typography variant="subtitle1" fontWeight={600}>
-                  No encontramos maestros
+                  No encontramos catálogos que coincidan con tu búsqueda.
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Prueba cambiando el término de búsqueda o limpia el filtro.
@@ -210,102 +214,25 @@ const MastersListPage = () => {
             <Grid container spacing={2}>
               {filtered.map((maestro) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={maestro.id}>
-                  <Card
-                    sx={{
-                      position: "relative",
-                      borderRadius: 3,
-                      height: "100%",
-                      transition: "transform .12s ease, box-shadow .12s ease",
-                      "&:hover": {
-                        transform: "translateY(-2px)",
-                        boxShadow: 6,
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        display: "flex",
-                        gap: 0.5,
-                        zIndex: 1,
-                        "& .MuiIconButton-root": {
-                          bgcolor: "background.paper",
-                        },
-                      }}
-                    >
-                      <Tooltip title="Ver maestro">
-                        <IconButton
-                          size="small"
-                          aria-label={`Ver maestro ${maestro.nombre}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openView(maestro.codigo_unico);
-                          }}
-                        >
-                          <Visibility fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Editar maestro">
-                        <IconButton
-                          size="small"
-                          aria-label={`Editar maestro ${maestro.nombre}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(
-                              `/catalogos/maestros/${encodeURIComponent(
-                                maestro.codigo_unico
-                              )}/editar`
-                            );
-                          }}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-
-                    <CardActionArea
-                      onClick={() =>
-                        navigate(
-                          `/catalogos/maestros/${encodeURIComponent(
-                            maestro.codigo_unico
-                          )}/items`
-                        )
-                      }
-                      aria-label={`Abrir ítems del catálogo ${maestro?.nombre}`}
-                    >
-                      <CardContent
-                        sx={{
-                          position: "relative",
-                          pb: 4,
-                          pt: 2,
-                          px: 3,
-                          mb: 1,
-                        }}
-                      >
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight={700}
-                          noWrap
-                          title={maestro?.nombre}
-                        >
-                          {maestro?.nombre || "Catálogo sin nombre"}
-                        </Typography>
-
-                        <Chip
-                          size="small"
-                          sx={{ position: "absolute", bottom: 0, right: 16 }}
-                          label={maestro?.esta_activo ? "Activo" : "Inactivo"}
-                          color={maestro?.esta_activo ? "success" : "default"}
-                          variant={
-                            maestro?.esta_activo ? "outlined" : "outlined"
-                          }
-                        />
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
+                  <CatalogCard
+                    maestro={maestro}
+                    secondary={
+                      maestro?.items_count
+                        ? `${maestro.items_count} ítems`
+                        : undefined
+                    }
+                    onOpenItems={(slug) =>
+                      navigate(
+                        `/maestros/catalogos/${encodeURIComponent(slug)}/items`
+                      )
+                    }
+                    onView={(slug) => openView(slug)}
+                    onEdit={(slug) =>
+                      navigate(
+                        `/maestros/catalogos/${encodeURIComponent(slug)}/editar`
+                      )
+                    }
+                  />
                 </Grid>
               ))}
             </Grid>

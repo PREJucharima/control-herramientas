@@ -214,7 +214,7 @@ const EmployeesPage = () => {
                           handleSelectRow={handleSelectRow}
                           onEdit={() =>
                             navigate(
-                              `/catalogos/empleados/${encodeURIComponent(
+                              `/maestros/empleados/${encodeURIComponent(
                                 emp.rut
                               )}/editar`
                             )

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm, Controller, FormProvider, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -27,6 +27,7 @@ import {
 } from "@/components/common/form";
 import { useBranches } from "@/features/branches/hooks/useBranches";
 import { useFetchItemsByMaestro } from "@/features/items/hooks/useFetchItemsByMaestro";
+import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import { ACCESORIES, MAESTROS } from "../constants/product.constants";
 import { useCatalogChildren } from "../hooks/useCatalogChildren";
 import { productDefaults } from "../schemas/product.defaults";
@@ -47,12 +48,18 @@ const ProductForm = ({
 }) => {
   const toISODate = (d) => (d ? dayjs(d).format("YYYY-MM-DD") : null);
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [formData, setFormData] = useState(null);
+
   const methods = useForm({
     defaultValues: productDefaults(initialProduct),
     resolver: yupResolver(productSchema),
     mode: "onBlur",
     criteriaMode: "all",
   });
+
+  console.log(initialProduct);
+  console.log(productDefaults(initialProduct));
 
   const { control, handleSubmit, setValue, formState, clearErrors } = methods;
   const { isSubmitting, isDirty, isValid } = formState;
@@ -223,9 +230,29 @@ const ProductForm = ({
       ...(initialProduct && { esta_activo: !!values.esta_activo }),
     };
 
-    console.log("payload", payload);
-    await onSubmit?.(payload);
+    // console.log("payload", payload);
+    // await onSubmit?.(payload);
+
+    setFormData(payload); // Guarda el payload listo para enviar
+    setConfirmOpen(true); // Abre el modal
   });
+
+  const handleConfirmSubmit = async () => {
+    if (!formData) return;
+
+    // Llama a la función onSubmit original
+    if (onSubmit) {
+      await onSubmit(formData);
+    }
+
+    setConfirmOpen(false); // Cierra el modal
+    setFormData(null); // Limpia los datos
+  };
+
+  const handleCancelSubmit = () => {
+    setConfirmOpen(false);
+    setFormData(null);
+  };
 
   const title = initialProduct ? "Editar producto" : "Nuevo producto";
   const subheader = initialProduct
@@ -233,334 +260,357 @@ const ProductForm = ({
     : "Completa los campos requeridos para crear un nuevo producto.";
 
   return (
-    <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
-      <CardHeader
-        title={
-          <Stack direction="row" aligns="center" gap={1}>
-            <Typography variant="h6" fontWeight={700}>
-              {title}
-            </Typography>
-            <Tooltip title="Los campos con * son obligatorios">
-              <InfoOutlined fontSize="small" color="action" />
-            </Tooltip>
-          </Stack>
-        }
-        subheader={subheader}
-      />
+    <>
+      <Card sx={{ borderRadius: 3, maxWidth: 850, mx: "auto" }}>
+        <CardHeader
+          title={
+            <Stack direction="row" aligns="center" gap={1}>
+              <Typography variant="h6" fontWeight={700}>
+                {title}
+              </Typography>
+              <Tooltip title="Los campos con * son obligatorios">
+                <InfoOutlined fontSize="small" color="action" />
+              </Tooltip>
+            </Stack>
+          }
+          subheader={subheader}
+        />
 
-      <Divider sx={{ mt: 0, mb: 2 }} />
+        <Divider sx={{ mt: 0, mb: 2 }} />
 
-      <FormProvider {...methods}>
-        <form onSubmit={onSubmitInternal} noValidate>
-          <CardContent>
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="empresa"
-                  control={control}
-                  label="Empresa"
-                  options={companies}
-                  isLoading={isLoadingCompanies}
-                  fetchError={errorCompanies}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="sucursal"
-                  control={control}
-                  label="Sucursal"
-                  options={branches}
-                  isLoading={isLoadingBranches}
-                  fetchError={errorBranches}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="categoria"
-                  control={control}
-                  label="Categoría"
-                  options={categories}
-                  isLoading={isLoadingCategories}
-                  fetchError={errorCategories}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="estado_producto"
-                  control={control}
-                  label="Estado del producto"
-                  options={productStatusOptions}
-                  isLoading={isProductStatusLoading}
-                  fetchError={productStatusError}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="tipo_producto"
-                  control={control}
-                  label="Tipo de producto"
-                  options={productTypeOptions}
-                  isLoading={isProductTypeLoading}
-                  fetchError={productTypeError}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="descripcion"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Descripción *"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="codigo_sistema"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label="Código del sistema"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="nro_serie"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label={`Nro de Serie ${productTypeWithSerie ? "*" : ""}`}
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                      disabled={!productTypeWithSerie}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="tipo"
-                  control={control}
-                  label="Tipo"
-                  options={typeOptions}
-                  isLoading={isTypeLoading}
-                  fetchError={typeError}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="subtipo"
-                  control={control}
-                  label="Sub Tipo"
-                  options={subTypeOptions}
-                  isLoading={isSubTypeLoading}
-                  fetchError={subTypeError}
-                  disabled={!selectedType || isSubTypeLoading}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="marca"
-                  control={control}
-                  label="Marca"
-                  options={brandOptions}
-                  isLoading={isBrandLoading}
-                  fetchError={brandError}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="modelo"
-                  control={control}
-                  label="Modelo"
-                  options={modelOptions}
-                  isLoading={isModelLoading}
-                  fetchError={modelError}
-                  disabled={!selectedBrand || isModelLoading}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="contrato"
-                  control={control}
-                  label="Contrato"
-                  options={contractOptions}
-                  isLoading={isContractLoading}
-                  fetchError={contractError}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <AutocompleteController
-                  name="moneda"
-                  control={control}
-                  label="Moneda"
-                  options={currencyOptions}
-                  isLoading={isCurrencyLoading}
-                  fetchError={currencyError}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="precio"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label={`Precio`}
-                      type="number"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <Stack direction="row" alignItems="center" gap={1}>
-                  <DatePicker name="fecha_ingreso" label="Fecha de ingreso" />
-                  <Tooltip title="Quitar fecha de ingreso">
-                    <span>
-                      <IconButton
-                        aria-label="Quitar fecha de ingreso"
-                        onClick={() =>
-                          setValue("fecha_ingreso", null, {
-                            shouldDirty: true,
-                          })
-                        }
-                        size="small"
-                      >
-                        <Clear fontSize="small" />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
-                </Stack>
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name="orden_compra"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      label={`Orden de compra`}
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={4} mb={4}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchController
-                  name="es_accesorio"
-                  control={control}
-                  label="Accesorio"
-                  helperText="Actívalo si este producto es un accesorio (ej. mouse, cargador)."
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <SwitchController
-                  name="es_nuevo"
-                  control={control}
-                  label="Nuevo"
-                  helperText="Actívalo si el producto no ha sido usado."
-                />
-              </Grid>
-            </Grid>
-
-            {!isAccessory && (
+        <FormProvider {...methods}>
+          <form onSubmit={onSubmitInternal} noValidate>
+            <CardContent>
               <Grid container spacing={4} mb={4}>
-                <Grid size={{ xs: 12, md: 12 }}>
-                  <Autocomplete
-                    multiple
-                    limitTags={2}
-                    fullWidth
-                    id="multiple-limit-tags"
-                    options={ACCESORIES}
-                    getOptionLabel={(option) => option?.title}
-                    renderInput={(params) => (
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="empresa"
+                    control={control}
+                    label="Empresa"
+                    options={companies}
+                    isLoading={isLoadingCompanies}
+                    fetchError={errorCompanies}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="sucursal"
+                    control={control}
+                    label="Sucursal"
+                    options={branches}
+                    isLoading={isLoadingBranches}
+                    fetchError={errorBranches}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="categoria"
+                    control={control}
+                    label="Categoría"
+                    options={categories}
+                    isLoading={isLoadingCategories}
+                    fetchError={errorCategories}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="estado_producto"
+                    control={control}
+                    label="Estado del producto"
+                    options={productStatusOptions}
+                    isLoading={isProductStatusLoading}
+                    fetchError={productStatusError}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="tipo_producto"
+                    control={control}
+                    label="Tipo de producto"
+                    options={productTypeOptions}
+                    isLoading={isProductTypeLoading}
+                    fetchError={productTypeError}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="descripcion"
+                    control={control}
+                    render={({ field, fieldState }) => (
                       <TextField
-                        {...params}
-                        label="Accesorios"
-                        placeholder="accesorios"
+                        {...field}
+                        label="Descripción *"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
                       />
                     )}
                   />
                 </Grid>
               </Grid>
-            )}
 
-            <Grid container spacing={4} mb={4}>
-              {initialProduct && (
+              <Grid container spacing={4} mb={4}>
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <SwitchController
-                    name="esta_activo"
+                  <Controller
+                    name="codigo_sistema"
                     control={control}
-                    label="Activo"
-                    helperText="Si está desactivado, el producto no aparecerá en flujos de selección."
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        value={field.value ?? ""}
+                        label="Código del sistema"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
                   />
                 </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="nro_serie"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        value={field.value ?? ""}
+                        label={`Nro de Serie ${
+                          productTypeWithSerie ? "*" : ""
+                        }`}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                        disabled={!productTypeWithSerie}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="tipo"
+                    control={control}
+                    label="Tipo"
+                    options={typeOptions}
+                    isLoading={isTypeLoading}
+                    fetchError={typeError}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="subtipo"
+                    control={control}
+                    label="Sub Tipo"
+                    options={subTypeOptions}
+                    isLoading={isSubTypeLoading}
+                    fetchError={subTypeError}
+                    disabled={!selectedType || isSubTypeLoading}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="marca"
+                    control={control}
+                    label="Marca"
+                    options={brandOptions}
+                    isLoading={isBrandLoading}
+                    fetchError={brandError}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="modelo"
+                    control={control}
+                    label="Modelo"
+                    options={modelOptions}
+                    isLoading={isModelLoading}
+                    fetchError={modelError}
+                    disabled={!selectedBrand || isModelLoading}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="contrato"
+                    control={control}
+                    label="Contrato"
+                    options={contractOptions}
+                    isLoading={isContractLoading}
+                    fetchError={contractError}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <AutocompleteController
+                    name="moneda"
+                    control={control}
+                    label="Moneda"
+                    options={currencyOptions}
+                    isLoading={isCurrencyLoading}
+                    fetchError={currencyError}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="precio"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        value={field.value ?? ""}
+                        label={`Precio`}
+                        type="number"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Stack direction="row" alignItems="center" gap={1}>
+                    <DatePicker name="fecha_ingreso" label="Fecha de ingreso" />
+                    <Tooltip title="Quitar fecha de ingreso">
+                      <span>
+                        <IconButton
+                          aria-label="Quitar fecha de ingreso"
+                          onClick={() =>
+                            setValue("fecha_ingreso", null, {
+                              shouldDirty: true,
+                            })
+                          }
+                          size="small"
+                        >
+                          <Clear fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                  </Stack>
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name="orden_compra"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        label={`Orden de compra`}
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+
+              <Grid container spacing={4} mb={4}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <SwitchController
+                    name="es_accesorio"
+                    control={control}
+                    label="Accesorio"
+                    helperText="Actívalo si este producto es un accesorio (ej. mouse, cargador)."
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <SwitchController
+                    name="es_nuevo"
+                    control={control}
+                    label="Nuevo"
+                    helperText="Actívalo si el producto no ha sido usado."
+                  />
+                </Grid>
+              </Grid>
+
+              {!isAccessory && (
+                <Grid container spacing={4} mb={4}>
+                  <Grid size={{ xs: 12, md: 12 }}>
+                    <Autocomplete
+                      multiple
+                      limitTags={2}
+                      fullWidth
+                      id="multiple-limit-tags"
+                      options={ACCESORIES}
+                      getOptionLabel={(option) => option?.title}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Accesorios"
+                          placeholder="accesorios"
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
               )}
-            </Grid>
-          </CardContent>
 
-          <Divider />
+              <Grid container spacing={4} mb={4}>
+                {initialProduct && (
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <SwitchController
+                      name="esta_activo"
+                      control={control}
+                      label="Activo"
+                      helperText="Si está desactivado, el producto no aparecerá en flujos de selección."
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </CardContent>
 
-          <CardActions sx={{ p: 2, justifyContent: "flex-end", gap: 1 }}>
-            <Button variant="outlined" color="secondary" onClick={onCancel}>
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={isSubmitting || !isDirty || !isValid}
-            >
-              {initialProduct ? "Guardar cambios" : "Crear producto"}
-            </Button>
-          </CardActions>
-        </form>
-      </FormProvider>
-    </Card>
+            <Divider />
+
+            <CardActions sx={{ p: 2, justifyContent: "flex-end", gap: 1 }}>
+              <Button variant="outlined" color="secondary" onClick={onCancel}>
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting || !isDirty || !isValid}
+              >
+                {initialProduct ? "Guardar cambios" : "Crear producto"}
+              </Button>
+            </CardActions>
+          </form>
+        </FormProvider>
+      </Card>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        title={`${
+          initialProduct ? "Confirmar Cambios" : "Crear nuevo producto"
+        } `}
+        content={`${
+          initialProduct
+            ? "¿Estás seguro de que deseas guardar los cambios en este producto?"
+            : "¿Estás seguro de que deseas crear este nuevo producto?"
+        }`}
+        onClose={handleCancelSubmit}
+        onConfirm={handleConfirmSubmit}
+        isLoading={isSubmitting}
+        confirmText="Confirmar"
+      />
+    </>
   );
 };
 

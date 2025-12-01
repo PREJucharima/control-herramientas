@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 
-import { useItemsStore } from "../states/itemsStore";
 import { getItemBySlug } from "../services/getItemBySlug";
 
 export const useFetchItemBySlug = (codigoMaestro, codigoItem) => {
-  const setItemBySlug = useItemsStore((s) => s.setItemBySlug);
-  const { itemBySlug } = useItemsStore();
+  const [itemBySlug, setItemBySlug] = useState();
 
-  const [loading, setLoading] = useState(Boolean(codigoMaestro && codigoItem));
+  const [isLoading, setIsLoading] = useState(
+    Boolean(codigoMaestro && codigoItem)
+  );
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!codigoMaestro || !codigoItem) {
-      setLoading(false);
+      setIsLoading(false);
       return;
     }
 
     let cancelled = false;
     (async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
       try {
         const data = await getItemBySlug(codigoMaestro, codigoItem);
@@ -26,7 +26,7 @@ export const useFetchItemBySlug = (codigoMaestro, codigoItem) => {
       } catch (e) {
         if (!cancelled) setError(e);
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     })();
 
@@ -35,5 +35,5 @@ export const useFetchItemBySlug = (codigoMaestro, codigoItem) => {
     };
   }, [codigoMaestro, codigoItem, setItemBySlug]);
 
-  return { itemBySlug, loading, error };
+  return { itemBySlug, isLoading, error };
 };

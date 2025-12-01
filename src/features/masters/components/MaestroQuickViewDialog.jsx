@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useNavigate } from "react-router";
 
 import dayjs from "dayjs";
@@ -23,20 +22,7 @@ import { useMaestrosStore } from "../states/maestrosStore";
 const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
   const { loading, error } = useFetchMaestroBySlug(slug);
   const { maestroBySlug } = useMaestrosStore();
-  const maestros = useMaestrosStore((state) => state.maestros);
   const navigate = useNavigate();
-
-  const nombreCatalogoDependiente = useMemo(() => {
-    if (!maestroBySlug?.depende_de_maestro) return null;
-
-    const maestroDependiente = maestros.find(
-      (m) => m.id === maestroBySlug.depende_de_maestro
-    );
-
-    return maestroDependiente?.nombre;
-  }, [maestros, maestroBySlug]);
-
-  console.log(nombreCatalogoDependiente);
 
   const dateFormat = (dateStr) => {
     return dayjs(dateStr).format("DD/MM/YYYY HH:mm");
@@ -53,7 +39,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
       <DialogTitle id="ver-maestro">
         <Stack direction="row" alignItems="center" gap={1.25}>
           <Inventory2 />
-          <Typography fontWeight={700}>Maestro</Typography>
+          <Typography fontWeight={700}>Catálogo</Typography>
           <Chip
             size="small"
             label={maestroBySlug?.esta_activo ? "Activo" : "Inactivo"}
@@ -85,38 +71,34 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
               </Button>
             }
           >
-            Error al cargar el maestro.
+            Error al cargar el catálogo.
           </Alert>
         )}
 
-        {!loading && !error && Object.keys(maestroBySlug).length > 0 && (
+        {!loading && !error && (
           <Stack gap={1}>
             <Typography variant="subtitle1" fontWeight={700}>
-              {maestroBySlug.nombre}
+              {maestroBySlug?.nombre}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Código único: <b>{maestroBySlug.codigo_unico}</b>
+              Código único: <b>{maestroBySlug?.codigo_unico}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-              Usuario creador: <b>{maestroBySlug.usuario_creacion}</b>
+              Usuario creador: <b>{maestroBySlug?.usuario_creacion}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
               Depende de catálogo:{" "}
-              <b>
-                {nombreCatalogoDependiente ??
-                  maestroBySlug?.depende_de_maestro?.nombre ??
-                  "—"}
-              </b>
+              <b>{maestroBySlug?.depende_de_maestro?.nombre ?? "—"}</b>
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
               Fechas: creación{" "}
-              <b>{dateFormat(maestroBySlug.fecha_creacion) ?? "—"}</b> -
+              <b>{dateFormat(maestroBySlug?.fecha_creacion) ?? "—"}</b> -
               modificación{" "}
-              <b>{dateFormat(maestroBySlug.fecha_modificacion) ?? "—"}</b>
+              <b>{dateFormat(maestroBySlug?.fecha_modificacion) ?? "—"}</b>
             </Typography>
           </Stack>
         )}
@@ -126,7 +108,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
         <Button
           variant="outlined"
           onClick={() => {
-            navigate(`/catalogos/${encodeURIComponent(slug)}/lista-items`);
+            navigate(`/maestros/catalogos/${encodeURIComponent(slug)}/items`);
           }}
         >
           Ver ítems
@@ -135,7 +117,7 @@ const MaestroQuickViewDialog = ({ open, slug, onClose }) => {
         <Button
           variant="contained"
           onClick={() => {
-            navigate(`/catalogos/maestros/${encodeURIComponent(slug)}/editar`);
+            navigate(`/maestros/catalogos/${encodeURIComponent(slug)}/editar`);
           }}
         >
           Editar

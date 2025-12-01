@@ -24,9 +24,24 @@ export const useFetchProducts = (
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    setPagination((prev) => (prev.page !== 1 ? { ...prev, page: 1 } : prev));
-  }, [filters.search, filters.status]);
+  const setFiltersWithReset = useCallback((updateAction) => {
+    setFilters((prevFilters) => {
+      const nextFilters =
+        typeof updateAction === "function"
+          ? updateAction(prevFilters)
+          : updateAction;
+
+      const hasChanged =
+        prevFilters.search !== nextFilters.search ||
+        prevFilters.status !== nextFilters.status;
+
+      if (hasChanged) {
+        setPagination((prev) => ({ ...prev, page: 1 }));
+      }
+
+      return nextFilters;
+    });
+  }, []);
 
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
@@ -84,7 +99,7 @@ export const useFetchProducts = (
     isLoading,
     error,
     filters,
-    setFilters,
+    setFilters: setFiltersWithReset,
     setSort,
     handleChangePage,
     handleChangePageSize,
