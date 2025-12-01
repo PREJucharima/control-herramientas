@@ -62,6 +62,8 @@ export default function ContractForm({
       : null,
   };
 
+  console.log("Initial contract values:", initialValues);
+
   const normalizeDate = (curr, orig) =>
     orig === "" || orig === "null" || orig == null ? null : curr;
 
@@ -351,12 +353,12 @@ export default function ContractForm({
       <ConfirmationDialog
         open={confirmOpen}
         title={`${
-          initialContract ? "Confirmar Cambios" : "Crear nuevo items"
+          initialContract ? "Confirmar Cambios" : "Crear nuevo contrato"
         } `}
         content={`${
           initialContract
-            ? "¿Estás seguro de que deseas guardar los cambios en este ítem?"
-            : "¿Estás seguro de que deseas crear este nuevo ítem?"
+            ? "¿Estás seguro de que deseas guardar los cambios en este contrato?"
+            : "¿Estás seguro de que deseas crear este nuevo contrato?"
         }`}
         onClose={handleCancelSubmit}
         onConfirm={handleConfirmSubmit}

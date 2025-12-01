@@ -1,13 +1,17 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 import { useAuthStore } from "../../auth/states/authStore";
 import { useCompaniesLookups } from "../../companies/hooks/useCompanies";
 import ContractForm from "../components/ContractForm";
 import { useCategoriesLookups } from "../../categories/hooks/useCategories";
-import { createContract } from "../services/contractService";
+import { updateContractByCode } from "../services/contractService";
+import { useFetchContractByCode } from "../hooks/useFetchContractByCode";
 
-const ContractCreatePage = () => {
+const ContractEditPage = () => {
   const navigate = useNavigate();
+  const { codigo } = useParams();
+
+  const { contractDetail, isLoading, error } = useFetchContractByCode(codigo);
 
   const user = useAuthStore((state) => state.user);
   const defaultCompany = user?.profile?.sucursal_principal?.empresa;
@@ -25,17 +29,21 @@ const ContractCreatePage = () => {
 
   const handleSubmit = async (payload) => {
     try {
-      console.log("Payload de creación de contrato:", payload);
-      await createContract(payload);
+      console.log("Payload de actualización de contrato:", payload);
+      await updateContractByCode(codigo, payload);
       navigate(`/maestros/contratos`);
     } catch (e) {
-      console.error("Error creando un contrato:", e);
+      console.error(`Error actualizando el contrato ${codigo}:`, e);
     }
   };
+
+  if (isLoading) return <div>Cargando contrato…</div>;
+  if (error) return <div>No se pudo cargar el contrato.</div>;
 
   return (
     <>
       <ContractForm
+        initialContract={contractDetail}
         companies={companies}
         defaultCompany={defaultCompany}
         isLoadingCompanies={isCompaniesLoading}
@@ -50,4 +58,4 @@ const ContractCreatePage = () => {
   );
 };
 
-export default ContractCreatePage;
+export default ContractEditPage;

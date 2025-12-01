@@ -1,0 +1,223 @@
+import { useNavigate } from "react-router";
+
+import {
+  Box,
+  Chip,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+  Typography,
+  Stack,
+  Divider,
+  styled,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Popover,
+} from "@mui/material";
+import { Add, ArrowBack, Clear, Refresh, Search } from "@mui/icons-material";
+
+import { FilterPill } from "@/components/common/filters";
+
+export const SearchTextField = styled(TextField)(() => ({
+  maxWidth: 320,
+  width: "100%",
+}));
+
+export default function ContractsHeadingArea({
+  title,
+  // Tabs estado ("" | "active" | "inactive")
+  statusValue,
+  onStatusChange,
+  // búsqueda
+  searchValue,
+  onSearchChange,
+  onClearSearch,
+  // datos
+  count,
+  isLoading,
+  error,
+  sticky = true,
+  refresh,
+}) {
+  const navigate = useNavigate();
+  const estadoText =
+    statusValue === "active"
+      ? "Activos"
+      : statusValue === "inactive"
+      ? "Inactivos"
+      : "Todos";
+
+  const activeFilterChips = (
+    <Stack direction="row" gap={1} flexWrap="wrap">
+      {statusValue === "active" && (
+        <Chip
+          size="small"
+          color="success"
+          variant="outlined"
+          label="Estado: Activos"
+          onDelete={() => onStatusChange("")}
+        />
+      )}
+      {statusValue === "inactive" && (
+        <Chip
+          size="small"
+          color="default"
+          variant="outlined"
+          label="Estado: Inactivos"
+          onDelete={() => onStatusChange("")}
+        />
+      )}
+      {!!searchValue && (
+        <Chip
+          size="small"
+          variant="outlined"
+          icon={<Search fontSize="small" />}
+          label={`Buscar: ${searchValue}`}
+          onDelete={onClearSearch}
+        />
+      )}
+    </Stack>
+  );
+
+  return (
+    <Box
+      sx={{
+        position: sticky ? "sticky" : "static",
+        top: 0,
+        zIndex: 2,
+        bgcolor: "background.paper",
+        pt: 2,
+        pb: 2,
+      }}
+    >
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        gap={2}
+        flexWrap="wrap"
+      >
+        <Stack direction="row" alignItems="center" gap={1.5} minWidth={0}>
+          <IconButton onClick={() => navigate(-1)} aria-label="Volver">
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h6" fontWeight={700} noWrap title={title}>
+            {title}
+          </Typography>
+          {!isLoading && !error && (
+            <Chip
+              size="small"
+              color="primary"
+              label={`${count ?? 0} ${
+                count === 1 ? "resultado" : "resultados"
+              }`}
+              sx={{ ml: 0.5, "& .MuiChip-label": { fontWeight: 700 } }}
+            />
+          )}
+        </Stack>
+      </Stack>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent={"space-between"}
+        alignItems={{ xs: "stretch", sm: "center" }}
+        gap={1.25}
+        mt={2.25}
+        mb={2.25}
+      >
+        <Stack direction={{ xs: "column", sm: "row" }} gap={1.25} flexGrow={1}>
+          <SearchTextField
+            type="search"
+            value={searchValue}
+            onChange={onSearchChange}
+            placeholder="Buscar por código, descripción…"
+            size="small"
+            fullWidth
+            slotProps={{
+              input: {
+                "aria-label": "Buscar empleados",
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" />
+                  </InputAdornment>
+                ),
+                endAdornment: !!searchValue && (
+                  <InputAdornment position="end">
+                    <Tooltip title="Limpiar (Esc)">
+                      <IconButton
+                        size="small"
+                        onClick={onClearSearch}
+                        aria-label="Limpiar búsqueda"
+                      >
+                        <Clear fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+          <Stack direction="row" gap={1} flexWrap="wrap">
+            <FilterPill
+              label={`Estado · ${estadoText}`}
+              active={Boolean(statusValue)}
+              onClear={() => onStatusChange?.("")}
+            >
+              {(close) => (
+                <FormControl fullWidth size="small">
+                  <InputLabel id="estado-label">Estado</InputLabel>
+                  <Select
+                    labelId="estado-label"
+                    label="Estado"
+                    value={statusValue ?? ""}
+                    onChange={(e) => {
+                      onStatusChange?.(e.target.value);
+                      close();
+                    }}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="active">Activos</MenuItem>
+                    <MenuItem value="inactive">Inactivos</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+            </FilterPill>
+
+            <Stack direction="row" alignItems="center">
+              <Divider orientation="vertical" flexItem />
+              <Tooltip title="Refrescar contratos">
+                <IconButton
+                  size="small"
+                  onClick={refresh}
+                  aria-label="Refrescar"
+                >
+                  <Refresh />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Stack>
+        </Stack>
+        <Box sx={{ ml: { md: 2 } }}>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => navigate("/maestros/contratos/nuevo")}
+            fullWidth={false}
+          >
+            Agregar contrato
+          </Button>
+        </Box>
+      </Stack>
+
+      {(!!searchValue || statusValue) && (
+        <>
+          <Divider sx={{ my: 1.25 }} />
+          {activeFilterChips}
+        </>
+      )}
+    </Box>
+  );
+}
