@@ -4,7 +4,7 @@ import { ItemForm } from "../components";
 import { createItem } from "../services/createItem";
 import { useItemsStore } from "../states/itemsStore";
 
-const AddItemPage = () => {
+const ItemCreatePage = () => {
   const navigate = useNavigate();
   const { codigo } = useParams();
 
@@ -31,4 +31,4 @@ const AddItemPage = () => {
   );
 };
 
-export default AddItemPage;
+export default ItemCreatePage;

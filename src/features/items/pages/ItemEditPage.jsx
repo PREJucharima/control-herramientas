@@ -8,7 +8,7 @@ import { useFetchItemBySlug } from "../hooks/useFetchItemBySlug";
 import { updateItemBySlug } from "../services/updateItemBySlug";
 import { useItemsStore } from "../states/itemsStore";
 
-const EditItemPage = () => {
+const ItemEditPage = () => {
   const navigate = useNavigate();
   const { codigo, codigo_item } = useParams();
   const { itemBySlug, isLoading, error } = useFetchItemBySlug(
@@ -59,4 +59,4 @@ const EditItemPage = () => {
   );
 };
 
-export default EditItemPage;
+export default ItemEditPage;

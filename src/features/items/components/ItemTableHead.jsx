@@ -1,12 +1,6 @@
 import { useCallback } from "react";
 
-import {
-  Checkbox,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-} from "@mui/material";
+import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { visuallyHidden } from "@mui/utils";
 
@@ -31,35 +25,15 @@ const headCells = [
   { id: "actions", label: "Acciones" },
 ];
 
-export default function ItemTableHead({
-  order,
-  orderBy,
-  rowCount,
-  numSelected,
-  onRequestSort,
-  onSelectAllRows,
-}) {
+export default function ItemTableHead({ order, orderBy, onRequestSort }) {
   const createSortHandler = useCallback(
     (property) => (event) => onRequestSort(event, property),
     [onRequestSort]
   );
 
-  const isAllSelected = rowCount > 0 && numSelected === rowCount;
-  const isIndeterminate = numSelected > 0 && numSelected < rowCount;
-
   return (
     <StyledTableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            size="small"
-            color="primary"
-            checked={isAllSelected}
-            indeterminate={isIndeterminate}
-            onChange={onSelectAllRows}
-          />
-        </TableCell>
-
         {headCells.map((h) => (
           <HeaderCell
             key={h.id}

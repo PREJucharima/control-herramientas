@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { Scrollbar } from "@/components/ui/scrollbar";
-import { TableDataNotFound, TableToolbar } from "@/components/ui/table";
+import { TableDataNotFound } from "@/components/ui/table";
 import { getComparator, stableSort, useMuiTable } from "@/hooks/useMuiTable";
 import { useMaestrosStore } from "@/features/masters/states/maestrosStore";
 import {
@@ -25,7 +25,7 @@ import {
 } from "../components";
 import { useFetchItems } from "../hooks/useFetchItems";
 
-const ItemsListPage = () => {
+const ItemsPage = () => {
   const { codigo } = useParams();
   const { items = [], isLoading, error } = useFetchItems(codigo);
   const { maestros } = useMaestrosStore();
@@ -49,14 +49,10 @@ const ItemsListPage = () => {
     page,
     order,
     orderBy,
-    selected,
-    isSelected,
     rowsPerPage,
     setPage,
-    handleSelectRow,
     handleChangePage,
     handleRequestSort,
-    handleSelectAllRows,
     handleChangeRowsPerPage,
   } = useMuiTable({ defaultOrderBy: "codigo" });
 
@@ -104,7 +100,6 @@ const ItemsListPage = () => {
     [filtered, page, rowsPerPage]
   );
 
-  const allIds = useMemo(() => filtered.map((r) => r.id), [filtered]);
   const count = filtered.length;
 
   return (
@@ -123,15 +118,6 @@ const ItemsListPage = () => {
           <SearchArea value={filters.search} onChange={handleSearchChange} />
         </Box>
 
-        {selected.length > 0 && (
-          <TableToolbar
-            selected={selected.length}
-            handleDeleteRows={() => {
-              /* bulk delete */
-            }}
-          />
-        )}
-
         {!isLoading && !error && (
           <>
             <TableContainer>
@@ -140,10 +126,7 @@ const ItemsListPage = () => {
                   <ItemTableHead
                     order={order}
                     orderBy={orderBy}
-                    numSelected={selected.length}
-                    rowCount={filtered.length}
                     onRequestSort={handleRequestSort}
-                    onSelectAllRows={handleSelectAllRows(allIds)}
                   />
                   <TableBody>
                     {paginated.length === 0 ? (
@@ -153,8 +136,6 @@ const ItemsListPage = () => {
                         <ItemTableRow
                           key={item.id}
                           item={item}
-                          isSelected={isSelected(item.id)}
-                          handleSelectRow={handleSelectRow}
                           onEdit={() => {
                             navigate(
                               `/maestros/catalogos/${encodeURIComponent(
@@ -222,4 +203,4 @@ const ItemsListPage = () => {
   );
 };
 
-export default ItemsListPage;
+export default ItemsPage;

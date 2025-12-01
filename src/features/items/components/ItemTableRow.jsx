@@ -1,21 +1,7 @@
-import { useCallback } from "react";
-
-import { Checkbox, TableRow, TableCell, Chip, IconButton } from "@mui/material";
+import { TableRow, TableCell, Chip, IconButton } from "@mui/material";
 import { Edit, Visibility } from "@mui/icons-material";
 
-export default function ItemTableRow({
-  item,
-  isSelected,
-  handleSelectRow,
-  onEdit,
-  onViewDetails,
-}) {
-  // const [menuOpen, setMenuOpen] = useState(false);
-  const handleCheck = useCallback(
-    (e) => handleSelectRow(e, item.id),
-    [handleSelectRow, item.id]
-  );
-
+export default function ItemTableRow({ item, onEdit, onViewDetails }) {
   const vigencia =
     item.fecha_inicio_vigencia || item.fecha_fin_vigencia
       ? `${(item.fecha_inicio_vigencia || "").slice(0, 10)} → ${(
@@ -25,15 +11,6 @@ export default function ItemTableRow({
 
   return (
     <TableRow hover>
-      <TableCell padding="checkbox">
-        <Checkbox
-          size="small"
-          color="primary"
-          checked={isSelected}
-          onClick={handleCheck}
-        />
-      </TableCell>
-
       <TableCell>{item.codigo ?? "—"}</TableCell>
       <TableCell>{item.descripcion ?? item.descripcion_corta ?? "—"}</TableCell>
       <TableCell>{item?.tipo_catalogo?.nombre_catalogo ?? "—"}</TableCell>
