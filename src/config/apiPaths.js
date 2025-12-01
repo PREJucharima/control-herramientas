@@ -17,6 +17,17 @@ export const API_PATHS = {
   },
 
   /**
+   * @_section Contratos - CRUD para la gestión de contratos
+   */
+  contracts: {
+    list: "api/contratos/",
+    create: "api/contratos/",
+    detail: (code) => `api/contratos/${encodeURIComponent(code)}/`,
+    update: (code) => `api/contratos/${encodeURIComponent(code)}/`,
+    partialUpdate: (code) => `api/contratos/${encodeURIComponent(code)}/`,
+  },
+
+  /**
    * @_section Empleados - CRUD para la gestión de empleados
    */
   employees: {
