@@ -54,7 +54,6 @@ const ProductEditPage = () => {
   const handleSubmit = async (payload) => {
     try {
       const updated = await updateProductByCode(codigo, payload);
-      // actualiza el store si lo tienes
       updateProductInStore?.(codigo, updated);
       navigate("/maestros/productos");
     } catch (e) {

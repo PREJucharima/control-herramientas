@@ -70,7 +70,7 @@ export default function ProductsTableRow({
       <TableCell>{fechaModificacion}</TableCell>
 
       <TableCell
-        align="right"
+        align="center"
         sx={{
           whiteSpace: "nowrap",
           position: "sticky",
