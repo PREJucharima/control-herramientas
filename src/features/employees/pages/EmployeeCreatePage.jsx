@@ -6,7 +6,7 @@ import { createEmployee } from "../services/createEmployee";
 import { useEmployeesStore } from "../states/employeesStore";
 import { EmployeeForm } from "../components";
 
-const AddNewMaestroPage = () => {
+const EmployeeCreatePage = () => {
   const navigate = useNavigate();
   const addEmployee = useEmployeesStore((s) => s.addEmployee);
   const user = useAuthStore((state) => state.user);
@@ -36,4 +36,4 @@ const AddNewMaestroPage = () => {
   );
 };
 
-export default AddNewMaestroPage;
+export default EmployeeCreatePage;

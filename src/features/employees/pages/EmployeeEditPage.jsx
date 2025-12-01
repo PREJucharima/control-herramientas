@@ -7,7 +7,7 @@ import { updateEmployeeByRut } from "../services/updateEmployeeByRut";
 import { getEmployeeByRut } from "../services/getEmployeeByRut"; // <-- NECESITAS ESTE SERVICIO
 import { useCompaniesLookups } from "../../companies/hooks/useCompanies";
 
-const EditEmployeePage = () => {
+const EmployeeEditPage = () => {
   const navigate = useNavigate();
   const { rut } = useParams();
 
@@ -80,4 +80,4 @@ const EditEmployeePage = () => {
   );
 };
 
-export default EditEmployeePage;
+export default EmployeeEditPage;
