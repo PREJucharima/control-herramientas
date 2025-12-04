@@ -10,6 +10,8 @@ const NavWrapper = styled("div")({
   paddingLeft: 16,
   paddingRight: 16,
 });
+const LOGO_PATH = "/static/logo/logo.png";
+
 export default function MobileSidebar() {
   const { showMobileSideBar, handleCloseMobileSidebar } = useLayout();
   return (
@@ -24,12 +26,16 @@ export default function MobileSidebar() {
       >
         <NavWrapper>
           <Box
-            pl={1}
-            pt={3}
-            alt="logo"
-            maxWidth={45}
             component="img"
-            src="/static/logo/logo.png"
+            src={LOGO_PATH}
+            alt="logo"
+            width={30}
+            sx={(theme) => ({
+              filter:
+                theme.palette.mode === "dark" ? "brightness(0) invert(1)" : "",
+              mt: theme.spacing(4),
+              ml: theme.spacing(1.5),
+            })}
           />
 
           <MultiLevelMenu sidebarCompact={false} />
