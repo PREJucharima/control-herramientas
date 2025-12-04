@@ -153,100 +153,94 @@ const ContractsPage = () => {
           />
         </Box>
 
-        {!isLoading && !error && (
-          <>
-            <TableContainer>
-              <Scrollbar autoHide={false}>
-                <Table
-                  sx={{
-                    mb: 1,
-                    overflow: "visible",
-                  }}
-                >
-                  <ContractsTableHead
-                    order={order}
-                    orderBy={orderBy}
-                    onRequestSort={handleRequestSort}
-                    rowCount={contracts.length}
-                    numSelected={numSelectedOnPage}
-                    onSelectAllRows={handleSelectAllRows(pageIds)}
-                  />
-                  <TableBody>
-                    {isLoading ? (
-                      <TableRow>
-                        <TableCell colSpan={10} align="center">
-                          <CircularProgress />
-                        </TableCell>
-                      </TableRow>
-                    ) : error ? (
-                      <TableRow>
-                        <TableCell colSpan={10} align="center">
-                          <Alert severity="error">Error al cargar datos.</Alert>
-                        </TableCell>
-                      </TableRow>
-                    ) : contracts.length === 0 ? (
-                      <TableDataNotFound query={filters.search} />
-                    ) : (
-                      contracts.map((contract) => (
-                        <ContractsTableRow
-                          key={contract.id}
-                          contract={contract}
-                          isSelected={isSelected(contract.id)}
-                          handleSelectRow={handleSelectRow}
-                          onEdit={() =>
-                            navigate(
-                              `/maestros/contratos/${encodeURIComponent(
-                                contract.codigo
-                              )}/editar`
-                            )
-                          }
-                          onViewDetails={() => openView(contract.codigo)}
-                        />
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </Scrollbar>
-            </TableContainer>
-
-            <Box p={1}>
-              <TablePagination
-                component="div"
-                count={pagination.count}
-                page={pagination.page - 1}
-                rowsPerPage={pagination.pageSize}
-                onPageChange={handleChangePage}
-                rowsPerPageOptions={[5, 10, 25]}
-                onRowsPerPageChange={handleChangePageSize}
-                showFirstButton
-                showLastButton
-                labelRowsPerPage="Filas por página:"
-                labelDisplayedRows={({ from, to, count }) =>
-                  `${from}–${to} de ${count !== -1 ? count : `más de ${to}`}`
-                }
-                getItemAriaLabel={(type) => {
-                  if (type === "first") return "Primera página";
-                  if (type === "last") return "Última página";
-                  if (type === "next") return "Página siguiente";
-                  return "Página anterior";
-                }}
+        <TableContainer>
+          <Scrollbar autoHide={false}>
+            <Table
+              sx={{
+                mb: 1,
+                overflow: "visible",
+              }}
+            >
+              <ContractsTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={contracts.length}
+                numSelected={numSelectedOnPage}
+                onSelectAllRows={handleSelectAllRows(pageIds)}
               />
-            </Box>
-          </>
-        )}
-      </Card>
+              <TableBody>
+                {isLoading && (
+                  <TableRow>
+                    <TableCell colSpan={10} align="center">
+                      <CircularProgress />
+                    </TableCell>
+                  </TableRow>
+                )}
 
-      {/* {isLoading && (
-        <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-          <CircularProgress aria-label="Cargando contratos" />
+                {!isLoading && error && (
+                  <TableRow>
+                    <TableCell colSpan={10} align="center">
+                      <Alert severity="error" sx={{ mb: 2 }}>
+                        Error al cargar contratos:{" "}
+                        {error?.message || "Intenta nuevamente."}
+                      </Alert>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {!isLoading && !error && contracts.length === 0 && (
+                  <TableDataNotFound query={filters.search} />
+                )}
+
+                {!isLoading &&
+                  !error &&
+                  contracts.length > 0 &&
+                  contracts.map((contract) => (
+                    <ContractsTableRow
+                      key={contract.id}
+                      contract={contract}
+                      isSelected={isSelected(contract.id)}
+                      handleSelectRow={handleSelectRow}
+                      onEdit={() =>
+                        navigate(
+                          `/maestros/contratos/${encodeURIComponent(
+                            contract.codigo
+                          )}/editar`
+                        )
+                      }
+                      onViewDetails={() => openView(contract.codigo)}
+                    />
+                  ))}
+              </TableBody>
+            </Table>
+          </Scrollbar>
+        </TableContainer>
+
+        <Box p={1}>
+          <TablePagination
+            component="div"
+            count={pagination.count}
+            page={pagination.page - 1}
+            rowsPerPage={pagination.pageSize}
+            onPageChange={handleChangePage}
+            rowsPerPageOptions={[5, 10, 25]}
+            onRowsPerPageChange={handleChangePageSize}
+            showFirstButton
+            showLastButton
+            labelRowsPerPage="Filas por página:"
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}–${to} de ${count !== -1 ? count : `más de ${to}`}`
+            }
+            getItemAriaLabel={(type) => {
+              if (type === "first") return "Primera página";
+              if (type === "last") return "Última página";
+              if (type === "next") return "Página siguiente";
+              return "Página anterior";
+            }}
+          />
         </Box>
-      )} */}
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          Error al cargar contratos: {error?.message || "Intenta nuevamente."}
-        </Alert>
-      )}
+      </Card>
 
       {viewCode && (
         <ContractQuickViewDialog
